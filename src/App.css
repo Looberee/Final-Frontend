@@ -1,0 +1,31 @@
+.App
+{
+    max-height: 100vh;
+    overflow: hidden;
+}
+
+.sidenav-content
+{
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    position: fixed;
+}
+
+
+.content
+{
+    width: 100vw;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #090f1b;
+    position: relative;
+    padding-bottom: 150px;
+}
+
+.content::-webkit-scrollbar
+{
+    display: none;
+}
+

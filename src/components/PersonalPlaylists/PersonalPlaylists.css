@@ -1,0 +1,60 @@
+.personal-playlists
+{
+
+}
+
+.playlists
+{
+    margin: 10px 0;
+
+}
+
+.playlist-item
+{
+    list-style-type: none;
+}
+
+.playlist-container
+{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.playlist-info
+{
+    width: 200px;
+    color: #676b77;
+    display: inline-flex;
+    justify-content: space-between;
+    transition: 0.5s ease;
+}
+
+.playlist-info .name
+{
+    font-size: 15px; 
+}
+
+.playlist-info .figure
+{
+    font-size: 15px;
+}
+
+.playlist-info:hover
+{
+    color: #fff;
+}
+
+.create-playlist
+{
+    cursor: pointer;
+    margin-top: 5px;
+    color: #7B39A5;
+    transition: 0.5s ease;
+}
+
+.create-playlist:hover
+{
+    color: #9710EE;
+}

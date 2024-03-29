@@ -1,0 +1,49 @@
+.profile-container
+{
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.6), 
+        rgba(0, 0, 0, 0.6)
+        ), url('https://w.wallhaven.cc/full/d6/wallhaven-d6mkv3.jpg');
+    background-position: contain;
+    display: inline-flex;
+    padding-left: 30px;
+    gap: 20px;
+
+}
+
+.image-container
+{
+
+}
+
+.image-container img
+{
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 20px;
+}
+
+
+.info-container
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    gap: 5px;
+    color: #fff;
+}
+
+.info-container h1
+{
+    font-size: 80px;
+}
+
+.info-container h3
+{
+    font-size: 16px;
+}

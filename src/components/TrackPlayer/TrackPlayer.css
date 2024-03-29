@@ -1,0 +1,185 @@
+/* TrackPlayer.css */
+
+.track-player {
+    width: calc(100% - 300px); /* Maintain the width */
+    height: 80px;
+    background-color: #101823;
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    right: 0; /* Shift the component to the right edge */
+    z-index: 9999; /* Ensure it stays above other content */
+}
+
+.track-player-container {
+    display: inline-flex;
+    margin: 0 10px;
+    gap: 10px;
+}
+
+.track-player-image-container
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.track-player-image
+{
+    width: 55px;
+    height: 55  px;
+    border-radius: 10px;
+}
+
+.track-player-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+    align-self: center;
+}
+
+.track-player-name {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+
+    width: 120px; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.player-composer {
+    margin: 0;
+    font-size: 14px;
+    color: #666666;
+}
+
+.controls
+{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.play-pause, .forward, .backward, .shuffle, .repeat
+{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.forward, .backward, .shuffle, .repeat
+{
+    color: #756f7d;
+    transition: 0.5s ease;
+}
+
+.forward:hover, .backward:hover, .shuffle:hover, .repeat:hover
+{
+    color: #fff;
+}
+
+.fa-play
+{
+    transform: translateX(2px);
+}
+
+.fa-pause
+{
+    scale: 1.1;
+}
+
+.play-pause-container
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #ffffff;
+    padding: 7px;
+    border-radius: 50%;
+    transition: 0.5s ease;
+
+}
+
+.play-pause-container.scaled {
+    transform: scale(1.05);
+    transition: transform 0.1s ease; /* Smooth transition */
+}
+
+.track-player-slider {
+    width: 400px; /* Ensure this matches the width of the seek bar */
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.seek-bar {
+    -webkit-appearance: none;
+    width: 400px; /* Match the width of the track player slider */
+    height: 5px;
+    border-radius: 10px;
+    background: #ddd;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.seek-bar::-webkit-slider-thumb
+{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    box-shadow: -500px 0 0 500px #882ecc;
+}
+
+.track-player-current-time,.track-player-duration-time
+{
+    color: #fff;
+    font-size: 16px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.settings-icon
+{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    color: #756f7d;
+    margin: 0 30px;
+}
+
+.track-player-volume, .track-player-favourite
+{
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.5s ease;
+}
+
+.track-player-volume:hover, .track-player-favourite:hover
+{
+    color: #fff;
+}
+
+
+.track-player-favourite.active
+{
+    color: #e2313b;
+    transform: scale(1.1);
+}
+
+

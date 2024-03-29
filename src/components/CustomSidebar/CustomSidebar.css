@@ -1,0 +1,349 @@
+@font-face {
+    font-family: Poppins-Medium;
+    src: url('../../fonts/poppins/Poppins-Medium.ttf');
+}
+
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.sidebar
+{
+    display: inline-flex;
+
+}
+
+
+.icon-sidebar
+{
+    background-color: #090f1b;
+    width: 50px;
+    max-height: calc(100% - 60px);
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    overflow: hidden;
+}
+
+.main
+{
+    margin-top: 20px;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.extra
+{
+    height: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+.main li
+{
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+    list-style-type: none;
+}
+
+.extra li
+{
+    margin: 15px;
+    list-style-type: none; 
+    display: flex;
+    justify-content: center;
+}
+
+a
+{
+    text-decoration: none;
+}
+
+.i-sidebar
+{
+    color: #756f7d;
+    width: 23px;
+    height: 23px;   
+    transition: 0.5s ease;
+}
+
+.i-sidebar:hover
+{
+    color: #fff;
+}
+
+hr
+{
+    width: 50%;
+    margin: 0 auto;
+}
+
+.profile-image
+{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-bottom: 30px;
+}
+
+/* Second Sidebar Section */
+
+.track-sidebar
+{
+    min-height: calc(100vh - 60px);
+    width: 250px;
+    background-color: #101823;
+    padding: 30px 15px;
+    overflow: auto;
+}
+
+.track-sidebar::-webkit-scrollbar
+{
+    display: none;
+}
+
+
+.title
+{
+    color: #fff;
+    font-size: 18px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.menu-option
+{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.menu-option li
+{
+    list-style-type: none;
+}
+
+.menu-option li a
+{
+    color: #756f7d;
+    transition: 0.5s ease;
+}
+
+.menu-option li a:hover
+{
+    color: #fff;
+}
+
+/* Personal Playlists */
+
+.personal-playlists
+{
+    
+}
+
+.playlists
+{
+    margin: 30px 0;
+
+}
+
+.playlist-item
+{
+    list-style-type: none;
+}
+
+.playlist-container
+{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.playlist-info
+{
+    width: 200px;
+    color: #676b77;
+    display: inline-flex;
+    justify-content: space-between;
+    transition: 0.5s ease;
+}
+
+.playlist-info .name
+{
+    
+}
+
+.playlist-info .figure
+{
+
+}
+
+.playlist-info:hover
+{
+    color: #fff;
+}
+
+.active{
+    color: #fff;
+}
+
+.create-playlist
+{
+    cursor: pointer;
+    margin-top: 5px;
+    color: #7B39A5;
+    transition: 0.5s ease;
+}
+
+.create-playlist:hover
+{
+    color: #9710EE;
+}
+
+/* Recent Tracks */
+
+.recently-played-track
+{
+    height: 100%;
+}
+
+.recent-tracks
+{
+
+}
+
+.recent-track-container
+{
+    margin: 10px 0;
+    list-style-type: none;
+    transition: 0.5s ease;
+}
+
+.recent-track-container:hover
+{
+    border-radius: 10px;
+    background-color: rgba(9, 15, 27, 0.9);
+}
+
+.recent-track-container img
+{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin: 10px 10px 5px 10px;
+}
+
+.recent-track-link
+{
+    display: inline-flex;
+}
+
+.recent-track-info
+{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+}
+
+.recent-track-name
+{
+    color: #fff;
+}
+
+.recent-track-artist
+{
+    font-size: 13px;
+    color: #676b77;
+}
+
+@media (min-width: 768px) and (max-width: 1024px){
+    .icon-sidebar
+    {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .icon-sidebar
+    {
+        display: none;
+    }
+
+    .track-sidebar
+    {
+        width: auto;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .track-sidebar{
+        padding: 10px;
+        width: auto;
+    }
+
+    .personal-playlists
+    {
+        width: 150px;
+    }
+
+    .playlist-info
+    {
+        width: auto;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .track-sidebar{
+        padding: 10px;
+        width: auto;
+    }
+
+    .personal-playlists
+    {
+        width: 100px;
+    }
+
+    .playlist-info
+    {
+        width: auto;
+    }
+}
+
+@media only screen and (max-width: 360px) {
+    /* Additional styles for even smaller screens */
+    .track-sidebar{
+        display: none;
+    }
+
+    .icon-sidebar
+    {
+        display: block;
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 320px) {
+    /* Additional styles for even smaller screens */
+    .track-sidebar{
+        display: none;
+    }
+
+    .icon-sidebar
+    {
+        width: 50px;
+        display: block;
+    }
+}

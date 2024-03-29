@@ -1,0 +1,138 @@
+@font-face {
+    font-family: Poppins-Medium;
+    src: url('../../../fonts/poppins/Poppins-Medium.ttf');
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.genres-container {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #090f1b;
+    padding: 10px 0;
+    overflow-y: hidden;
+    overflow-x: auto;
+    margin: 10px;
+    
+}
+
+.genres-container .genres-title {
+    font-size: 30px;
+    color: #fff;
+    margin: 16px 0 20px 0;
+    padding-left: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.5s ease;
+
+}
+
+.genres-container .genres-title:hover
+{
+    transform: translateY(-5px);
+}
+
+.genres-list-container {
+    overflow-x: auto; /* Allow horizontal scrolling */
+    width: 100%; /* Ensure it takes full width */
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    overflow-x: auto;
+}
+
+.genres-list {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: calc(100% - 40px);
+    overflow-y: hidden;
+    overflow-x: auto;
+    margin: 10px;
+    flex-wrap: wrap;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+
+}
+
+.genres {
+    flex: 0 0 120px;
+    scroll-snap-align: start;
+    cursor: pointer;
+    float: left;
+    transition: 0.5s ease;
+    padding: 12px;
+    border-radius: 10px;
+    margin: 5px; /* Add margin between the items */
+}
+
+.genres:hover
+{
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.genres-cover {
+    position: relative;
+    width: 200px; /* Adjust width as needed */
+    height: 200px; /* Adjust height as needed */
+    overflow: hidden; /* Ensure the overflow is hidden to hide the zoomed-out portion */
+    transition: transform 0.5s ease; /* Add a transition for smooth animation */
+}
+
+.genres-cover:hover .genres-name-overlay
+{
+    display: block;
+}
+
+.genres-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.5);
+    border-radius: 50%; /* Adjust brightness as needed */
+    scale: 0.95;
+    transition: border-radius 0.5s ease; /* Add a transition for smooth animation */
+}
+
+.genres-name-overlay {
+    font-size: 30px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white; /* Text color for the genre name */
+    padding: 10px; /* Adjust padding as needed */
+    text-align: center;
+    transition: transform 0.5s ease-out; /* Add a transition for smooth animation */
+}
+
+.genres-name-overlay h3
+{
+    transition: transform 0.3s ease; /* Add a transition for smooth animation */ 
+}
+
+.genres:hover .genres-image {
+    transform: scale(1.1);
+    border-radius: 0%;
+}
+
+.genres:hover .genres-name-overlay h3 {
+    font-size: 40px;
+}
+
+.genres-info h3 {
+    font-size: 16px;
+    color: #fff;
+    font-weight: 400;
+}
+
+.genres-info p {
+    font-size: 14px;
+    color: #676b77;
+}

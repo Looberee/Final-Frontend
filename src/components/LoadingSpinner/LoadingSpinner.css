@@ -1,0 +1,73 @@
+.loader-container
+{
+    margin: 20px;
+}
+
+.loader
+{
+    height: 25px;
+    display: flex;
+    align-items: center;
+}
+
+.loader .stroke
+{
+    display: block;
+    position: relative;
+    background: #ccc;
+    height: 100%;
+    width: 4px;
+    border-radius: 50px;
+    margin: 0 1px;
+    animation: animate 1.5s linear infinite;
+
+}
+
+@keyframes animate
+{
+    50%
+    {
+        height: 20%;
+        background: #802399;
+    }
+    100%
+    {
+        height: 100%;
+        background: #AE2BD1;
+    }
+}
+
+.stroke:nth-child(1)
+{
+    animation-delay: 0s;
+}
+
+.stroke:nth-child(2)
+{
+    animation-delay: 0.3s;
+}
+
+.stroke:nth-child(3)
+{
+    animation-delay: 0.6s;
+}
+
+.stroke:nth-child(4)
+{
+    animation-delay: 0.9s;
+}
+
+.stroke:nth-child(5)
+{
+    animation-delay: 0.6s;
+}
+
+.stroke:nth-child(6)
+{
+    animation-delay: 0.3s;
+}
+
+.stroke:nth-child(7)
+{
+    animation-delay: 0s;
+}

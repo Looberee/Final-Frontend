@@ -1,0 +1,242 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+
+.navigation
+{
+    background-color: #101823;
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+    min-width: 100%;
+    max-height: 60px;
+}
+
+.branch-container
+{   
+    padding-left: 25px;
+    height: 70px;
+    display: inline-flex;
+    gap: 50px;
+    justify-content: center;
+    align-items: center;
+}
+
+.branch-container h1
+{
+    color: #fff;
+    cursor: pointer;
+}
+
+
+.nav-options
+{
+    display: inline-flex;
+    gap: 40px;
+}
+
+.option
+{
+    width: 90px;
+}
+
+.option a
+{
+    text-decoration: none;
+    font-size: 14px;
+    color: #756f7d;
+    transition: 0.5s ease;
+    
+}
+
+.option a:hover
+{
+    color: #fff;
+    
+}
+
+/* User Container */
+
+.user-container
+{
+    display: inline-flex;
+    gap: 20px;
+    align-items: center;
+    padding-right: 25px;
+}
+
+.searchbar-container
+{
+    display: inline-flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.searchbar
+{
+    width: 400px;
+    height: 30px;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #171d29;
+    color: #fff;
+}
+
+.searchbar:focus
+{
+    color: #fff;
+}
+
+.notification-profile-container
+{
+    display: inline-flex;
+    gap: 30px;
+    align-items: center;
+    margin-right: 50px;
+}
+
+.notification, .profile-login
+{
+
+}
+
+.notification-icon, .profile-icon
+{
+    width: 23px;
+    height: 23px;
+    color: #756f7d;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    transition: 0.5s ease;
+    cursor: pointer;
+}
+
+.notification-icon:hover, .profile-icon:hover
+{
+    color: #fff;
+}
+
+.login-button
+{
+    padding: 10px 20px;
+    border-radius: 20px;
+    background-color: #f5a623;
+    color: #fff;
+    font-size: 14px;
+    transition: 0.5s ease;
+    cursor: pointer;
+
+    
+}
+
+.login-button:hover
+{
+    background-color: #D78E16;
+    color: #fff;
+}
+
+.user-nav-icon
+{
+    width: 23px;
+    height: 23px;
+    color: #756f7d;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    transition: 0.5s ease;
+    cursor: pointer;
+
+}
+
+.user-nav-icon:hover
+{
+    color: #fff;
+}
+
+
+/* Media Query */
+
+/* Tablet Portrait */
+@media screen and (max-width: 768px) {
+    .navigation {
+        width: auto;
+        justify-content: space-between;
+    }
+
+    .branch-container {
+        padding-left: 0;
+        margin-left: 30px;
+        justify-content: flex-start;
+        gap: 20px;
+    }
+
+    .nav-options {
+        display: none;
+    }
+
+    .user-container {
+        justify-content: flex-end;
+        gap: 50px;
+    }
+
+    .searchbar-container {
+        display: flex;
+        gap: 10px;
+    }
+
+    .searchbar {
+        width: 200px;
+    }
+
+    .notification-profile-container {
+        gap: 50px;
+    }
+
+    .notification, .profile {
+    }
+}
+
+/* Phone Landscape */
+@media screen and (max-width: 480px) {
+    .navigation {
+        width: auto;
+        justify-content: center;
+    }
+
+    .branch-container h1 {
+        font-size: 1.5rem;
+    }
+
+    .searchbar {
+        width: 150px;
+    }
+
+    .notification-icon{
+        display: none;
+    }
+}
+
+/* Phone Portrait */
+@media screen and (max-width: 320px) {
+    .branch-container h1 {
+        font-size: 1.2rem;
+    }
+
+    .searchbar {
+        width: 120px;
+    }
+
+    .notification-icon, .profile-icon {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+
+
