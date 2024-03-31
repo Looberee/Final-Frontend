@@ -17,7 +17,6 @@ import UserPlaylist from './pages/SmallPages/UserPlaylist/UserPlaylist';
 import Searched from './pages/SmallPages/Searched/Searched';
 import { refreshTokens } from './Auth';
 import jwt_decode from "jwt-decode";
-import SpotifyPlayer from './components/SpotifyTrackPlayer/SpotifyTrackPlayer';
 import { UserProvider } from './contexts/UserContext'; // Import UserProvider
 import { RecentTrackProvider } from './contexts/RecentTrackContext';
 import { PlaylistProvider } from './contexts/PlaylistContext';
@@ -26,9 +25,18 @@ import { useAuth } from './contexts/AuthContext';
 import Genres from './pages/SmallPages/Genres/Genres';
 import GenreDetail from './pages/SmallPages/Genres/GenreDetail';
 import Tracks from './pages/SmallPages/Tracks/Tracks';
+import { TrackProvider } from './contexts/TrackContext';
+import { useTrack } from './contexts/TrackContext';
+import WaitingList from './pages/SmallPages/WaitingList/WaitingList';
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    window.process = {
+      ...window.process,
+    };
+  }, []);
 
   const handleLogin = () => {
     setIsLoggedIn(true);
@@ -49,38 +57,26 @@ const App = () => {
     }
   };
 
-  const handleSpotifyTokenRefresh = async () => {
-    try {
-      const spotifyAccessToken = await refreshTokens(); // Refresh tokens
-      localStorage.setItem('spotify_token', spotifyAccessToken); // Store new access token
-    } catch (error) {
-      console.error('Failed to refresh spotify tokens:', error);
-      handleLogout(); // Log out user if token refresh fails
-    }
-  };
-
   return (
     <DarkThemeProvider>
       <UserProvider>
         <AuthProvider>
-          <Router>
-            <AppContent isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout} onTokenRefresh={handleTokenRefresh} onSpotifyTokenRefresh={handleSpotifyTokenRefresh}/>
-          </Router>
+          <TrackProvider>
+            <Router>
+              <AppContent isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout} onTokenRefresh={handleTokenRefresh}/>
+            </Router>
+          </TrackProvider>
         </AuthProvider>
       </UserProvider>
     </DarkThemeProvider>
   );
 };
 
-const AppContent = ({ isLoggedIn, onLogin, onLogout, onTokenRefresh, onSpotifyTokenRefresh}) => {
+const AppContent = ({ isLoggedIn, onLogin, onLogout, onTokenRefresh}) => {
   const location = useLocation();
   const [searchValue, setSearchValue] = useState('');
-  const [selectedTrack, setSelectedTrack] = useState();
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
-
-  const handleTrackSelected = (track) => {
-    setSelectedTrack(track);
-  };
+  const { pyppoTrack } = useTrack();
 
   useEffect(() => {
     // Check if access token is expired and refresh if needed
@@ -96,20 +92,6 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout, onTokenRefresh, onSpotifyTo
     }
   }, [onTokenRefresh]);
 
-  // useEffect(() => {
-  //   const spotifyToken = localStorage.getItem('spotify_token');
-  //   if (spotifyToken) {
-  //     const decodedToken = jwt_decode(spotifyToken); // Decode the Spotify access token
-  //     const tokenExpTime = decodedToken.exp * 1000; // Convert expiration time to milliseconds
-  //     const currentTime = new Date().getTime();
-  //     if (tokenExpTime < currentTime) {
-  //       // Token expired, refresh it
-  //       onSpotifyTokenRefresh();
-  //     }
-  //   }
-  // }, [onSpotifyTokenRefresh]);
-  
-
   return (
     <div>
       {!isAuthPage && (
@@ -118,20 +100,25 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout, onTokenRefresh, onSpotifyTo
           <RecentTrackProvider>
             <PlaylistProvider>
             <div className='sidenav-content'>
+
               <CustomSidebar isLoggedIn={isLoggedIn} onLogout={onLogout} />
               <div className='content'>
+                {searchValue ? <Searched searchValue={searchValue}/> :
                 <Routes>
                   <Route path="/" element={<Home />} />
-                  <Route path="/personal/playlists/:encode_id/tracks" element={<UserPlaylist onTrackSelected={handleTrackSelected} />} />
+                  <Route path="/personal/playlists/:encode_id/tracks" element={<UserPlaylist />} />
                   <Route path="/personal/profile" element={<UserProfile/>}/>
+                  <Route path='/waiting/tracks' element={<WaitingList />} />
                   <Route path="/genres" element={<Genres/>}/>
                   <Route path='/genres/:genre_name' element={<GenreDetail />} />
                   <Route path='/artists' element={<Artists/>}/>
                   <Route path='/tracks' element={<Tracks/>}/>
-                </Routes>
-                {searchValue ? <Searched searchValue={searchValue} onTrackSelected={handleTrackSelected} /> : <div></div>}
-                {selectedTrack ? <TrackPlayer trackSelected={selectedTrack} /> : <div></div>}
+                </Routes>}
+
+                <TrackPlayer/>
+
               </div>
+
             </div>
             </PlaylistProvider>
           </RecentTrackProvider>

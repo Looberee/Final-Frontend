@@ -10,6 +10,7 @@ const PersonalPlaylists = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const { playlistState } = usePlaylist();
+    const [ isTextActive , setIsTextActive] = useState(false);
 
     const fetchPlaylists = async () => {
         try {
@@ -50,6 +51,10 @@ const PersonalPlaylists = () => {
         }
     };
 
+    const toggleTextActive = (encode_id) => {
+        setIsTextActive(encode_id);
+    }
+
     if (isLoading || error) {
         return (
             <div>
@@ -61,9 +66,9 @@ const PersonalPlaylists = () => {
     const playlistItems = data && data.user_playlists ? data.user_playlists.map((playlist, index) =>
         <li className='playlist-container' key={index}>
             {/* Use Link component instead of anchor tag */}
-            <Link to={`/personal/playlists/${playlist.encode_id}/tracks`} className='playlist-info'>
-                <span className='name'>{playlist.name}</span>
-                <span className='figure'>{playlist.tracks_count}</span>
+            <Link to={`/personal/playlists/${playlist.encode_id}/tracks`} className='playlist-info' onClick={() => toggleTextActive(playlist.encode_id)}>
+                <span className={`name ${isTextActive === playlist.encode_id ? 'active' : ''}`}>{playlist.name}</span>
+                <span className={`figure ${isTextActive === playlist.encode_id ? 'active' : ''}`}>{playlist.tracks_count}</span>
             </Link>
         </li>
     ) : null;

@@ -44,7 +44,6 @@ const Login = ({onLogin}) => {
     
     useEffect(() => {
         if (isLoggedIn) {
-            console.log('isLoggedIn after login:', isLoggedIn);
             navigate('/');
         }
     }, [isLoggedIn, navigate]);

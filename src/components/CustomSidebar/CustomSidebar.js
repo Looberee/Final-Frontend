@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './CustomSidebar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faMusic, faUser, faHeadphonesSimple , faMoon, faRightFromBracket, faBookmark, faSliders, faMicrophoneLines } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faMusic, faUser, faHeadphonesSimple, faDoorOpen , faMoon, faRightFromBracket, faBookmark, faSliders, faMicrophoneLines } from '@fortawesome/free-solid-svg-icons';
 import PersonalPlaylists from '../PersonalPlaylists/PersonalPlaylists';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useRecentTrack } from '../../contexts/RecentTrackContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTrack } from '../../contexts/TrackContext';
 import { Link } from 'react-router-dom';
 
 const CustomSidebar = () => {
@@ -16,12 +17,14 @@ const CustomSidebar = () => {
     const { recentTrackState, toggleRecentTrack } = useRecentTrack();
     const navigate = useNavigate();
     const { logout, isAuthenticated } = useAuth();
+    const { setPyppoTrack } = useTrack();
 
     const sidebarItems = [
         { id: 'home', icon: faHome },
         { id: 'music', icon: faMusic },
         { id: 'user', icon: faUser },
         { id: 'headphones', icon: faHeadphonesSimple },
+        { id: 'door', icon: faDoorOpen },
     ];
 
     const extraSidebarItems = [
@@ -45,6 +48,14 @@ const CustomSidebar = () => {
         else if ( item === 'user')
         {
             navigate('/personal/profile');
+        }
+        else if ( item === 'home')
+        {
+            navigate('/');
+        }
+        else if ( item === 'headphones')
+        {
+            navigate('/waiting/tracks');
         }
     };
 
@@ -78,6 +89,13 @@ const CustomSidebar = () => {
         setStoredPlaylists(updatedPlaylists);
         localStorage.setItem('playlists', JSON.stringify(updatedPlaylists));
     };
+
+    const handlePlayTrack = (track) =>
+    {
+        console.log('Track: ', track)
+        setPyppoTrack(track);
+        toggleRecentTrack();
+    }
 
     return (
         <div className='sidebar'>
@@ -142,9 +160,9 @@ const CustomSidebar = () => {
 
                     <ul className='recent-tracks'>
                         {recentTracks.map((track, index) => (
-                            <li key={index} className='recent-track-container'>
+                            <li key={index} className='recent-track-container' onClick={() => handlePlayTrack(track)}>
                                 <a href='#' className='recent-track-link'>
-                                    <img src={track.cloudinary_img_url} alt={track.name} />
+                                    <img src={track.spotify_image_url} alt={track.name} />
 
                                     <div className='recent-track-info'>
                                         <span className='recent-track-name'>{track.name}</span>

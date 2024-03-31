@@ -9,30 +9,7 @@ import Modal from "react-modal";
 import PersonalPlaylists from "../../../components/PersonalPlaylists/PersonalPlaylists";
 import ModalPlaylists from "../../../components/ModalPlaylists/ModalPlaylists";
 import { usePlaylist } from "../../../contexts/PlaylistContext";
-
-const customStyles = {
-    option: (provided, state) => ({
-        ...provided,
-        borderBottom: '1px solid #ccc',
-        color: state.isSelected ? 'white' : 'black',
-        background: state.isSelected ? '#007bff' : 'white',
-        '&:hover': {
-            background: state.isSelected ? '#007bff' : '#f0f0f0',
-        },
-    }),
-    control: (provided) => ({
-        ...provided,
-        width: 200,
-        borderRadius: 8,
-        border: '1px solid #ced4da',
-    }),
-    menu: (provided) => ({
-        ...provided,
-        width: 200,
-        borderRadius: 8,
-        border: '1px solid #ced4da',
-    }),
-};
+import { useTrack } from "../../../contexts/TrackContext";
 
 const modalStyles = {
     content: {
@@ -56,6 +33,7 @@ const modalStyles = {
 
 const Dropdown = ({ track }) => {
     const { togglePlaylist } = usePlaylist();
+    const { waitingList, addToWaitingList } = useTrack();
     const options = [
         { 
             value: 'option1', 
@@ -70,18 +48,11 @@ const Dropdown = ({ track }) => {
             value: 'option2', 
             label: (
                 <span style={{ fontSize: 'small' }}>
-                    <FontAwesomeIcon icon={faInfoCircle} /> View track information
+                    <FontAwesomeIcon icon={faInfoCircle} /> Add to list for next track
                 </span>
-            )
+            ),
+            action : () => handleAddToWaitingList(track) 
         },
-        { 
-            value: 'option3', 
-            label: (
-                <span style={{ fontSize: 'small' }}>
-                    <FontAwesomeIcon icon={faUser} /> View artist information
-                </span>
-            )
-        }
     ];
 
     const [isOpen, setIsOpen] = useState(false);
@@ -123,6 +94,12 @@ const Dropdown = ({ track }) => {
         }
     };
 
+    const handleAddToWaitingList = (track) => {
+        console.log("Track will be added to waiting list: ", track);
+        addToWaitingList(track);
+
+    }
+
     return (
         <div className="dropdown">
             <div className="dropdown-toggle" onClick={() => setIsOpen(!isOpen)}>
@@ -153,13 +130,14 @@ const Dropdown = ({ track }) => {
 
 
 
-const Searched = ({ searchValue, onTrackSelected }) => {
+const Searched = ({ searchValue }) => {
     const [searchResults, setSearchResults] = useState([]);
     const [error, setError] = useState(null);
     const [hoveredTrack, setHoveredTrack] = useState(null);
     const [imageKey, setImageKey] = useState(Date.now());
     const [isOpen, setIsOpen] = useState(false);
     const { toggleRecentTrack } = useRecentTrack();
+    const { pyppoTrack, setPyppoTrack,  isPlaying, setIsPlaying } = useTrack();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -197,49 +175,8 @@ const Searched = ({ searchValue, onTrackSelected }) => {
     };
 
     const handleTrackSelected = async (track) => {
-        onTrackSelected(track);
-        console.log(track);
-
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.post('http://127.0.0.1:5000/personal/recent/tracks', {
-                'spotify_id' : track.spotify_id,
-                'played_at' : Date.now()
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}` // Include Bearer token in the request headers
-                }
-            });
-
-            console.log(response.data); // Log the response from the Flask route
-            toggleRecentTrack();
-
-        } catch (error) {
-            console.log(track.spotify_id)
-            console.error('Error adding recent track:', error);
-        }
-
-        try
-        {
-            const token = localStorage.getItem('token');
-            const trackUri = 'spotify:track:' + track.spotify_id
-            console.log(trackUri);
-            const response = await axios.post('http://127.0.0.1:5000/playback/play' , { trackUri }, {
-                headers: {
-                    'Authorization': `Bearer ${token}` 
-                }
-            });
-
-            console.log(response.data.message)
-        }
-        catch (error)   
-        {
-            console.error('Error adding recent track:', error);
-        }
-    };
-
-    const handleAddTrack = (track) => {
-        setIsOpen(!isOpen);
+        setPyppoTrack(track);
+        toggleRecentTrack();
     };
 
     const memoizedSearchResults = useMemo(() => searchResults, [searchResults]);
@@ -253,7 +190,6 @@ const Searched = ({ searchValue, onTrackSelected }) => {
                     <li className="searched-track" key={track.id}
                         onMouseEnter={() => handleMouseEnter(index)}
                         onMouseLeave={handleMouseLeave}
-                        onDoubleClick={() => handleTrackSelected(track)}
                         >
                         <div className="searched-cover">
                             <img className="searched-track-image" src={track.spotify_image_url} loading="lazy" key={`${track.id}-${imageKey}`} onLoad={generateImageKey}/>

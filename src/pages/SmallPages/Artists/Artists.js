@@ -18,7 +18,7 @@ const Artist = ({title, genre, fetched_artists}) => {
                     {artists.map(artist => (
                         <li key={artist.id} className="artist">
                         <div className="artist-cover">
-                            <img className="artist-image" src={artist.image_url} alt={artist.name} loading="lazy" />
+                            <img className="artist-image" src={artist.spotify_image_url} alt={artist.name} loading="lazy" />
                         </div>
                         <div className="artist-info">
                             <h3>{artist.name}</h3>

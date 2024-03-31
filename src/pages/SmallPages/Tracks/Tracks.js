@@ -1,40 +1,52 @@
 import React ,{ useState , useEffect} from "react";
+import { useTrack } from "../../../contexts/TrackContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import './Tracks.css'
 
 const Track = ({title, fetched_tracks}) => {
     const [trackTitle, setTrackTitle] = useState("Title");
     const [tracks, setTracks ] = useState([{}])
+    const { setPyppoTrack } = useTrack();
 
     useEffect(() =>{
         setTrackTitle(title);
         setTracks(fetched_tracks)
     },[title, fetched_tracks])
+    
+    const handleTrackSelected = (track) => {
+        setPyppoTrack(track);
+    }
         
 
-    return (
-        <div>
-            <div className="track-container">
-                <h1 className="track-title">{trackTitle}</h1>
+const renderedTracks = React.useMemo(() => tracks.map((track, index) => (
+    <li key={index} className="track" onDoubleClick={() => handleTrackSelected(track)}>
+        <div className="track-cover">
+            <img className="track-image" src={track.spotify_image_url} alt={track.name} />
+            {/* <div className="play-button" onClick={() => handleTrackSelected(track)}>
+                <FontAwesomeIcon icon={faPlay} className="track-play" />
+            </div> */}
+        </div>
+        <div className="track-info">
+            <h3>{track.name}</h3>
+            <p>{track.artists}</p>
+        </div>
+    </li>
+)), [tracks, handleTrackSelected]);
 
-                <div className="tracks-list-container">
-                    <ul className="tracks-list">
-                        {tracks.map((track, index) => (
-                            <li key={index} className="track">
-                                <div className="track-cover">
-                                    <img className="track-image" src={track.image_url} alt={track.name} />
-                                </div>
-                                <div className="track-info">
-                                    <h3>{track.track_name}</h3>
-                                    <p>{track.artists}</p>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+return (
+    <div>
+        <div className="track-container">
+            <h1 className="track-title">{trackTitle}</h1>
 
+            <div className="tracks-list-container">
+                <ul className="tracks-list">
+                    {renderedTracks}
+                </ul>
             </div>
         </div>
-    )
+    </div>
+);
 
 }
 

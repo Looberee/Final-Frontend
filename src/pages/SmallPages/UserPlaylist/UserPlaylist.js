@@ -7,21 +7,19 @@ import { useParams } from 'react-router-dom';
 import axios from "axios";
 import { usePlaylist } from "../../../contexts/PlaylistContext";
 import { useRecentTrack } from "../../../contexts/RecentTrackContext";
+import { useTrack } from "../../../contexts/TrackContext";
 
-const TrackRow = ({ track, trackOrder, onTrackSelected, playlist_encode_id }) => {
+const TrackRow = ({ track, trackOrder , playlist_encode_id }) => {
     const [isHovered, setIsHovered] = useState(false);
-    const [isPlaying, setIsPlaying] = useState(false);
+    const [isPlayingActive, setIsPlayingActive] = useState(false);
     const [isFavourited, setIsFavourited] = useState(false);
     const { playlistState, togglePlaylist } = usePlaylist();
     const { toggleRecentTrack } = useRecentTrack();
+    const { setPyppoTrack, setIsPlaying } = useTrack();
 
     const toggleFavourites = () => {
         setIsFavourited(prevState => !prevState);
     }
-
-    const togglePlay = () => {
-        setIsPlaying(prevState => !prevState);
-    };
 
     const handleMouseEnter = () => {
         setIsHovered(true);
@@ -32,46 +30,11 @@ const TrackRow = ({ track, trackOrder, onTrackSelected, playlist_encode_id }) =>
     };
 
     const handleTrackSelected = async () => {
-        onTrackSelected(track);
-
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.post('http://127.0.0.1:5000/personal/recent/tracks', {
-                'spotify_id' : track.spotify_id,
-                'played_at' : Date.now()
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}` // Include Bearer token in the request headers
-                }
-            });
-
-            console.log(response.data); // Log the response from the Flask route
-            toggleRecentTrack();
-
-        } catch (error) {
-            console.log(track.spotify_id)
-            console.error('Error adding recent track:', error);
-        }
-
-        try
-        {
-            const token = localStorage.getItem('token');
-            const trackUri = 'spotify:track:' + track.spotify_id
-            console.log(trackUri);
-            const response = await axios.post('http://127.0.0.1:5000/playback/play' , { trackUri }, {
-                headers: {
-                    'Authorization': `Bearer ${token}` 
-                }
-            });
-
-            console.log(response.data.message)
-        }
-        catch (error)   
-        {
-            console.error('Error adding recent track:', error);
-        }
-
+        setPyppoTrack(track);
+        toggleRecentTrack();
     };
+
+    
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = Math.floor(seconds % 60);
@@ -110,11 +73,11 @@ const TrackRow = ({ track, trackOrder, onTrackSelected, playlist_encode_id }) =>
 
     return (
         <div>
-            <div className={`row ${isHovered ? 'hovered' : ''} ${isPlaying ? 'pause' : 'play'}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+            <div className={`row ${isHovered ? 'hovered' : ''} ${isPlayingActive ? 'pause' : 'play'}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
                 <div className="col-info">
-                    <div className="id-animation" onClick={togglePlay}>
+                    <div className="id-animation">
                         <span>#{trackOrder}</span>
-                        <FontAwesomeIcon className={`user-playlist-play-button ${isPlaying ? 'pause' : 'play'}`} icon={isPlaying ? faPause : faPlay} onClick={handleTrackSelected}/>
+                        <FontAwesomeIcon className={`user-playlist-play-button ${isPlayingActive ? 'pause' : 'play'}`} icon={isPlayingActive ? faPause : faPlay} onClick={handleTrackSelected} />
                     </div>
                     <div className="user-playlist-info">
                         <img className="track-image" src={track.spotify_image_url} alt={track.name} />
@@ -163,6 +126,7 @@ const UserPlaylist = ({onTrackSelected}) => {
     const [playlistTracks, setPlaylistTracks] = useState();
     const { encode_id } = useParams();
     const { playlistState, togglePlaylist } = usePlaylist();
+
 
     useEffect(() => {
         const fetchPlaylistTracks = async () => {
@@ -266,17 +230,12 @@ const UserPlaylist = ({onTrackSelected}) => {
             console.error('Error deleting playlist:', error);
         }
     };
-    
-    const handleTrackSelected = (track) => {
-        onTrackSelected(track);
-    };
-    
+
 
     return (
         <div className="user-playlist-container">
             <div className="user-playlist-wrapper">
                 <div className="user-playlist-detail">
-                    <img className="user-playlist-image" src="https://i.scdn.co/image/ab67616d00001e02c2504e80ba2f258697ab2954"/>
                     <h1 className="user-playlist-name">{playlistName}</h1>
                     <div className="user-playlist-ed-btn">
                         <FontAwesomeIcon className="user-playlist-edit" icon={faPenToSquare} onClick={openEditModal}/>
@@ -319,7 +278,6 @@ const UserPlaylist = ({onTrackSelected}) => {
                             playlist_encode_id = {encode_id}
                             track={track}
                             trackOrder={index + 1}
-                            onTrackSelected={handleTrackSelected}
                         />
                     ))
                 ) : (

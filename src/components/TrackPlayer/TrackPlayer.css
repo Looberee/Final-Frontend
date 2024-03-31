@@ -54,10 +54,15 @@
     white-space: nowrap;
 }
 
-.player-composer {
+.track-player-composer {
     margin: 0;
     font-size: 14px;
     color: #666666;
+
+    width: 120px; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .controls
@@ -83,6 +88,10 @@
 
 .forward:hover, .backward:hover, .shuffle:hover, .repeat:hover
 {
+    color: #fff;
+}
+
+.repeat.active {
     color: #fff;
 }
 
