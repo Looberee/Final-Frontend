@@ -91,7 +91,7 @@
     color: #fff;
 }
 
-.repeat.active {
+.repeat.active, .shuffle.active {
     color: #fff;
 }
 

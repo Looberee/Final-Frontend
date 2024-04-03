@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './CustomSidebar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faMusic, faUser, faHeadphonesSimple, faDoorOpen , faMoon, faRightFromBracket, faBookmark, faSliders, faMicrophoneLines } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faMusic, faUser, faHeadphonesSimple, faDoorOpen, faHeart, faMoon, faRightFromBracket, faBookmark, faSliders, faMicrophoneLines } from '@fortawesome/free-solid-svg-icons';
 import PersonalPlaylists from '../PersonalPlaylists/PersonalPlaylists';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -9,6 +9,7 @@ import { useRecentTrack } from '../../contexts/RecentTrackContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTrack } from '../../contexts/TrackContext';
 import { Link } from 'react-router-dom';
+import { useRoom } from '../../contexts/RoomContext';
 
 const CustomSidebar = () => {
     const [storedPlaylists, setStoredPlaylists] = useState([]);
@@ -16,12 +17,13 @@ const CustomSidebar = () => {
     const [activeItem, setActiveItem] = useState(null);
     const { recentTrackState, toggleRecentTrack } = useRecentTrack();
     const navigate = useNavigate();
-    const { logout, isAuthenticated } = useAuth();
-    const { setPyppoTrack } = useTrack();
+    const { logout, isAuthenticated, alreadyAuth } = useAuth();
+    const { setPyppoTrack, setToggleDuplicate } = useTrack();
+    const { roomState, setRoomState } = useRoom();
 
     const sidebarItems = [
         { id: 'home', icon: faHome },
-        { id: 'music', icon: faMusic },
+        { id: 'heart', icon: faHeart },
         { id: 'user', icon: faUser },
         { id: 'headphones', icon: faHeadphonesSimple },
         { id: 'door', icon: faDoorOpen },
@@ -43,19 +45,29 @@ const CustomSidebar = () => {
         setActiveItem(item);
 
         if (item === 'rightFromBracket') {
+            setRoomState(false);
             logout();
         }
         else if ( item === 'user')
         {
+            setRoomState(false);
             navigate('/personal/profile');
         }
         else if ( item === 'home')
         {
+            setRoomState(false);
             navigate('/');
         }
         else if ( item === 'headphones')
         {
+            setRoomState(false);
             navigate('/waiting/tracks');
+        }
+        else if ( item == 'door')
+        {
+            // handle room id here
+            navigate('/room');
+            setRoomState(true);
         }
     };
 
@@ -65,9 +77,7 @@ const CustomSidebar = () => {
             try {
                 const token = localStorage.getItem('token');
                 const response = await axios.get('http://127.0.0.1:5000/personal/recent/tracks', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    withCredentials: true
                 });
                 setRecentTracks(response.data.recent_tracks);
             } catch (error) {
@@ -124,7 +134,13 @@ const CustomSidebar = () => {
                 </ul>
             </div>
 
-            <div className='track-sidebar'>
+            <div className={`room-sidebar ${roomState ? 'room' : '' }`}>
+                <div className='menu'>
+                    <a href='/a' className='create-room-btn'>Create Room</a>
+                </div>    
+            </div>
+
+            <div className={`track-sidebar ${roomState ? 'room' : '' }`}>
                 <div className='menu'>
                     <div className='title'>
                         <FontAwesomeIcon className='' icon={faBookmark} />
@@ -140,7 +156,7 @@ const CustomSidebar = () => {
                     </ul>
                 </div>
 
-                {isAuthenticated() ?
+                {alreadyAuth ?
                     <div className='personal-playlists'>
                         <div className='title'>
                             <FontAwesomeIcon className='' icon={faSliders} />
@@ -151,7 +167,7 @@ const CustomSidebar = () => {
 
                     </div> : <div></div>}
 
-                { isAuthenticated() ?    
+                { alreadyAuth ?    
                 <div className='recently-played-track'>
                     <div className='title'>
                         <FontAwesomeIcon className='' icon={faMicrophoneLines} />
@@ -175,6 +191,7 @@ const CustomSidebar = () => {
                 </div> : <div></div>}
 
             </div>
+
         </div>
     );
 };

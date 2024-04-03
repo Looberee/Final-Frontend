@@ -81,9 +81,7 @@ const Dropdown = ({ track }) => {
     
             // Send a POST request to the Flask route using Axios with authorization header
             const response = await axios.post(`http://127.0.0.1:5000/personal/playlists/${playlistId}/track/${track.spotify_id}`, data, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                }
+                withCredentials: true
             });
             console.log('Response:', response.data);
             togglePlaylist();
@@ -145,9 +143,7 @@ const Searched = ({ searchValue }) => {
                 if (searchValue) {
                     const spotifyAccessToken = localStorage.getItem('spotify_token');
                     const response = await axios.get(`http://127.0.0.1:5000/search?query=${searchValue}`, {
-                    headers: {
-                        Authorization: `Bearer ${spotifyAccessToken}`
-                    }
+                        withCredentials: true
                 });
                     setSearchResults(response.data.search_results);
                 } else {
@@ -190,6 +186,7 @@ const Searched = ({ searchValue }) => {
                     <li className="searched-track" key={track.id}
                         onMouseEnter={() => handleMouseEnter(index)}
                         onMouseLeave={handleMouseLeave}
+                        onClick={() => handleTrackSelected(track)}
                         >
                         <div className="searched-cover">
                             <img className="searched-track-image" src={track.spotify_image_url} loading="lazy" key={`${track.id}-${imageKey}`} onLoad={generateImageKey}/>

@@ -11,7 +11,7 @@ const Login = ({onLogin}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const { login } = useAuth();
+    const { setAccessToken, setRefreshToken, login, setAlreadyAuth } = useAuth();
 
     const navigate = useNavigate();
 
@@ -23,19 +23,28 @@ const Login = ({onLogin}) => {
             const response = await axios.post('http://127.0.0.1:5000/login', {
                 username,
                 password
-            });
-            console.log('Login successful', response.data);
+            }, {withCredentials: true});  // Make sure to include this to send cookies
     
-            // Save token or session identifier in local storage or cookies
-            localStorage.setItem('token', response.data.access_token);
-            localStorage.setItem('spotify_token', response.data.spotify_access_token);
-            console.log('Token: ' + response.data.access_token);
-            console.log('Spotify Access Token: ' + response.data.spotify_access_token);
-            setIsLoggedIn(true);
-            login(localStorage.getItem('token'));
-            console.log(response.data.profile);
-            onLogin();
+            if (response.data.login) {
+                console.log('Login successful');
+                setIsLoggedIn(true);
+                setAlreadyAuth(true);
+                onLogin();
+            } else {
+                console.log('Login failed');
+            }
 
+            if (response.data.access_token && response.data.refresh_token) {
+                setAccessToken(response.data.access_token);
+                setRefreshToken(response.data.refresh_token);
+                login(response.data.access_token);
+            }
+
+            if (response.data.spotify_token)
+            {
+                localStorage.setItem('spotify_token', response.data.spotify_token);
+            }
+    
         } catch (error) {
             console.log(error.message);
         }

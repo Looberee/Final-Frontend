@@ -8,6 +8,7 @@ const GenreDetail = () => {
     const { genre_name } = useParams();
     const [tracksGenre, setTracksGenre] = useState();
     const [tracksGenreImage, setTracksGenreImage] = useState();
+    const [tracksGenreName, setTracksGenreName] = useState();
 
     const [popularTracks, setPopularTracks] = useState([]);
     const [longestTracks, setLongestTracks] = useState([]);
@@ -47,15 +48,20 @@ const GenreDetail = () => {
         }
 
         if (tracksGenre && tracksGenre.length > 0) {
-            const imageUrls = tracksGenre.map(track => track.image_url);
+            const imageUrls = tracksGenre.map(track => track.spotify_image_url);
             setTracksGenreImage(imageUrls);
+        }
+
+        if (tracksGenre && tracksGenre.length > 0) {
+            const name = tracksGenre.map(track => track.name);
+            setTracksGenreName(name);
         }
 
     }, [tracksGenre]);
 
     return (
         <div>
-            <GenreBanner imageUrls={tracksGenreImage}/>
+            <GenreBanner imageUrls={tracksGenreImage} names={tracksGenreName}/>
             <Albums title="Top Popular Tracks" tracks={popularTracks} />
             <Albums title="For Who Want To Enjoy" tracks={longestTracks} />
             <Albums title="Hot As New" tracks={nearestTracks} />

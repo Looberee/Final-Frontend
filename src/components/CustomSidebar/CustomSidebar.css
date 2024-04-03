@@ -103,6 +103,47 @@ hr
     background-color: #101823;
     padding: 30px 15px;
     overflow: auto;
+    transition: 1s ease-in-out;
+}
+
+.track-sidebar.room
+{
+    transition: 1s ease-in-out;
+    width: 0px;
+    padding: 30px 0;
+}
+
+.room-sidebar
+{
+    background-color: #101823;
+    width: 0;
+    transition: 1s ease-in-out;
+}
+
+.room-sidebar.room
+{
+    min-height: calc(100vh - 60px);
+    width: 250px;
+    background-color: #101823;
+    padding: 30px 15px;
+    overflow: auto;
+}
+
+.room-sidebar .menu .create-room-btn{
+    width: 100%;
+    padding: 10px;
+    /* background-color: #9710EE; */
+    cursor: pointer;
+    border-radius: 30px;
+    color: #000;
+}
+
+.room-sidebar.room .menu .create-room-btn
+{
+    margin-top: 20px;
+    color: #7B39A5;
+    transition: 0.5s ease;
+
 }
 
 .track-sidebar::-webkit-scrollbar

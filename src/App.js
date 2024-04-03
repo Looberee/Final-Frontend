@@ -15,8 +15,6 @@ import UserProfile from './pages/SmallPages/UserProfile/UserProfile';
 import Artists from './pages/SmallPages/Artists/Artists';
 import UserPlaylist from './pages/SmallPages/UserPlaylist/UserPlaylist';
 import Searched from './pages/SmallPages/Searched/Searched';
-import { refreshTokens } from './Auth';
-import jwt_decode from "jwt-decode";
 import { UserProvider } from './contexts/UserContext'; // Import UserProvider
 import { RecentTrackProvider } from './contexts/RecentTrackContext';
 import { PlaylistProvider } from './contexts/PlaylistContext';
@@ -28,9 +26,26 @@ import Tracks from './pages/SmallPages/Tracks/Tracks';
 import { TrackProvider } from './contexts/TrackContext';
 import { useTrack } from './contexts/TrackContext';
 import WaitingList from './pages/SmallPages/WaitingList/WaitingList';
+import Room from './pages/SmallPages/Room/Room';
+import { RoomProvider } from './contexts/RoomContext';
+import Cookies from 'js-cookie';
+
+import io from 'socket.io-client';
+
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const token = Cookies.get('access_token_cookie');
+
+  useEffect(() => {
+    if (token) {
+      console.log('Access token: ' + token);
+    }
+    else{
+      console.log('No access token');
+    }
+  },[])
 
   useEffect(() => {
     window.process = {
@@ -47,24 +62,16 @@ const App = () => {
     setIsLoggedIn(false);
   };
 
-  const handleTokenRefresh = async () => {
-    try {
-      const accessToken = await refreshTokens(); // Refresh tokens
-      localStorage.setItem('token', accessToken); // Store new access token
-    } catch (error) {
-      console.error('Failed to refresh tokens:', error);
-      handleLogout(); // Log out user if token refresh fails
-    }
-  };
-
   return (
     <DarkThemeProvider>
       <UserProvider>
         <AuthProvider>
           <TrackProvider>
-            <Router>
-              <AppContent isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout} onTokenRefresh={handleTokenRefresh}/>
-            </Router>
+            <RoomProvider>
+              <Router>
+                <AppContent isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout}/>
+              </Router>
+            </RoomProvider>
           </TrackProvider>
         </AuthProvider>
       </UserProvider>
@@ -79,18 +86,17 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout, onTokenRefresh}) => {
   const { pyppoTrack } = useTrack();
 
   useEffect(() => {
-    // Check if access token is expired and refresh if needed
-    const token = localStorage.getItem('token');
-    if (token) {
-      const decodedToken = jwt_decode(token); // Decode the JWT token
-      const tokenExpTime = decodedToken.exp * 1000; // Convert expiration time to milliseconds
-      const currentTime = new Date().getTime();
-      if (tokenExpTime < currentTime) {
-        // Token expired, refresh it
-        onTokenRefresh();
-      }
-    }
-  }, [onTokenRefresh]);
+    const socket = io('http://127.0.0.1:5000');
+
+    socket.on('spotify_token_refreshed', (data) => {
+        localStorage.removeItem('spotify_token');
+
+        localStorage.setItem('spotify_token', data.spotify_access_token);
+    });
+
+    // Clean up the effect
+    return () => socket.disconnect();
+}, []);
 
   return (
     <div>
@@ -113,6 +119,7 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout, onTokenRefresh}) => {
                   <Route path='/genres/:genre_name' element={<GenreDetail />} />
                   <Route path='/artists' element={<Artists/>}/>
                   <Route path='/tracks' element={<Tracks/>}/>
+                  <Route path='/room' element={<Room/>}/>
                 </Routes>}
 
                 <TrackPlayer/>

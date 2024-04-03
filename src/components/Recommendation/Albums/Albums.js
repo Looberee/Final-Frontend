@@ -24,7 +24,7 @@ const Albums = ({title, tracks}) => {
                                 </div>
                                 <div className="album-info">
                                     <h3>{track.name}</h3>
-                                    <p>{track.artists}</p>
+                                    <p>{Array.isArray(track.artists) ? track.artists.join(', ') : track.artists}</p>
                                 </div>
                             </li>
                         ))}

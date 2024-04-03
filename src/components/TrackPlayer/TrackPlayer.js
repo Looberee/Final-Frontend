@@ -5,8 +5,12 @@ import axios from 'axios';
 import './TrackPlayer.css';
 import { useTrack } from '../../contexts/TrackContext';
 import { useRecentTrack } from '../../contexts/RecentTrackContext';
+import { useAuth } from '../../contexts/AuthContext';
+import Cookies from 'js-cookie';
 
 const TrackPlayer = () => {
+    const { accessToken } = useAuth();
+
     const [pyppoPlayer, setPyppoPlayer] = useState();
     const [alreadyPlayed, setAlreadyPlayed] = useState(false);
 
@@ -25,14 +29,13 @@ const TrackPlayer = () => {
     const [counter, setCounter] = useState(0);
     const [intervalId, setIntervalId] = useState(null);
 
-    const { pyppoTrack, setPyppoTrack, isPlaying, setIsPlaying, myDeviceId, setMyDeviceId, waitingList, removeFromWaitingList } = useTrack();
-    const { toggleRecentTrack } = useRecentTrack();
+    const { pyppoTrack, setPyppoTrack, isPlaying, setIsPlaying, myDeviceId, setMyDeviceId, waitingList, removeFromWaitingList, toggleDuplicate, setToggleDuplicate } = useTrack();
+    const { toggleRecentTrack, recentTrackState } = useRecentTrack();
     const [shuffleState, setShuffleState] = useState(false);
     const [shuffleActive, setShuffleActive] = useState(false);
     const [repeatState, setRepeatState] = useState('off');
     const [repeatActive, setRepeatActive] = useState(false);
 
-    
     useEffect(() => {
         const initSpotifyPlayer = () => {
             if (window.Spotify) {
@@ -86,8 +89,6 @@ const TrackPlayer = () => {
         if (pyppoTrack) {
             setTrackUri(`spotify:track:${pyppoTrack.spotify_id}`)
             setIsPlayingTrack(pyppoTrack);
-            setIsPlaying(true);
-            handlePlayTrackInPlayer();
         }
         else
         {
@@ -95,12 +96,18 @@ const TrackPlayer = () => {
             setTrackUri(null);
             setIsPlaying(false);
         }
-    },[pyppoTrack, trackUri]);
+    },[pyppoTrack]);
+
+    useEffect(() => {
+        handlePlayTrackInPlayer();
+        setIsPlaying(true);
+        setAlreadyPlayed(true);
+    },[trackUri])
 
     useEffect(() => {
         if (isPlayingTrack)
         {
-            console.log("Now playing the Playing Track: ", isPlayingTrack.name);
+            console.log("Now playing: ", isPlayingTrack.name);
             handleAddRecentTrack();
         }
 
@@ -143,7 +150,7 @@ const TrackPlayer = () => {
                 clearInterval(intervalId);
             }
         };
-    }, [isPlayingTrack]);
+    }, [isPlayingTrack, isPlaying]);
 
     useEffect(() => {
         setSliderValue((counter / (isPlayingTrack ? isPlayingTrack.duration / 1000 : 1)) * 100);
@@ -198,12 +205,13 @@ const TrackPlayer = () => {
         togglePlay();
     };
 
-    const handlePlayTrackInPlayer = async () => {
+    const handlePlayTrackInPlayer =     async () => {
         try {
-            const response = await axios.post('http://127.0.0.1:5000/playback/play', { myDeviceId, trackUri });
+            const response = await axios.post('http://127.0.0.1:5000/playback/play', { myDeviceId, trackUri }, {
+                withCredentials: true,
+            });
             setIsPlaying(true);
             setAlreadyPlayed(true)
-            console.log("Playback is playing this track: ", response.data.current_track);
         } catch (error) {
             console.error('Failed to send playback control request:', error);
         }
@@ -211,7 +219,9 @@ const TrackPlayer = () => {
 
     const handleResumeTrackInPlayer = async () => {
         try {
-            const response = await axios.post('http://127.0.0.1:5000/playback/resume', { myDeviceId });
+            const response = await axios.post('http://127.0.0.1:5000/playback/resume', { myDeviceId }, {
+                withCredentials: true
+            });
             console.log('Playback control request sent successfully');
             console.log(response.data.message);
             setIsPlaying(true);
@@ -223,7 +233,9 @@ const TrackPlayer = () => {
 
     const handlePauseTrackInPlayer = async () => {
         try {
-            const response = await axios.post('http://127.0.0.1:5000/playback/pause', { myDeviceId });
+            const response = await axios.post('http://127.0.0.1:5000/playback/pause', { myDeviceId }, {
+                withCredentials: true
+            });
             console.log('Playback control request sent successfully');
             console.log(response.data.message);
             setIsPlaying(false);
@@ -233,22 +245,23 @@ const TrackPlayer = () => {
     }
 
     const togglePlay = async () => {
-        setIsPlaying((pre) => (!pre))
-
         if (isPlaying) {
             console.log('Pausing track in player...');
             handlePauseTrackInPlayer()
+            setIsPlaying((pre) => (!pre))
         } else 
         {
             if (alreadyPlayed)
             {
                 console.log('Resuming track in player...');
                 handleResumeTrackInPlayer();
+                setIsPlaying((pre) => (!pre))
             }
             else
             {
                 console.log('Playing track in player...');
                 handlePlayTrackInPlayer();
+                setIsPlaying((pre) => (!pre))
             }
         } 
     };
@@ -256,7 +269,9 @@ const TrackPlayer = () => {
     const handleClickNext = async () => {
         try {
             setIsPlaying(true);
-            const response = await axios.post('http://127.0.0.1:5000/playback/next', { myDeviceId });
+            const response = await axios.post('http://127.0.0.1:5000/playback/next', { myDeviceId }, {
+                withCredentials: true
+            });
             console.log('Playback control request sent successfully');
 
             setAlreadyPlayed(true)
@@ -272,7 +287,9 @@ const TrackPlayer = () => {
     const handleClickPrevious = async () => {
         try {
             setIsPlaying(true);
-            const response = await axios.post('http://127.0.0.1:5000/playback/previous', { myDeviceId });
+            const response = await axios.post('http://127.0.0.1:5000/playback/previous', { myDeviceId }, {
+                withCredentials: true
+            });
             console.log('Playback control request sent successfully');
 
             setAlreadyPlayed(true)
@@ -290,6 +307,8 @@ const TrackPlayer = () => {
             const response = await axios.post('http://127.0.0.1:5000/playback/shuffle', {
                 myDeviceId: deviceId,
                 shuffleState: !shuffleState // Toggle shuffle state
+            }, {
+                withCredentials: true
             });
             const { success, message } = response.data;
             if (success) {
@@ -308,6 +327,8 @@ const TrackPlayer = () => {
             const response = await axios.post('http://127.0.0.1:5000/playback/repeat', {
                 myDeviceId: deviceId, // Assuming deviceId is a simple string or number
                 repeatState: repeatMode
+            }, {
+                withCredentials: true
             });
             const { success, message } = response.data;
             if (success) {
@@ -322,34 +343,41 @@ const TrackPlayer = () => {
     };
     
     const handleRepeatToggle = () => {
-        setRepeatActive(!repeatActive);
-        if (repeatActive) {
-            handleRepeat('off');
-        } else {
-            handleRepeat('track');
+        if (isPlaying == false)
+        {
+            
         }
+        else
+        {
+            setRepeatActive(!repeatActive);
+            if (repeatActive) {
+                handleRepeat('off');
+            } else {
+                handleRepeat('track');
+            }
+        }
+    }
+
+    const handleShuffleToggle = () => {
+        setShuffleActive(!shuffleActive);
+        handleShuffle();
     }
 
     const handleAddRecentTrack = async () => {
         try {
-            const token = localStorage.getItem('token');
             const response = await axios.post('http://127.0.0.1:5000/personal/recent/tracks', {
                 'spotify_id' : isPlayingTrack.spotify_id,
                 'played_at' : Date.now()
             }, {
-                headers: {
-                    'Authorization': `Bearer ${token}` // Include Bearer token in the request headers
-                }
+                withCredentials: true // This ensures that cookies (including the HttpOnly cookie with the JWT token) are included in the request
             });
-
-            console.log(response.data); // Log the response from the Flask route
             toggleRecentTrack();
-
+    
         } catch (error) {
             console.log(isPlayingTrack.spotify_id)
             console.error('Error adding recent track:', error);
         }
-    }
+    };
     
 
     const formatTime = (seconds) => {
@@ -374,7 +402,7 @@ const TrackPlayer = () => {
             </div>
 
             <div className="controls" style={{ color: '#fff' }}>
-                <FontAwesomeIcon icon={faShuffle} className="shuffle" onClick={handleShuffle}/>
+                <FontAwesomeIcon icon={faShuffle} className={`shuffle ${shuffleActive ? 'active' : ''}`} onClick={handleShuffleToggle}/>
                 <FontAwesomeIcon icon={faBackwardStep} className="backward" onClick={handleClickPrevious}/>
                 <div className={`play-pause-container ${isScaled ? 'scaled' : ''}`} onClick={handleClick}>
                     <FontAwesomeIcon

@@ -7,7 +7,7 @@ import { useAuth } from "../../contexts/AuthContext";
 
 
 const Navbar = ({ isLoggedIn, onLogout, setSearchValue }) => {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, alreadyAuth } = useAuth();
     const handleInputChange = (event) => {
         const { value } = event.target;
         setSearchValue(value);
@@ -17,9 +17,9 @@ const Navbar = ({ isLoggedIn, onLogout, setSearchValue }) => {
         <div>
             <nav className="navigation">
                 <div className="branch-container">
-                    <h1>Pyppo</h1>
+                    <Link to="/"><h1>Pyppo</h1></Link>
 
-                    <ul className="nav-options">
+                    {/* <ul className="nav-options">
                         <li className="option">
                             <a href="">What's new?</a>
                         </li>
@@ -31,7 +31,7 @@ const Navbar = ({ isLoggedIn, onLogout, setSearchValue }) => {
                         <li className="option">
                             <a href="">Features</a>
                         </li>            
-                    </ul>
+                    </ul> */}
                 </div>
 
 
@@ -46,7 +46,7 @@ const Navbar = ({ isLoggedIn, onLogout, setSearchValue }) => {
                         </a>
 
                         <a className="profile-login">
-                            {isAuthenticated() ? (
+                            {alreadyAuth ? (
                                 <FontAwesomeIcon icon={faCircleUser} className="user-nav-icon"/>
                             ) : (
                                 <Link to="/login" className="login-button">Log in</Link>

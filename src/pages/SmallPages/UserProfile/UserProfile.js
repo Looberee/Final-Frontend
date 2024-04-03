@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './UserProfile.css'
 import axios from 'axios';
 import LoadingSpinner from '../../../components/LoadingSpinner/LoadingSpinner';
-
+import Cookies from 'js-cookie';
 
 const UserProfile = () => {
     const [profileData, setProfileData] = useState();
@@ -11,17 +11,10 @@ const UserProfile = () => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const token = localStorage.getItem('token'); // Assuming you stored the token in local storage
-                const response = await axios.get('http://localhost:5000/profile', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                console.log('User profile data:', response.data);
-                setProfileData(response.data);
+                const res = await axios.get('http://127.0.0.1:5000/cookies', { withCredentials: true });
+                const response = await axios.get('http://127.0.0.1:5000/profile', { withCredentials: true });
+                setProfileData(response.data.profile);
                 setIsLoading(false);
-
-                console.log(profileData);
             } catch (error) {
                 console.error('Error fetching user profile:', error);
             }
@@ -29,6 +22,10 @@ const UserProfile = () => {
 
         fetchUserProfile();
     }, []);
+
+    useEffect(() => {
+        console.log("Profile data: ", profileData);
+    },[profileData])
 
     return (     
         <div>

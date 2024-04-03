@@ -10,6 +10,7 @@ export const TrackProvider = ({ children }) => {
     const [pyppoTrack, setPyppoTrack] = useState(null);
     const [waitingList, setWaitingList] = useState([]);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [toggleDuplicate, setToggleDuplicate] = useState(false);
 
     useEffect(() => {
         console.log("--------------------------------------------------------")
@@ -40,6 +41,7 @@ export const TrackProvider = ({ children }) => {
                 pyppoTrack, setPyppoTrack,
                 waitingList, addToWaitingList,removeFromWaitingList,
                 isPlaying, setIsPlaying, toggleIsPlaying,
+                toggleDuplicate, setToggleDuplicate
             }}
         >
             {children}

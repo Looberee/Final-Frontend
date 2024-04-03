@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import './GenreBanner.css';
 
-const GenreBanner = ({imageUrls}) => {
+const GenreBanner = ({imageUrls, names}) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [fade, setFade] = useState(false);
     const [images, setImages] = useState([]);
+    const [trackNames, setTrackNames] = useState([]);
 
     // Update images state when imageUrls prop changes
     useEffect(() => {
@@ -14,9 +15,10 @@ const GenreBanner = ({imageUrls}) => {
     }, [imageUrls]);
 
     useEffect(() => {
-        console.log("Hello url from banner: ", imageUrls);
-    }, [imageUrls]);
-
+        if (names && Array.isArray(names) && names.length > 0) {
+            setTrackNames(names);
+        }
+    }, [names]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -39,8 +41,8 @@ const GenreBanner = ({imageUrls}) => {
         <div className="genre-container">
             <div className="genre-slider-wrapper">
                 <div className={`genre-slider-content ${fade ? 'fade-out' : ''}`}>
-                    <span>Top playlists</span>
-                    <h1>Discover new music</h1>
+                    <span>Top tracks</span>
+                    <h1>{trackNames[currentIndex]}</h1>
                     <p>Listen to new music and create your own playlists</p>
                     <button>Play now</button>
                 </div>
@@ -57,7 +59,7 @@ const GenreBanner = ({imageUrls}) => {
                     ))}
                 </div>
 
-                <div className="genre-slider-nav">
+                {/* <div className="genre-slider-nav">
                     {images.map((_, index) => (
                         <div
                             href={`#slide-${index}`}
@@ -66,7 +68,7 @@ const GenreBanner = ({imageUrls}) => {
                             onClick={() => goToSlide(index)}
                         ></div>
                     ))}
-                </div>
+                </div> */}
             </div>
         </div>
     );

@@ -57,9 +57,7 @@ const TrackRow = ({ track, trackOrder , playlist_encode_id }) => {
             const response = await axios.delete(
                 `http://127.0.0.1:5000/personal/playlists/${playlist_encode_id}/track/${track.id}`,
                 {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    withCredentials: true
                 }
             );
             console.log('Track deleted successfully:', response.data);
@@ -134,9 +132,7 @@ const UserPlaylist = ({onTrackSelected}) => {
                 // Fetch playlist tracks from the server
                 const token = localStorage.getItem('token');
                 const response = await axios.get(`http://127.0.0.1:5000/personal/playlists/${encode_id}/tracks`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}` // Replace token with your actual token value
-                    }
+                    withCredentials: true
                 });
                 console.log("Track from the specific playlist: ", response.data.playlist.tracks);
                 setPlaylistTracks(response.data.playlist.tracks);
@@ -197,9 +193,7 @@ const UserPlaylist = ({onTrackSelected}) => {
                 'http://127.0.0.1:5000/personal/playlists',
                 { encode_id: encode_id, new_name: name }, // Send encode_id and new_name in the request body
                 {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    withCredentials: true
                 }
             );
             console.log('Playlist name updated successfully:', response.data);
@@ -217,9 +211,7 @@ const UserPlaylist = ({onTrackSelected}) => {
             const response = await axios.delete(
                 'http://127.0.0.1:5000/personal/playlists', // Correct endpoint
                 {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
+                    withCredentials: true,
                     data: { encode_id: encode_id } // Pass encode_id in the request body
                 }
             );

@@ -15,9 +15,7 @@ const ModalPlaylists = ({ onAddToPlaylist }) => {
         try {
             const token = localStorage.getItem('token');
             const response = await axios.get('http://127.0.0.1:5000/personal/playlists', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                withCredentials: true
             });
             setData(response.data);
         } catch (error) {
@@ -38,9 +36,7 @@ const ModalPlaylists = ({ onAddToPlaylist }) => {
                 'http://localhost:5000/personal/playlists',
                 {},
                 {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    withCredentials: true
                 }
             );
             // After creating the playlist, refresh the playlists data
