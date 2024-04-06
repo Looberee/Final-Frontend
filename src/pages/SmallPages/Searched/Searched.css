@@ -12,14 +12,13 @@
 }
 
 .searched-tracks-list {
-    width: 100%;
     display: flex;
     align-items: center;
     gap: 15px;
-    min-width: calc(100% - 40px);
+    min-width: calc(100% - 30px);
     overflow-y: auto;
     overflow-x: auto;
-    margin: 20px 30px;
+    padding: 0 30px;
 }
 
 .searched-track {
@@ -39,12 +38,6 @@
 {
     background-color: rgba(255, 255, 255, 0.1);
 }
-
-.searched-track:hover .searched-track-info h3
-{
-
-}
-
 
 .searched-track-image {
     width: 150px;
@@ -140,10 +133,6 @@
     color: #fff;
 }
 
-.searched-track:hover .play-button:hover .searched-track-play:hover
-{
-}
-
 .searched-track:hover .searched-track-image {
     filter: brightness(60%);
 }
@@ -151,6 +140,8 @@
 /* Dropdown style */
 
 .dropdown {
+    position: relative;
+    display: inline-block;
 }
 
 .dropdown-toggle {
@@ -165,14 +156,14 @@
 
 .dropdown-menu {
     position: absolute;
+    padding: 10px;
     bottom: calc(100% + 5px);
-    width: 180px;
+    width: 190px;
     left: auto;
     right: 0;
-    background-color: white;
-    border: 1px solid #ccc;
+    background-color: rgba(9, 15, 27, 1.2);
     border-radius: 4px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    box-shadow: rgba(255, 255, 255, 0.02) 0px 1px 3px 0px, rgba(226, 224, 220, 0.15) 0px 0px 0px 1px;
     transform: translateX(10px);
 }
 
@@ -190,8 +181,9 @@
     cursor: pointer;
     width: 100%;
     margin: 10px 0;
+    transition: 0.5 ease;
 }
 
 .dropdown-menu ul li:hover {
-    background-color: #f0f0f0;
+    color: #fff;
 }

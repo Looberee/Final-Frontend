@@ -16,6 +16,7 @@ const TrackRow = ({ track, trackOrder , playlist_encode_id }) => {
     const { playlistState, togglePlaylist } = usePlaylist();
     const { toggleRecentTrack } = useRecentTrack();
     const { setPyppoTrack, setIsPlaying } = useTrack();
+    const [profile, setProfile] = useState();
 
     const toggleFavourites = () => {
         setIsFavourited(prevState => !prevState);
@@ -34,7 +35,19 @@ const TrackRow = ({ track, trackOrder , playlist_encode_id }) => {
         toggleRecentTrack();
     };
 
-    
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:5000/profile', { withCredentials: true });
+                setProfile(response.data.profile);
+            } catch (error) {
+                console.error('Error fetching user profile:', error);
+            }
+        };
+
+        fetchUserProfile();
+    }, []);
+
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = Math.floor(seconds % 60);
@@ -52,8 +65,6 @@ const TrackRow = ({ track, trackOrder , playlist_encode_id }) => {
 
     const handleDeleteTrackInPlaylist = async (track) => {
         try {
-            console.log("Hello:", playlist_encode_id, "and: ", track);
-            const token = localStorage.getItem('token');
             const response = await axios.delete(
                 `http://127.0.0.1:5000/personal/playlists/${playlist_encode_id}/track/${track.id}`,
                 {
@@ -88,7 +99,7 @@ const TrackRow = ({ track, trackOrder , playlist_encode_id }) => {
 
                 <div className="col-name">
                     <FontAwesomeIcon icon={faUser}/>
-                    <span className="user-playlist-owner">Dennis</span>
+                    <span className="user-playlist-owner">{profile ? profile.username : "User"}</span>
                 </div>
 
                 <div className="col-genre">

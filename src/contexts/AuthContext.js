@@ -72,6 +72,7 @@ const refreshTokens = async () => {
         });
         console.log("Successfully refreshed tokens: ", response.data.refresh);
         login(response.data.access_token);
+        setRefreshToken(response.data.refresh_token);
     } catch (error) {
         console.error('Error refreshing tokens:', error);
         throw error;

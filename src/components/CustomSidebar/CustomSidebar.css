@@ -302,12 +302,18 @@ hr
 .recent-track-name
 {
     color: #fff;
+    width: 120px; 
+    overflow: hidden; 
+    white-space: nowrap;
 }
 
 .recent-track-artist
 {
     font-size: 13px;
     color: #676b77;
+    width: 120px; 
+    overflow: hidden; 
+    white-space: nowrap;
 }
 
 @media (min-width: 768px) and (max-width: 1024px){

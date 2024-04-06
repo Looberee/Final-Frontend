@@ -6,7 +6,6 @@ import './TrackPlayer.css';
 import { useTrack } from '../../contexts/TrackContext';
 import { useRecentTrack } from '../../contexts/RecentTrackContext';
 import { useAuth } from '../../contexts/AuthContext';
-import Cookies from 'js-cookie';
 
 const TrackPlayer = () => {
     const { accessToken } = useAuth();
@@ -18,7 +17,6 @@ const TrackPlayer = () => {
 
     const [isScaled, setIsScaled] = useState(false);
     const [sliderValue, setSliderValue] = useState(0);
-    const [isFavourite, setIsFavourite] = useState(false);
 
     const [spotifyStatus, setSpotifyStatus] = useState('Connecting to Spotify...');
     const [deviceId, setDeviceId] = useState();
@@ -29,12 +27,13 @@ const TrackPlayer = () => {
     const [counter, setCounter] = useState(0);
     const [intervalId, setIntervalId] = useState(null);
 
-    const { pyppoTrack, setPyppoTrack, isPlaying, setIsPlaying, myDeviceId, setMyDeviceId, waitingList, removeFromWaitingList, toggleDuplicate, setToggleDuplicate } = useTrack();
+    const { pyppoTrack, setPyppoTrack, isPlaying, setIsPlaying, myDeviceId, setMyDeviceId, waitingList, removeFromWaitingList, toggleDuplicate, setToggleDuplicate, isTrackFavourite, setIsTrackFavourite} = useTrack();
     const { toggleRecentTrack, recentTrackState } = useRecentTrack();
     const [shuffleState, setShuffleState] = useState(false);
     const [shuffleActive, setShuffleActive] = useState(false);
     const [repeatState, setRepeatState] = useState('off');
     const [repeatActive, setRepeatActive] = useState(false);
+
 
     useEffect(() => {
         const initSpotifyPlayer = () => {
@@ -42,7 +41,7 @@ const TrackPlayer = () => {
                 console.log('Spotify object is available:', window.Spotify);
         
                 const spotify_access_token = localStorage.getItem('spotify_token');
-                console.log('Access token:', spotify_access_token);
+                console.log('Spotify access token:', spotify_access_token);
         
                 if (!spotify_access_token) {
                     console.error('Access token not found in local storage');
@@ -121,40 +120,52 @@ const TrackPlayer = () => {
     },[isPlayingTrack, waitingList])
 
     useEffect(() => {
-        if (isPlayingTrack) {
-            const trackDurationInSeconds = isPlayingTrack.duration / 1000; // Assuming duration is in milliseconds
+        let intervalId;
     
-            // Start the counter when a track starts playing
-            const id = setInterval(() => {
+        if (isPlayingTrack && (isPlaying == true)) {
+            const trackDurationInSeconds = isPlayingTrack.duration / 1000;
+    
+            intervalId = setInterval(() => {
                 setCounter(prevCounter => {
                     if (prevCounter < trackDurationInSeconds) {
                         return prevCounter + 1;
                     } else {
-                        // When the counter reaches the track duration, clear the interval and print "Track end"
-                        clearInterval(id);
                         console.log('Track end');
-                        setIsPlaying(false);
-                        setAlreadyPlayed(false);
-                        return 0; // Reset the counter
+                        if (repeatActive === false) {
+                            clearInterval(intervalId);
+                            console.log('Repeat state is false');   
+                            setIsPlaying(false);
+                            setAlreadyPlayed(false);
+                            setSliderValue(0);
+                            return 0;
+                        } else {
+                            console.log('Repeat state is true');
+                            setIsPlaying(true);
+                            setAlreadyPlayed(true);
+                            setSliderValue(0);
+                            return 0;
+                        }
                     }
                 });
             }, 1000);
-    
-            // Save the interval ID so we can clear it later
-            setIntervalId(id);
         }
     
-        // Clear the interval when the component unmounts or when the track changes
         return () => {
             if (intervalId) {
                 clearInterval(intervalId);
             }
         };
-    }, [isPlayingTrack, isPlaying]);
-
+    }, [isPlayingTrack, repeatActive, isPlaying]);
+    
+    // Reset the counter to 0 whenever the song changes
     useEffect(() => {
-        setSliderValue((counter / (isPlayingTrack ? isPlayingTrack.duration / 1000 : 1)) * 100);
-    },[counter])
+        if (intervalId) {
+            clearInterval(intervalId);
+            setIntervalId(null);
+        }
+        setCounter(0);
+        setSliderValue(0);
+    }, [pyppoTrack,]);
 
     useEffect(() => {
         if (currentTrackPosition == '0:00' && isPlayingTrack == pyppoTrack) {
@@ -172,25 +183,77 @@ const TrackPlayer = () => {
         }
     }, [currentTrackPosition]);
 
-    const handleSliderChange = (PositionInSec) => {
-        const newPosition = parseInt(PositionInSec);
-        setSliderValue(newPosition);
-    
-        // Calculate the new position in seconds based on the slider value and track duration
-        const newTrackPosition = (newPosition / 100) * (isPlayingTrack.duration / 1000);
-        setCurrentTrackPosition(formatTime(newTrackPosition)); // Update the displayed time
+    useEffect(() => {
+        if (isPlayingTrack && isPlayingTrack.duration > 0) {
+            const trackDurationInSeconds = isPlayingTrack.duration / 1000;
+            const sliderValue = (counter / trackDurationInSeconds) * 100;
+            setSliderValue(sliderValue);
+        }
+    }, [counter]);
+
+
+    const handleSliderChange = (event) => {
+        const value = parseInt(event.target.value);
+        console.log("Slider value: ", value)
+        setSliderValue(value);
     };
-    
-    const toggleFavourite = () => {
-        setIsFavourite(prevState => !prevState);
+
+    const handleAddToFavourites = async (track) => {
+        try
+        {
+            const response = await axios.post('http://127.0.0.1:5000/personal/favourites/track', 
+            { 'spotify_id' : track.spotify_id }, 
+            { withCredentials : true });
+            console.log('Message : ', response.data.message)
+        }
+        catch (error)
+        {
+            console.error('Failed to add track to favourites:', error);
+        }
+    }
+
+    const handleRemoveFromFavourites = async (track) => {
+        try {
+            const response = await axios.delete('http://127.0.0.1:5000/personal/favourites/track', {
+                data: { 'spotify_id' : track.spotify_id },
+                withCredentials: true
+            });
+            console.log('Message : ', response.data.message)
+        }
+        catch (err) {
+            console.error('Failed to remove track from favourites:', err)
+        }
+    }
+
+
+    const toggleFavourite = (track) => {
+        setIsTrackFavourite(prevState => !prevState);
+        if (track)
+        {
+            if (!isTrackFavourite)
+            {
+                handleAddToFavourites(track);
+            }
+            else
+            {
+                handleRemoveFromFavourites(track);
+            }
+        }
+        else
+        {
+            console.log("Something wrong here")
+        }
     };
 
     const handleSeek = async () => {
         try {
             // Calculate the new position in milliseconds based on the slider value
             const newPositionMs = (sliderValue / 100) * isPlayingTrack.duration;
-            console.log(newPositionMs)
-            const response = await axios.post('http://127.0.0.1:5000/playback/seek', { newPositionMs });
+            setCounter(parseInt(newPositionMs / 1000));
+            console.log("Slider value in seek function: ", sliderValue)
+            console.log("Is Playing Track: ", isPlayingTrack.name)
+            console.log("Track duration: ",isPlayingTrack.duration)
+            const response = await axios.post('http://127.0.0.1:5000/playback/seek', { newPositionMs }, {withCredentials: true});
             console.log('Seek request sent successfully');
             // setSliderValue(response.data.new_position_ms / isPlayingTrack.duration * 100);
         } catch (error) {
@@ -205,7 +268,7 @@ const TrackPlayer = () => {
         togglePlay();
     };
 
-    const handlePlayTrackInPlayer =     async () => {
+    const handlePlayTrackInPlayer = async () => {
         try {
             const response = await axios.post('http://127.0.0.1:5000/playback/play', { myDeviceId, trackUri }, {
                 withCredentials: true,
@@ -386,7 +449,7 @@ const TrackPlayer = () => {
         return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
     };
 
-    const duration = isPlayingTrack ? formatTime(isPlayingTrack.duration / 1000) : '0.00';
+    const duration = isPlayingTrack ? formatTime(isPlayingTrack.duration / 1000) : '0:00';
 
     return (
         <div className="track-player">
@@ -397,7 +460,7 @@ const TrackPlayer = () => {
 
                 <div className='track-player-info'>
                     <h3 className="track-player-name">{isPlayingTrack ? isPlayingTrack.name : '.........'}</h3>
-                    <p className="track-player-composer">{isPlayingTrack ? isPlayingTrack.artists : '......'}</p>
+                    <p className="track-player-composer">{isPlayingTrack ? isPlayingTrack.artists.join(', ') : '......'}</p>
                 </div>
             </div>
 
@@ -422,7 +485,7 @@ const TrackPlayer = () => {
                     min="0"
                     max="100"
                     className="seek-bar"
-                    onChange={handleSliderChange}
+                    onChange={(event) => handleSliderChange(event)}
                     onMouseUp={handleSeek} // Trigger seek when user releases mouse after adjusting seek bar
                 />
                 <span className='time track-player-duration-time'>{duration}</span>
@@ -432,12 +495,11 @@ const TrackPlayer = () => {
                 <FontAwesomeIcon icon={faVolumeUp} className="track-player-volume" />
                 <FontAwesomeIcon
                     icon={faHeart}
-                    className={`track-player-favourite ${isFavourite ? 'active' : ''}`}
-                    onClick={toggleFavourite}
+                    className={`track-player-favourite ${isTrackFavourite ? 'active' : ''}`}
+
+                    onClick={() => toggleFavourite(isPlayingTrack)}
                 />
             </div>
-
-            <div className="spotify-status">{spotifyStatus}</div>
         </div>
     );
 };

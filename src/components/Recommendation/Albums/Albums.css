@@ -1,63 +1,28 @@
-@font-face {
-    font-family: Poppins-Medium;
-    src: url('../../../fonts/poppins/Poppins-Medium.ttf');
-}
-
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-.album-container {
-    width: 100%;
-    height: 360px;
-    background-color: #090f1b;
-    padding: 10px 0;
-    overflow-y: hidden;
-    overflow-x: auto;
-    
-}
-
-.album-container .album-title {
+.searched-tracks-title {
     font-size: 30px;
     color: #fff;
-    margin: 16px 0 20px 0;
-    padding-left: 20px;
-    font-weight: 600;
+    margin: 20px 30px;
     cursor: pointer;
     transition: 0.5s ease;
-
 }
 
-.album-container .album-title:hover
+.searched-tracks-title:hover
 {
     transform: translateY(-5px);
 }
 
-.albums-list-container {
-    overflow-x: auto; /* Allow horizontal scrolling */
-    width: 100%; /* Ensure it takes full width */
-    display: flex;
-    justify-content: center;
-    align-self: center;
-    overflow-x: auto;
-}
-
-.albums-list {
+.searched-tracks-list {
     display: flex;
     align-items: center;
     gap: 15px;
-    min-width: calc(100% - 40px);
-    overflow-y: hidden;
+    min-width: calc(100% - 30px);
+    overflow-y: auto;
     overflow-x: auto;
-    margin: 10px;
-    flex-wrap: nowrap;
-
+    padding: 0 30px;
 }
 
-.album {
+.searched-track {
+    background-color: #090f1b;
     flex: 0 0 120px;
     scroll-snap-align: start;
     cursor: pointer;
@@ -65,21 +30,24 @@
     transition: 0.5s ease;
     padding: 12px;
     border-radius: 10px;
+    max-width: 100%;
+    position: relative;
 }
 
-.album:hover
+.searched-track:hover
 {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-.album-image {
+.searched-track-image {
     width: 150px;
     height: 150px;
     object-fit: cover;
-    border-radius: 12px;
+    /* border-radius: 12px; */
+    position: relative;
 }
 
-.album-info {
+.searched-track-info {
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -87,21 +55,135 @@
     margin: 5px;
 }
 
-.album-info h3 {
+.searched-track-info h3 {
     font-size: 16px;
     color: #fff;
     font-weight: 400;
+
     width: 120px; 
     overflow: hidden; 
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.album-info p {
+.searched-track-info p {
     font-size: 14px;
     color: #676b77;
+
     width: 120px; 
     overflow: hidden; 
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.play-button {
+    position: absolute;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    top: 30%;
+    left: 35%;
+    opacity: 0;
+    transition: 0.5s ease;
+    color: #756f7d;
+    font-size: 30px;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #756f7d;
+    padding: 25px;
+    border-radius: 50%;
+}
+
+.setting-button {
+    position: absolute;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    right: 10%;
+    bottom: 10%;
+    opacity: 0; /* Initially hidden */
+    color: #756f7d;
+}
+
+.searched-track-settings {
+    transition: 0.5s ease;
+}
+
+.play-button .searched-track-play:hover,.searched-track-settings:hover {
+    
+    color: #fff;
+}
+
+
+
+
+.searched-track:hover .play-button {
+    opacity: 1; /* Show play button on hover */
+    
+
+}
+
+.searched-track:hover .setting-button {
+    opacity: 1; /* Show play button on hover */
+}
+
+.searched-track:hover .play-button:hover
+{
+    border: 2px solid #fff;
+    color: #fff;
+}
+
+.searched-track:hover .searched-track-image {
+    filter: brightness(60%);
+}
+
+/* Dropdown style */
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    transform: scale(1.5);
+    cursor: pointer;
+    transition: 0.5s ease;
+}
+
+.dropdown-toggle:hover {
+    color: #fff;
+}
+
+.dropdown-menu {
+    position: absolute;
+    padding: 10px;
+    bottom: calc(100% + 5px);
+    width: 190px;
+    left: auto;
+    right: 0;
+    background-color: rgba(9, 15, 27, 1.2);
+    border-radius: 4px;
+    box-shadow: rgba(255, 255, 255, 0.02) 0px 1px 3px 0px, rgba(226, 224, 220, 0.15) 0px 0px 0px 1px;
+    transform: translateX(10px);
+}
+
+
+
+.dropdown-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown-menu ul li {
+    display: inline-flex;
+    justify-content: start;
+    cursor: pointer;
+    width: 100%;
+    margin: 10px 0;
+    transition: 0.5 ease;
+}
+
+.dropdown-menu ul li:hover {
+    color: #fff;
 }

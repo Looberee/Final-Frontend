@@ -23,9 +23,6 @@ const renderedTracks = React.useMemo(() => tracks.map((track, index) => (
     <li key={index} className="track" onDoubleClick={() => handleTrackSelected(track)}>
         <div className="track-cover">
             <img className="track-image" src={track.spotify_image_url} alt={track.name} />
-            {/* <div className="play-button" onClick={() => handleTrackSelected(track)}>
-                <FontAwesomeIcon icon={faPlay} className="track-play" />
-            </div> */}
         </div>
         <div className="track-info">
             <h3>{track.name}</h3>

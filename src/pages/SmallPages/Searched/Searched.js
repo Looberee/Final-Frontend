@@ -38,7 +38,7 @@ const Dropdown = ({ track }) => {
         { 
             value: 'option1', 
             label: (
-                <span style={{ fontSize: 'small' }}>
+                <span style={{ fontSize: 'small' }} className="dropdown-option">
                     <FontAwesomeIcon icon={faPlus} /> Add to my playlists
                 </span>
             ),
@@ -47,7 +47,7 @@ const Dropdown = ({ track }) => {
         { 
             value: 'option2', 
             label: (
-                <span style={{ fontSize: 'small' }}>
+                <span style={{ fontSize: 'small' }} className="dropdown-option">
                     <FontAwesomeIcon icon={faInfoCircle} /> Add to list for next track
                 </span>
             ),
@@ -77,9 +77,6 @@ const Dropdown = ({ track }) => {
     
         // Send a POST request to the Flask route using Axios
         try {
-            const token = localStorage.getItem('token');
-    
-            // Send a POST request to the Flask route using Axios with authorization header
             const response = await axios.post(`http://127.0.0.1:5000/personal/playlists/${playlistId}/track/${track.spotify_id}`, data, {
                 withCredentials: true
             });
@@ -186,7 +183,7 @@ const Searched = ({ searchValue }) => {
                     <li className="searched-track" key={track.id}
                         onMouseEnter={() => handleMouseEnter(index)}
                         onMouseLeave={handleMouseLeave}
-                        onClick={() => handleTrackSelected(track)}
+                        onDoubleClick={() => handleTrackSelected(track)}
                         >
                         <div className="searched-cover">
                             <img className="searched-track-image" src={track.spotify_image_url} loading="lazy" key={`${track.id}-${imageKey}`} onLoad={generateImageKey}/>

@@ -10,6 +10,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useTrack } from '../../contexts/TrackContext';
 import { Link } from 'react-router-dom';
 import { useRoom } from '../../contexts/RoomContext';
+import { isElement } from 'lodash';
 
 const CustomSidebar = () => {
     const [storedPlaylists, setStoredPlaylists] = useState([]);
@@ -23,7 +24,6 @@ const CustomSidebar = () => {
 
     const sidebarItems = [
         { id: 'home', icon: faHome },
-        { id: 'heart', icon: faHeart },
         { id: 'user', icon: faUser },
         { id: 'headphones', icon: faHeadphonesSimple },
         { id: 'door', icon: faDoorOpen },

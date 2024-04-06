@@ -1,9 +1,51 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import './PersonalPlaylists.css';
+import './ProfilePlaylist.css';
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { Link } from "react-router-dom"; // Import Link from React Router
 import { usePlaylist } from "../../contexts/PlaylistContext";
+
+
+export const ProfilePlaylist = () => {
+    const [playlists, setPlaylists] = useState([]);
+
+    useEffect(() => {
+        const getPlaylists = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:5000/personal/playlists', {withCredentials : true})
+                setPlaylists(response.data.user_playlists)
+            }
+            catch (err) {
+                console.error("Fail to fetch playlists: ", err);
+            }
+        }
+        getPlaylists();
+    },[])
+
+    return (
+        <div>
+            <div className="profile-playlist-container">
+                <h1 className="profile-playlist-title">Personal Playlists</h1>
+
+                <div className="profile-playlists-list-container">
+                    <ul className="profile-playlists-list">
+                    {playlists.map((playlist, index) => (
+                        <li key={playlist.id} className="profile-playlist">
+                        <div className="profile-playlist-cover">
+                            <img className="profile-playlist-image" src="https://w.wallhaven.cc/full/m3/wallhaven-m3m5vy.jpg" loading="lazy" />
+                        </div>
+                        <div className="profile-playlist-info">
+                            <h3>{playlist.name}</h3>
+                        </div>
+                        </li>
+                    ))}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    )
+}
 
 const PersonalPlaylists = () => {
     const [data, setData] = useState(null);
