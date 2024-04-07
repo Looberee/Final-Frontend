@@ -31,14 +31,14 @@ export const ProfilePlaylist = () => {
                 <div className="profile-playlists-list-container">
                     <ul className="profile-playlists-list">
                     {playlists.map((playlist, index) => (
-                        <li key={playlist.id} className="profile-playlist">
-                        <div className="profile-playlist-cover">
-                            <img className="profile-playlist-image" src="https://w.wallhaven.cc/full/m3/wallhaven-m3m5vy.jpg" loading="lazy" />
-                        </div>
-                        <div className="profile-playlist-info">
-                            <h3>{playlist.name}</h3>
-                        </div>
-                        </li>
+                        <Link to={`/personal/playlists/${playlist.encode_id}/tracks`} key={playlist.id} className="profile-playlist">
+                            <div className="profile-playlist-cover">
+                                <img className="profile-playlist-image" src="https://w.wallhaven.cc/full/m3/wallhaven-m3m5vy.jpg" loading="lazy" />
+                            </div>
+                            <div className="profile-playlist-info">
+                                <h3>{playlist.name}</h3>
+                            </div>
+                        </Link>
                     ))}
                     </ul>
                 </div>

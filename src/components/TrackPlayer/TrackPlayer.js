@@ -33,6 +33,23 @@ const TrackPlayer = () => {
     const [shuffleActive, setShuffleActive] = useState(false);
     const [repeatState, setRepeatState] = useState('off');
     const [repeatActive, setRepeatActive] = useState(false);
+    const [trackEnd, setTrackEnd] = useState(false);
+
+    useEffect(() => {
+
+        console.log("???????????????????????")
+        console.log("Track in pyppo state: ", pyppoTrack)
+        console.log("Track is playing now: " + isPlayingTrack)
+        console.log("IsPlaying: " + isPlaying) 
+        console.log("Repeat: " + repeatActive)
+        console.log("Shuffle: " + shuffleActive)
+        console.log("Already played: " + alreadyPlayed)
+        console.log("Waiting List: ", waitingList)
+        console.log("???????????????????????")
+
+
+
+    },[isPlayingTrack, isPlaying, repeatActive, shuffleActive, alreadyPlayed, waitingList, pyppoTrack])
 
 
     useEffect(() => {
@@ -98,6 +115,15 @@ const TrackPlayer = () => {
     },[pyppoTrack]);
 
     useEffect(() => {
+        if (trackEnd) {
+            setIsPlayingTrack(null);
+            setTrackUri(null);
+            setIsPlaying(false);
+            setAlreadyPlayed(false);
+        }
+    },[trackEnd])
+
+    useEffect(() => {
         handlePlayTrackInPlayer();
         setIsPlaying(true);
         setAlreadyPlayed(true);
@@ -106,15 +132,16 @@ const TrackPlayer = () => {
     useEffect(() => {
         if (isPlayingTrack)
         {
-            console.log("Now playing: ", isPlayingTrack.name);
             handleAddRecentTrack();
         }
 
-        if (isPlayingTrack === null && waitingList.length > 0)
+        if (isPlayingTrack === null && waitingList.length > 0 )
         {
-            console.log("Now playing the Waiting Track: ", waitingList[0].name);
-            setIsPlaying(waitingList[0]);
+
+            setPyppoTrack(waitingList[0]);
+            setIsPlayingTrack(waitingList[0]);  
             removeFromWaitingList(waitingList[0]);
+            setTrackEnd(false); 
         }
 
     },[isPlayingTrack, waitingList])
@@ -130,7 +157,8 @@ const TrackPlayer = () => {
                     if (prevCounter < trackDurationInSeconds) {
                         return prevCounter + 1;
                     } else {
-                        console.log('Track end');
+                        setTrackEnd(true);
+                        console.log('Track end', trackEnd);
                         if (repeatActive === false) {
                             clearInterval(intervalId);
                             console.log('Repeat state is false');   
@@ -142,6 +170,7 @@ const TrackPlayer = () => {
                             console.log('Repeat state is true');
                             setIsPlaying(true);
                             setAlreadyPlayed(true);
+                            setTrackEnd(false);
                             setSliderValue(0);
                             return 0;
                         }
@@ -179,6 +208,7 @@ const TrackPlayer = () => {
             {
                 setPyppoTrack(null);
                 setIsPlaying(false);
+                setTrackEnd(false);
             }
         }
     }, [currentTrackPosition]);
@@ -311,6 +341,7 @@ const TrackPlayer = () => {
         if (isPlaying) {
             console.log('Pausing track in player...');
             handlePauseTrackInPlayer()
+            setTrackEnd(false);
             setIsPlaying((pre) => (!pre))
         } else 
         {
@@ -318,12 +349,14 @@ const TrackPlayer = () => {
             {
                 console.log('Resuming track in player...');
                 handleResumeTrackInPlayer();
+                setTrackEnd(false);
                 setIsPlaying((pre) => (!pre))
             }
             else
             {
                 console.log('Playing track in player...');
                 handlePlayTrackInPlayer();
+                setTrackEnd(false);
                 setIsPlaying((pre) => (!pre))
             }
         } 
