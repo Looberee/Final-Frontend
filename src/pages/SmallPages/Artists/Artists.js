@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
 import './Artists.css';
+import LoadingSpinner from "../../../components/LoadingSpinner/LoadingSpinner"; // Import loading spinner component
 
-export const Artist = ({title, genre, fetched_artists}) => {
-    const [artists, setArtists] = useState([]);
-
-    useEffect(() => {
-        setArtists(fetched_artists);
-    },[fetched_artists])
-
+export const Artist = ({ title, genre, fetched_artists }) => {
     return (
         <div>
             <div className="artist-container">
@@ -15,28 +10,32 @@ export const Artist = ({title, genre, fetched_artists}) => {
 
                 <div className="artists-list-container">
                     <ul className="artists-list">
-                    {artists.map(artist => (
-                        <li key={artist.id} className="artist">
-                        <div className="artist-cover">
-                            <img className="artist-image" src={artist.spotify_image_url} alt={artist.name} loading="lazy" />
-                        </div>
-                        <div className="artist-info">
-                            <h3>{artist.name}</h3>
-                            <p>{artist.genre}</p>
-                        </div>
-                        </li>
-                    ))}
+                        {fetched_artists.map(artist => (
+                            <li key={artist.id} className="artist">
+                                <div className="artist-cover">
+                                    <img className="artist-image" src={artist.spotify_image_url} alt={artist.name} loading="lazy" />
+                                </div>
+                                <div className="artist-info">
+                                    <h3>{artist.name}</h3>
+                                    <p>{artist.genre}</p>
+                                </div>
+                            </li>
+                        ))}
+                        {/* Render loading spinners for remaining slots */}
+                        {Array.from({ length: 6 - fetched_artists.length }).map((_, index) => (
+                            <li key={index}>
+                                <LoadingSpinner />
+                            </li>
+                        ))}
                     </ul>
                 </div>
             </div>
         </div>
-    )
-
+    );
 };
 
-const Artists = () => 
-{
-    const [genre, setGenre ] = useState(['pop', 'rock','edm','jazz','gaming']);
+const Artists = () => {
+    const [genre, setGenre] = useState(['pop', 'rock', 'edm', 'jazz', 'gaming']);
     const [popArtists, setPopArtists] = useState([]);
     const [rockArtists, setRockArtists] = useState([]);
     const [edmArtists, setEdmArtists] = useState([]);
@@ -54,35 +53,33 @@ const Artists = () =>
                 return []; // Return empty array in case of error
             }
         };
-    
+
         const updateArtistsState = async () => {
             const artistsByGenre = {};
             for (const genreItem of genre) {
                 const artists = await fetchArtists(genreItem);
                 artistsByGenre[genreItem] = artists;
             }
-    
+
             setPopArtists(artistsByGenre['pop']);
             setRockArtists(artistsByGenre['rock']);
             setEdmArtists(artistsByGenre['edm']);
             setJazzArtists(artistsByGenre['jazz']);
             setGamingArtists(artistsByGenre['gaming']);
         };
-    
+
         updateArtistsState();
     }, []);
 
-
     return (
         <div>
-            <Artist title={"Grooving to Catchy Melodies and Infectious Beats"} genre={"Pop"} fetched_artists={popArtists}/>
-            <Artist title={"Always Ready to Dive Headfirst into The Energy of Rock 'N' Roll"} genre={"Rock"} fetched_artists={rockArtists}/>
-            <Artist title={"Pulsating Waves of Electronic Sound Create an Irresistible Atmosphere"} genre={"EDM"} fetched_artists={edmArtists}/>
-            <Artist title={"Jazzing Up the Mood with the Soulful Melodies of Jazz"} genre={"Jazz"} fetched_artists={jazzArtists}/>
-            <Artist title={"The Adrenaline-Fueled Challenges and Immersive Worlds Provide an Escape into Realms of Adventure and Strategy"} genre={"Gaming"} fetched_artists={gamingArtists}/>
-
+            <Artist title={"Grooving to Catchy Melodies and Infectious Beats"} genre={"Pop"} fetched_artists={popArtists} />
+            <Artist title={"Always Ready to Dive Headfirst into The Energy of Rock 'N' Roll"} genre={"Rock"} fetched_artists={rockArtists} />
+            <Artist title={"Pulsating Waves of Electronic Sound Create an Irresistible Atmosphere"} genre={"EDM"} fetched_artists={edmArtists} />
+            <Artist title={"Jazzing Up the Mood with the Soulful Melodies of Jazz"} genre={"Jazz"} fetched_artists={jazzArtists} />
+            <Artist title={"The Adrenaline-Fueled Challenges and Immersive Worlds Provide an Escape into Realms of Adventure and Strategy"} genre={"Gaming"} fetched_artists={gamingArtists} />
         </div>
-    )
+    );
+};
 
-}
 export default Artists;

@@ -9,9 +9,11 @@ export const useRoom = () => useContext(RoomContext);
 // RoomContext Provider component
 export const RoomProvider = ({ children }) => {
     const [roomState, setRoomState] = useState(false);
+    const [toggleRoom, setToggleRoom] = useState(false);
+    const [toggleAllRoom, setToggleAllRoom] = useState(false);
 
     return (
-        <RoomContext.Provider value={{ roomState, setRoomState }}>
+        <RoomContext.Provider value={{ roomState, setRoomState, toggleRoom, setToggleRoom, toggleAllRoom, setToggleAllRoom }}>
             {children}
         </RoomContext.Provider>
     );

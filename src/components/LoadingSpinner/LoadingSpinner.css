@@ -1,6 +1,13 @@
 .loader-container
 {
-    margin: 20px;
+    width: 175px;
+    height: 248px;
+    border-radius: 10px;
+    background-color: rgba(255,255,255,0.03);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
 }
 
 .loader

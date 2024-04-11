@@ -29,8 +29,11 @@ import WaitingList from './pages/SmallPages/WaitingList/WaitingList';
 import Room from './pages/SmallPages/Room/Room';
 import { RoomProvider } from './contexts/RoomContext';
 import Cookies from 'js-cookie';
+import { useModal } from './contexts/ModalContext';
 
 import io from 'socket.io-client';
+import { ModalProvider } from './contexts/ModalContext';
+import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
 
 
 const App = () => {
@@ -64,17 +67,19 @@ const App = () => {
 
   return (
     <DarkThemeProvider>
-      <UserProvider>
-        <AuthProvider>
-          <TrackProvider>
-            <RoomProvider>
-              <Router>
-                <AppContent isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout}/>
-              </Router>
-            </RoomProvider>
-          </TrackProvider>
-        </AuthProvider>
-      </UserProvider>
+      <ModalProvider>
+        <UserProvider>
+          <AuthProvider>
+            <TrackProvider>
+              <RoomProvider>
+                <Router>
+                  <AppContent isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout}/>
+                </Router>
+              </RoomProvider>
+            </TrackProvider>
+          </AuthProvider>
+        </UserProvider>
+      </ModalProvider>
     </DarkThemeProvider>
   );
 };
@@ -84,6 +89,7 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout, onTokenRefresh}) => {
   const [searchValue, setSearchValue] = useState('');
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
   const { pyppoTrack } = useTrack();
+  const { openModalId } = useModal();
 
   useEffect(() => {
     const socket = io('http://127.0.0.1:5000');
@@ -97,6 +103,10 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout, onTokenRefresh}) => {
     // Clean up the effect
     return () => socket.disconnect();
 }, []);
+
+  useEffect(() => {
+    console.log(openModalId);
+  },[openModalId])
 
   return (
     <div>
@@ -121,8 +131,8 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout, onTokenRefresh}) => {
                   <Route path='/tracks' element={<Tracks/>}/>
                   <Route path='/room' element={<Room/>}/>
                 </Routes>}
-
                 <TrackPlayer/>
+
 
               </div>
 

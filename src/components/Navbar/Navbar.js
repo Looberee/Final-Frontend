@@ -4,10 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faRightFromBracket, faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useRoom } from "../../contexts/RoomContext";
 
 
 const Navbar = ({ isLoggedIn, onLogout, setSearchValue }) => {
     const { isAuthenticated, alreadyAuth } = useAuth();
+    const { roomState, setRoomState} = useRoom();
     const handleInputChange = (event) => {
         const { value } = event.target;
         setSearchValue(value);
@@ -17,7 +19,7 @@ const Navbar = ({ isLoggedIn, onLogout, setSearchValue }) => {
         <div>
             <nav className="navigation">
                 <div className="branch-container">
-                    <Link to="/"><h1>Pyppo</h1></Link>
+                    <Link to="/" onClick={() => setRoomState(false)}><h1>Pyppo</h1></Link>
 
                     {/* <ul className="nav-options">
                         <li className="option">

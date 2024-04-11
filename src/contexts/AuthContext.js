@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import jwtDecode from 'jwt-decode'; // Library for decoding JWT tokens
 import axios from 'axios';
+
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
@@ -10,6 +11,8 @@ const [accessToken, setAccessToken] = useState();
 const [refreshToken, setRefreshToken] = useState();
 const [expiresAt, setExpiresAt] = useState(null);
 const [alreadyAuth, setAlreadyAuth] = useState(false);
+
+
 
 useEffect(() => {
     console.log("Access Token: " + accessToken);
@@ -95,6 +98,8 @@ const logout = async () => {
             withCredentials: true
         });
         console.log('Logout successful:', response.data);
+        window.location.pathname = '/genres';
+
     } catch (error) {
         console.error('Error logging out:', error);
     }
@@ -120,6 +125,8 @@ useEffect(() => {
     };
     checkAuth();
 }, [alreadyAuth]);
+
+
 
 
 return (

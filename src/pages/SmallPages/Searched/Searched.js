@@ -10,24 +10,28 @@ import PersonalPlaylists from "../../../components/PersonalPlaylists/PersonalPla
 import ModalPlaylists from "../../../components/ModalPlaylists/ModalPlaylists";
 import { usePlaylist } from "../../../contexts/PlaylistContext";
 import { useTrack } from "../../../contexts/TrackContext";
+import UnauthorizedModal from "../../../components/Modal/AlertModals/UnauthorizedModal";
+import { useAuth } from "../../../contexts/AuthContext";
+import { useModal } from "../../../contexts/ModalContext";
+import LoadingSpinner from "../../../components/LoadingSpinner/LoadingSpinner"; // Import loading spinner component
 
 const modalStyles = {
     content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    backgroundColor: '#090f1b',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-    borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
-    border: 'none',
-    padding: '20px'
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        backgroundColor: '#090f1b',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        borderRadius: '8px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+        border: 'none',
+        padding: '20px'
     },
     overlay: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    zIndex: '1000'
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        zIndex: '1000'
     }
 };
 
@@ -123,20 +127,22 @@ const Dropdown = ({ track }) => {
     );
 };
 
-
-
 const Searched = ({ searchValue }) => {
     const [searchResults, setSearchResults] = useState([]);
+    const [loading, setLoading] = useState(false); // Add loading state
     const [error, setError] = useState(null);
     const [hoveredTrack, setHoveredTrack] = useState(null);
     const [imageKey, setImageKey] = useState(Date.now());
     const [isOpen, setIsOpen] = useState(false);
     const { toggleRecentTrack } = useRecentTrack();
     const { pyppoTrack, setPyppoTrack,  isPlaying, setIsPlaying } = useTrack();
+    const { alreadyAuth } = useAuth();
+    const { openModal } = useModal();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true); // Set loading to true when fetching data
                 if (searchValue) {
                     const spotifyAccessToken = localStorage.getItem('spotify_token');
                     const response = await axios.get(`http://127.0.0.1:5000/search?query=${searchValue}`, {
@@ -146,7 +152,9 @@ const Searched = ({ searchValue }) => {
                 } else {
                     setSearchResults([]);
                 }
+                setLoading(false); // Set loading to false after fetching data
             } catch (error) {
+                setLoading(false); // Set loading to false if there's an error
                 setError(error.message);
             }
         };
@@ -168,44 +176,64 @@ const Searched = ({ searchValue }) => {
     };
 
     const handleTrackSelected = async (track) => {
-        setPyppoTrack(track);
-        toggleRecentTrack();
+        if (alreadyAuth)
+        {
+            setPyppoTrack(track);
+            toggleRecentTrack();
+        }
+        else
+        {
+            openModal('unauthorizedModal')
+        }
+
     };
 
     const memoizedSearchResults = useMemo(() => searchResults, [searchResults]);
+    
+    // Calculate the number of loading spinners to show
+    const numLoadingSpinners = Math.min(6, loading ? 6 - memoizedSearchResults.length : 0);
 
     return (
         <div>
             <h1 className="searched-tracks-title">Based on what you searched</h1>
 
-            <ul className="searched-tracks-list">
-                {memoizedSearchResults.map((track, index) => (
-                    <li className="searched-track" key={track.id}
-                        onMouseEnter={() => handleMouseEnter(index)}
-                        onMouseLeave={handleMouseLeave}
-                        onDoubleClick={() => handleTrackSelected(track)}
-                        >
-                        <div className="searched-cover">
-                            <img className="searched-track-image" src={track.spotify_image_url} loading="lazy" key={`${track.id}-${imageKey}`} onLoad={generateImageKey}/>
-                            {hoveredTrack === index && (
-                                <div className="play-button" onClick={() => handleTrackSelected(track)}>
-                                    <FontAwesomeIcon icon={faPlay} className="searched-track-play" />
-                                </div>
-                            )}
-                        </div>
+            {loading ? ( // Render loading spinners if loading is true
+                Array.from({ length: numLoadingSpinners }, (_, index) => (
+                    <div style={{display:'inline-flex', marginLeft: '20px'}}><LoadingSpinner key={index} /></div>
 
-                        <div className="searched-track-info">
-                            <h3>{track.name}</h3>
-                            <p>{track.artists}</p>
-                            {hoveredTrack === index && (
-                                <div className="setting-button">
-                                    <Dropdown track={track} isOpen={isOpen} setIsOpen={setIsOpen}/>
-                                </div>
-                            )}
-                        </div>
-                    </li>
-                ))}
-            </ul>
+                ))
+            ) : (
+                <ul className="searched-tracks-list">
+                    {memoizedSearchResults.map((track, index) => (
+                        <li className="searched-track" key={track.id}
+                            onMouseEnter={() => handleMouseEnter(index)}
+                            onMouseLeave={handleMouseLeave}
+                            onDoubleClick={() => handleTrackSelected(track)}
+                            >
+                            <div className="searched-cover">
+                                <img className="searched-track-image" src={track.spotify_image_url} loading="lazy" key={`${track.id}-${imageKey}`} onLoad={generateImageKey}/>
+                                {hoveredTrack === index && (
+                                    <div className="play-button" onClick={() => handleTrackSelected(track)}>
+                                        <FontAwesomeIcon icon={faPlay} className="searched-track-play" />
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="searched-track-info">
+                                <h3>{track.name}</h3>
+                                <p>{track.artists}</p>
+                                {hoveredTrack === index && (
+                                    <div className="setting-button">
+                                        <Dropdown track={track} isOpen={isOpen} setIsOpen={setIsOpen}/>
+                                    </div>
+                                )}
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            )}
+
+            <UnauthorizedModal />
         </div>
     );
 };

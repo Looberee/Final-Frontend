@@ -47,3 +47,41 @@
 {
     font-size: 16px;
 }
+
+.info-container .username-status-container
+{
+    display: inline-flex;
+    justify-content: center;
+    align-self: start;
+    align-items: center;
+    gap: 20px;
+}
+
+.info-container .username-status-container .crown-icon 
+{
+    color: #f1c40f;
+    font-size: 25px;
+
+}
+
+.info-container .role-status-container
+{
+    display: inline-flex;
+    gap: 20px;
+}
+
+.info-container .role-status-container .premium-perform-btn
+{
+    background-color: #f1c40f;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.5s ease;
+}
+
+.info-container .role-status-container .premium-perform-btn:hover
+{
+    background-color: #f39c12;
+}

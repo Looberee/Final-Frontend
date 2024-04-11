@@ -112,16 +112,17 @@ const TrackPlayer = () => {
             setTrackUri(null);
             setIsPlaying(false);
         }
+        
     },[pyppoTrack]);
 
     useEffect(() => {
-        if (trackEnd) {
+        if (trackEnd && waitingList.length != 0) {
             setIsPlayingTrack(null);
             setTrackUri(null);
             setIsPlaying(false);
             setAlreadyPlayed(false);
         }
-    },[trackEnd])
+    },[trackEnd, waitingList])
 
     useEffect(() => {
         handlePlayTrackInPlayer();
@@ -194,7 +195,7 @@ const TrackPlayer = () => {
         }
         setCounter(0);
         setSliderValue(0);
-    }, [pyppoTrack,]);
+    }, [pyppoTrack]);
 
     useEffect(() => {
         if (currentTrackPosition == '0:00' && isPlayingTrack == pyppoTrack) {
@@ -364,15 +365,16 @@ const TrackPlayer = () => {
 
     const handleClickNext = async () => {
         try {
-            setIsPlaying(true);
+            setTrackEnd(true);
             const response = await axios.post('http://127.0.0.1:5000/playback/next', { myDeviceId }, {
                 withCredentials: true
             });
             console.log('Playback control request sent successfully');
-
+            setTrackEnd(false);
+            setIsPlaying(true);
             setAlreadyPlayed(true)
-            console.log("Hello Next: ", response.data);
             setIsPlayingTrack(response.data.nextTrack);
+            setPyppoTrack(response.data.nextTrack);
             toggleRecentTrack();
 
         } catch (error) {
@@ -382,15 +384,16 @@ const TrackPlayer = () => {
 
     const handleClickPrevious = async () => {
         try {
-            setIsPlaying(true);
+            setTrackEnd(true);
             const response = await axios.post('http://127.0.0.1:5000/playback/previous', { myDeviceId }, {
                 withCredentials: true
             });
             console.log('Playback control request sent successfully');
-
+            setTrackEnd(false);
+            setIsPlaying(true);
             setAlreadyPlayed(true)
-            console.log("Hello Previous: ", response.data);
             setIsPlayingTrack(response.data.previousTrack);
+            setPyppoTrack(response.data.previousTrack);
             toggleRecentTrack();
 
         } catch (error) {
@@ -493,7 +496,7 @@ const TrackPlayer = () => {
 
                 <div className='track-player-info'>
                     <h3 className="track-player-name">{isPlayingTrack ? isPlayingTrack.name : '.........'}</h3>
-                    <p className="track-player-composer">{isPlayingTrack ? isPlayingTrack.artists.join(', ') : '......'}</p>
+                    <p className="track-player-composer">{isPlayingTrack ? isPlayingTrack.artists : '......'}</p>
                 </div>
             </div>
 

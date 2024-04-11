@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './CustomSidebar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faMusic, faUser, faHeadphonesSimple, faDoorOpen, faHeart, faMoon, faRightFromBracket, faBookmark, faSliders, faMicrophoneLines } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faMusic, faUser, faHeadphonesSimple, faDoorOpen, faMoon, faRightFromBracket, faBookmark, faMicrophoneLines, faBuildingUser } from '@fortawesome/free-solid-svg-icons';
 import PersonalPlaylists from '../PersonalPlaylists/PersonalPlaylists';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -11,6 +11,9 @@ import { useTrack } from '../../contexts/TrackContext';
 import { Link } from 'react-router-dom';
 import { useRoom } from '../../contexts/RoomContext';
 import { isElement } from 'lodash';
+import RoomOptions from '../RoomOptions/RoomOptions';
+import { useModal } from '../../contexts/ModalContext';
+import UnauthorizedModal from '../../components/Modal/AlertModals/UnauthorizedModal';
 
 const CustomSidebar = () => {
     const [storedPlaylists, setStoredPlaylists] = useState([]);
@@ -21,6 +24,7 @@ const CustomSidebar = () => {
     const { logout, isAuthenticated, alreadyAuth } = useAuth();
     const { setPyppoTrack, setToggleDuplicate } = useTrack();
     const { roomState, setRoomState } = useRoom();
+    const { openModal } = useModal();
 
     const sidebarItems = [
         { id: 'home', icon: faHome },
@@ -50,26 +54,67 @@ const CustomSidebar = () => {
         }
         else if ( item === 'user')
         {
-            setRoomState(false);
-            navigate('/personal/profile');
+            if (alreadyAuth)
+            {
+                setRoomState(false);
+                navigate('/personal/profile');
+            }
+            else
+            {  
+                setActiveItem(false)
+                handleOpenUnauthorized();
+            }
+
         }
         else if ( item === 'home')
         {
             setRoomState(false);
             navigate('/');
+            
         }
         else if ( item === 'headphones')
         {
-            setRoomState(false);
-            navigate('/waiting/tracks');
+            if (alreadyAuth)
+            {
+                setRoomState(false);
+                navigate('/waiting/tracks');
+            }
+            else
+            {
+                setActiveItem(false)
+                handleOpenUnauthorized();
+            }
         }
         else if ( item == 'door')
         {
-            // handle room id here
-            navigate('/room');
-            setRoomState(true);
+            if (alreadyAuth)
+            {
+                navigate('/room');
+                setRoomState(true);
+            }
+            else
+            {
+                setActiveItem(false)
+                handleOpenUnauthorized();
+            }
+        }
+        else if ( item === 'moon')
+        {
+            if (alreadyAuth)
+            {
+
+            }
+            else
+            {
+                setActiveItem(false)
+                handleOpenUnauthorized();
+            }
         }
     };
+
+    const handleOpenUnauthorized = () => {
+        openModal('unauthorizedModal');
+    }
 
     useEffect(() => {
         // Fetch recent tracks when component mounts
@@ -110,16 +155,19 @@ const CustomSidebar = () => {
     return (
         <div className='sidebar'>
             <div className='icon-sidebar'>
-                <ul className='main'>
-                    {/* Map over the sidebarItems array to render each item dynamically */}
-                    {sidebarItems.map((item) => (
-                        <li key={item.id}>
-                            <a href='#' onClick={() => handleClick(item.id)}>
-                                <FontAwesomeIcon className={`i-sidebar ${activeItem === item.id ? 'active' : ''}`} icon={item.icon} />
-                            </a>
-                        </li>
-                    ))}
-                </ul>
+            <ul className='main'>
+                {/* Map over the sidebarItems array to render each item dynamically */}
+                {sidebarItems.map((item) => (
+                    <li key={item.id}>
+                        <a className="special-a" onClick={() => handleClick(item.id)}>
+                            <FontAwesomeIcon 
+                                className={`i-sidebar ${item.id === 'door' ? (roomState ? 'room' : '') : (activeItem === item.id ? 'active' : '')}`} 
+                                icon={item.icon} 
+                            />
+                        </a>
+                    </li>
+                ))}
+            </ul>
 
                 <hr></hr>
 
@@ -135,10 +183,17 @@ const CustomSidebar = () => {
             </div>
 
             <div className={`room-sidebar ${roomState ? 'room' : '' }`}>
-                <div className='menu'>
-                    <a href='/a' className='create-room-btn'>Create Room</a>
-                </div>    
+                <div className='room-gadgets'>
+                    <div className='title'>
+                        <FontAwesomeIcon className='' icon={faBuildingUser} />
+                        <span>Your Room</span>
+                    </div>
+                </div>
+
+                <RoomOptions />
+
             </div>
+            
 
             <div className={`track-sidebar ${roomState ? 'room' : '' }`}>
                 <div className='menu'>
@@ -159,7 +214,7 @@ const CustomSidebar = () => {
                 {alreadyAuth ?
                     <div className='personal-playlists'>
                         <div className='title'>
-                            <FontAwesomeIcon className='' icon={faSliders} />
+                            <FontAwesomeIcon className='' icon={faMusic} />
                             <span>Playlists</span>
                         </div>
 
@@ -188,7 +243,7 @@ const CustomSidebar = () => {
                             </li>
                         ))}
                     </ul>
-                </div> : <div></div>}
+                </div> : <UnauthorizedModal />}
 
             </div>
 

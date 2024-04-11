@@ -10,6 +10,10 @@ import PersonalPlaylists from "../../../components/PersonalPlaylists/PersonalPla
 import ModalPlaylists from "../../../components/ModalPlaylists/ModalPlaylists";
 import { usePlaylist } from "../../../contexts/PlaylistContext";
 import { useTrack } from "../../../contexts/TrackContext";
+import { useAuth } from "../../../contexts/AuthContext";
+import { useModal } from "../../../contexts/ModalContext";
+import UnauthorizedModal from "../../Modal/AlertModals/UnauthorizedModal";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const modalStyles = {
     content: {
@@ -133,6 +137,8 @@ const Albums = ({ title, tracks }) => {
     const [isOpen, setIsOpen] = useState(false);
     const { toggleRecentTrack } = useRecentTrack();
     const { pyppoTrack, setPyppoTrack,  isPlaying, setIsPlaying } = useTrack();
+    const { alreadyAuth } = useAuth();
+    const { openModal } = useModal();
 
     const handleMouseEnter = (index) => {
         setHoveredTrack(index);
@@ -147,8 +153,15 @@ const Albums = ({ title, tracks }) => {
     };
 
     const handleTrackSelected = async (track) => {
-        setPyppoTrack(track);
-        toggleRecentTrack();
+        if (alreadyAuth)
+        {
+            setPyppoTrack(track);
+            toggleRecentTrack();
+        }
+        else {
+            openModal('unauthorizedModal');
+        }
+
     };
 
     const memoizedFilteredTracks = useMemo(() => {
@@ -157,6 +170,8 @@ const Albums = ({ title, tracks }) => {
         }
         return tracks.filter(track => searchResults.includes(track));
     }, [tracks, searchResults]);
+
+    const loadingTracks = Array.from({ length: 6 - memoizedFilteredTracks.length }, (_, index) => index);
 
     return (
         <div>
@@ -189,7 +204,10 @@ const Albums = ({ title, tracks }) => {
                         </div>
                     </li>
                 ))}
+                {loadingTracks.map(index => <LoadingSpinner key={index} />)}
             </ul>
+
+            <UnauthorizedModal />
         </div>
     );
 };

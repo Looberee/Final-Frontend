@@ -8,8 +8,10 @@ import axios from "axios";
 import { usePlaylist } from "../../../contexts/PlaylistContext";
 import { useRecentTrack } from "../../../contexts/RecentTrackContext";
 import { useTrack } from "../../../contexts/TrackContext";
+import { useModal } from "../../../contexts/ModalContext";
+import EditPlaylistModal from "../../../components/Modal/StandardModals/EditPlaylistModal";
 
-const TrackRow = ({ track, trackOrder , playlist_encode_id }) => {
+const TrackRow = ({ track, trackOrder, playlist_encode_id }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isPlayingActive, setIsPlayingActive] = useState(false);
     const [isFavourited, setIsFavourited] = useState(false);
@@ -17,6 +19,16 @@ const TrackRow = ({ track, trackOrder , playlist_encode_id }) => {
     const { toggleRecentTrack } = useRecentTrack();
     const { setPyppoTrack, setIsPlaying } = useTrack();
     const [profile, setProfile] = useState();
+
+    useEffect(() => {
+        if (track.is_favourite)
+        {
+            setIsFavourited(true)
+        }
+        else {
+            setIsFavourited(false)
+        }
+    },[])
 
     const toggleFavourites = () => {
         setIsFavourited(prevState => !prevState);
@@ -77,8 +89,53 @@ const TrackRow = ({ track, trackOrder , playlist_encode_id }) => {
             console.error('Error deleting track:', error);
         }
     };
-    
 
+    const handleAddToFavourites = async (track) => {
+        try
+        {
+            const response = await axios.post('http://127.0.0.1:5000/personal/favourites/track', 
+            { 'spotify_id' : track.spotify_id }, 
+            { withCredentials : true });
+            console.log('Message : ', response.data.message)
+        }
+        catch (error)
+        {
+            console.error('Failed to add track to favourites:', error);
+        }
+    }
+
+    const handleRemoveFromFavourites = async (track) => {
+        try {
+            const response = await axios.delete('http://127.0.0.1:5000/personal/favourites/track', {
+                data: { 'spotify_id' : track.spotify_id },
+                withCredentials: true
+            });
+            console.log('Message : ', response.data.message)
+        }
+        catch (err) {
+            console.error('Failed to remove track from favourites:', err)
+        }
+    }
+
+
+    const toggleFavourite = (track) => {
+        setIsFavourited(prevState => !prevState);
+        if (track)
+        {
+            if (!isFavourited)
+            {
+                handleAddToFavourites(track);
+            }
+            else
+            {
+                handleRemoveFromFavourites(track);
+            }
+        }
+        else
+        {
+            console.log("Something wrong here")
+        }
+    };
 
     return (
         <div>
@@ -118,7 +175,7 @@ const TrackRow = ({ track, trackOrder , playlist_encode_id }) => {
                 </div>
 
                 <div className="col-settings">
-                    <FontAwesomeIcon className={`user-playlist-favourite ${isFavourited ? 'active' : ''}`} icon={faHeart} onClick={toggleFavourites}/>
+                    <FontAwesomeIcon className={`user-playlist-favourite ${isFavourited ? 'active' : ''}`} icon={faHeart} onClick={() => toggleFavourite(track)}/>
                     <FontAwesomeIcon className="user-playlist-setting" icon={faTrash} onClick={() => handleDeleteTrackInPlaylist(track)}/>
                 </div>
 
@@ -135,7 +192,9 @@ const UserPlaylist = ({onTrackSelected}) => {
     const [playlistTracks, setPlaylistTracks] = useState();
     const { encode_id } = useParams();
     const { playlistState, togglePlaylist } = usePlaylist();
-
+    const { openModal } = useModal();
+    const { isTrackFavourite, setIsTrackFavourite } = useTrack();
+    const [favouriteTracks, setFavouriteTracks] = useState([]);
 
     useEffect(() => {
         const fetchPlaylistTracks = async () => {
@@ -234,7 +293,6 @@ const UserPlaylist = ({onTrackSelected}) => {
         }
     };
 
-
     return (
         <div className="user-playlist-container">
             <div className="user-playlist-wrapper">
@@ -255,6 +313,7 @@ const UserPlaylist = ({onTrackSelected}) => {
                             </div>
                         </div>
                         </Modal>
+                        <EditPlaylistModal />
                         <FontAwesomeIcon className="user-playlist-delete" icon={faTrash} onClick={openDeleteModal}/>
                         <Modal 
                         isOpen={isDeleteModalOpen}
@@ -280,7 +339,7 @@ const UserPlaylist = ({onTrackSelected}) => {
                             key={track.id}
                             playlist_encode_id = {encode_id}
                             track={track}
-                            trackOrder={index + 1}
+                            trackOrder={index + 1} // Pass function to toggle favourite state
                         />
                     ))
                 ) : (

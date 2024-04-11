@@ -6,12 +6,14 @@ import './Login.css';
 import './LoginUltil.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useRoom } from '../../contexts/RoomContext';
 
 const Login = ({onLogin}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const { setAccessToken, setRefreshToken, login, setAlreadyAuth } = useAuth();
+    const { roomState } = useRoom();
 
     const navigate = useNavigate();
 
@@ -53,9 +55,15 @@ const Login = ({onLogin}) => {
     
     useEffect(() => {
         if (isLoggedIn) {
-            navigate('/');
+            if (roomState === true) {
+                navigate('/room')
+            }
+            else {
+                navigate('/');
+            }
         }
     }, [isLoggedIn, navigate]);
+
 
     return (
         <div>

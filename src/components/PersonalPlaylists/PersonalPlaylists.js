@@ -56,7 +56,6 @@ const PersonalPlaylists = () => {
 
     const fetchPlaylists = async () => {
         try {
-            const token = localStorage.getItem('token');
             const response = await axios.get('http://127.0.0.1:5000/personal/playlists', {
                 withCredentials: true
             });
@@ -82,7 +81,6 @@ const PersonalPlaylists = () => {
                     withCredentials: true
                 }
             );
-            // After creating the playlist, refresh the playlists data
             fetchPlaylists();
         } catch (error) {
             console.error('Error creating playlist:', error);
