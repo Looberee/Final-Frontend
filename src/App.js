@@ -34,6 +34,7 @@ import { useModal } from './contexts/ModalContext';
 import io from 'socket.io-client';
 import { ModalProvider } from './contexts/ModalContext';
 import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
+import SpecificRoom from './pages/SmallPages/Room/SpecificRoom';
 
 
 const App = () => {
@@ -84,10 +85,10 @@ const App = () => {
   );
 };
 
-const AppContent = ({ isLoggedIn, onLogin, onLogout, onTokenRefresh}) => {
+const AppContent = ({ isLoggedIn, onLogin, onLogout}) => {
   const location = useLocation();
   const [searchValue, setSearchValue] = useState('');
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  const isBigPage = location.pathname === '/login' || location.pathname === '/register' || /\/room\/\d+/.test(location.pathname);
   const { pyppoTrack } = useTrack();
   const { openModalId } = useModal();
 
@@ -110,8 +111,9 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout, onTokenRefresh}) => {
 
   return (
     <div>
-      {!isAuthPage && (
+      {!isBigPage && (
         <div className='App'>
+          
           <Navbar isLoggedIn={isLoggedIn} onLogout={onLogout} setSearchValue={setSearchValue} />
           <RecentTrackProvider>
             <PlaylistProvider>
@@ -122,6 +124,7 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout, onTokenRefresh}) => {
                 {searchValue ? <Searched searchValue={searchValue}/> :
                 <Routes>
                   <Route path="/" element={<Home />} />
+                  <Route path="/home" element={<Home />} />
                   <Route path="/personal/playlists/:encode_id/tracks" element={<UserPlaylist />} />
                   <Route path="/personal/profile" element={<UserProfile/>}/>
                   <Route path='/waiting/tracks' element={<WaitingList />} />
@@ -145,6 +148,7 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout, onTokenRefresh}) => {
       <Routes>
         <Route path='/login' element={<Login onLogin={onLogin} />} />
         <Route path='/register' element={<Register onRegister={onLogin} />} />
+        <Route path='/room/:id' element={<SpecificRoom />} />
       </Routes>
     </div>
   );

@@ -75,6 +75,14 @@ a
     transition: 0.5s ease;
 }
 
+.i-sidebar.dark{
+    position: absolute;
+}
+
+.i-sidebar.light{
+    position: absolute;
+}
+
 .i-sidebar:hover
 {
     color: #fff;

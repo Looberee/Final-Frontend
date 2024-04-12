@@ -6,7 +6,7 @@ import './Tracks.css'
 
 const Track = ({title, fetched_tracks}) => {
     const [trackTitle, setTrackTitle] = useState("Title");
-    const [tracks, setTracks ] = useState([{}])
+    const [tracks, setTracks ] = useState([])
     const { setPyppoTrack } = useTrack();
 
     useEffect(() =>{
@@ -19,17 +19,23 @@ const Track = ({title, fetched_tracks}) => {
     }
         
 
-const renderedTracks = React.useMemo(() => tracks.map((track, index) => (
-    <li key={index} className="track" onDoubleClick={() => handleTrackSelected(track)}>
-        <div className="track-cover">
-            <img className="track-image" src={track.spotify_image_url} alt={track.name} />
-        </div>
-        <div className="track-info">
-            <h3>{track.name}</h3>
-            <p>{track.artists}</p>
-        </div>
-    </li>
-)), [tracks, handleTrackSelected]);
+    const renderedTracks = React.useMemo(() => {
+        if (tracks.length > 0) {
+            return tracks.map((track, index) => (
+                <li key={index} className="track" onDoubleClick={() => handleTrackSelected(track)}>
+                    <div className="track-cover">
+                        <img className="track-image" src={track.spotify_image_url} alt={track.name} />
+                    </div>
+                    <div className="track-info">
+                        <h3>{track.name}</h3>
+                        <p>{track.artists}</p>
+                    </div>
+                </li>
+            ));
+        } else {
+            return <li>No tracks available</li>; // Or any other appropriate message
+        }
+    }, [tracks, handleTrackSelected]);
 
 return (
     <div>

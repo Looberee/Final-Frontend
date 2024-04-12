@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './CustomSidebar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faMusic, faUser, faHeadphonesSimple, faDoorOpen, faMoon, faRightFromBracket, faBookmark, faMicrophoneLines, faBuildingUser } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faMusic, faUser, faHeadphonesSimple, faDoorOpen, faSun, faMoon, faRightFromBracket, faBookmark, faMicrophoneLines, faBuildingUser } from '@fortawesome/free-solid-svg-icons';
 import PersonalPlaylists from '../PersonalPlaylists/PersonalPlaylists';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -35,6 +35,7 @@ const CustomSidebar = () => {
 
     const extraSidebarItems = [
         { id: 'moon', icon: faMoon },
+        { id: 'sun', icon: faSun },
         { id: 'rightFromBracket', icon: faRightFromBracket }
     ];
 
@@ -115,6 +116,10 @@ const CustomSidebar = () => {
     const handleOpenUnauthorized = () => {
         openModal('unauthorizedModal');
     }
+
+    useEffect(() => {
+        setActiveItem('moon')
+    },[])
 
     useEffect(() => {
         // Fetch recent tracks when component mounts

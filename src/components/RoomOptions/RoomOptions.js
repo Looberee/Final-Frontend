@@ -32,7 +32,7 @@ const RoomOptions = () => {
                         <li className="room-container" style={{color:'#fff'}} key={room.id}>
                             <a className="room-box" href="#">
                                 <h2 className="room-name">{room.name}</h2>
-                                <span className="room-type">{room.room_type == 'public' ? <FontAwesomeIcon className="private-room" icon={faLock} />: ''}</span>
+                                <span className="room-type">{room.room_type == 'private' ? <FontAwesomeIcon className="private-room" icon={faLock} />: ''}</span>
                             </a>
                         </li>
                     ))}

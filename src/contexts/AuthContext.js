@@ -98,7 +98,7 @@ const logout = async () => {
             withCredentials: true
         });
         console.log('Logout successful:', response.data);
-        window.location.pathname = '/genres';
+        window.location.pathname = '/home';
 
     } catch (error) {
         console.error('Error logging out:', error);

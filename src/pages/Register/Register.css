@@ -148,8 +148,8 @@ iframe {
     text-transform: uppercase;
 }
 
-.bg1 {background-color: #3b5998}
-.bg2 {background-color: #1da1f2}
+.bg1 {background-color: #1ed760}
+.bg2 {background-color: #1ed760}
 .bg3 {background-color: #ea4335}
 
 
@@ -161,7 +161,7 @@ iframe {
     margin: 0 auto;
 }
 
-.container-login100 {
+.container-login100-register {
     width: 100%;  
     min-height: 100vh;
     display: -webkit-box;
@@ -173,7 +173,7 @@ iframe {
     justify-content: center;
     align-items: center;
     padding: 15px;
-    background: url('../../images/MusicNote.jpg');
+    background: url('https://w.wallhaven.cc/full/72/wallhaven-72yzje.jpg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -181,7 +181,7 @@ iframe {
 
 .wrap-login100 {
     width: 500px;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     overflow: hidden;
 }
@@ -201,6 +201,29 @@ iframe {
     color: #333333;
     line-height: 1.2;
     text-align: center;
+}
+
+.register-actions
+{
+    font-family: Poppins-Regular;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.register-actions .login-navigate
+{
+    font-size: 16px;
+    color: #333333;
+    text-decoration: none;
+    transition: 0.5s ease;
+
+}
+
+.login-navigate:hover
+{
+    color: #a64bf4;
+    text-decoration: underline;
 }
 
 
