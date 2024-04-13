@@ -123,8 +123,8 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout}) => {
               <div className='content'>
                 {searchValue ? <Searched searchValue={searchValue}/> :
                 <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/home" element={<Home />} />
+                  {/* <Route path="/" element={<Home />} />
+                  <Route path="/home" element={<Home />} /> */}
                   <Route path="/personal/playlists/:encode_id/tracks" element={<UserPlaylist />} />
                   <Route path="/personal/profile" element={<UserProfile/>}/>
                   <Route path='/waiting/tracks' element={<WaitingList />} />

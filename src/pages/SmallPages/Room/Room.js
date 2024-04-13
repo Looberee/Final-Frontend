@@ -29,35 +29,15 @@ const Room = () => {
         if (room.room_type === 'private') {
             const password = prompt('Enter password:');
             if (password) {
-                console.log("This room has password and password input is: ", password)
+                console.log("This room has a password, and the password input is:", password);
                 socket.emit('join', { room_id: room.id, password });
-                socket.on('message', (data) => {
-                    console.log(data.msg);  // logs "current_id has entered the room."
-                    // Navigate to the room with specific ID upon successful join
-                    if (data.success) {
-                        // Redirect to the room with specific ID using Link
-                        window.location.href = `/room/${room.id}`;
-                    } else {
-                        // Show a fake modal or handle the error
-                        alert('Failed to join the room. Incorrect password.');
-                    }
-                });
             }
-        } else {
-            socket.emit('join', { room_id: room.id });
-            socket.on('message', (data) => {
-                console.log(data.msg);  // logs "current_id has entered the room."
-                // Navigate to the room with specific ID upon successful join
-                if (data.success) {
-                    console.log("Success!")
-                    window.location.href = `/room/${room.id}`;
-                } else {
-                    // Show a fake modal or handle the error
-                    alert('Failed to join the room.');
-                }
-            });
         }
-    }
+
+    };
+    
+    
+    
 
     return (
         <div className="allrooms-page">

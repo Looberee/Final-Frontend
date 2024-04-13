@@ -1,0 +1,56 @@
+.track-queue-sidebar
+{
+    background-color: bisque;
+    max-width: 250px;
+    min-height: 100%;
+    overflow-y: auto;
+}
+
+.track-queue-sidebar::-webkit-scrollbar
+{
+    display: none;
+}
+
+.track-queue-title-container
+{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 20px;
+    gap: 15px;
+}
+
+.track-queue-title
+{
+}
+
+.track-queue-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: start;
+    width: 100%;
+}
+
+.track-queue-object {
+    display: inline-flex;
+    align-self: start;
+    align-items: center;
+    width: 90%;
+    background-color: aquamarine;
+    padding: 10px;
+    border-radius: 20px;
+    margin: 10px;
+    gap: 10px;
+}
+
+.track-queue-avatar {
+    margin-left: 5px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.track-queue-name {
+
+}
