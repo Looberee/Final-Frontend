@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import io from 'socket.io-client';
+import axios from 'axios';
 import './SpecificRoom.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMusic, faPlay, faUserTie, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faL, faMusic, faPlay, faUserTie, faUsers } from '@fortawesome/free-solid-svg-icons';
 
 const SpecificRoom = () => {
     const { id } = useParams();
@@ -13,6 +14,21 @@ const SpecificRoom = () => {
     const [newMessage, setNewMessage] = useState('');
     const [joinSuccess, setJoinSuccess] = useState(null); // Track join success or failure
     const socket = useRef(io('http://127.0.0.1:5001', { withCredentials: true })); // Replace with your socket server URL
+    const [userInput, setUserInput] = useState([]);
+    const [trackSearchedValue, setTrackSearchedValue] = useState('');
+    const [trackSearchedResults, setTrackSearchedResults] = useState([]);
+    const [showTrackSearchResults, setShowTrackSearchResults] = useState(false);
+    const [commandResults, setCommandResults] = useState(['!pplay', '!pchat']);
+    const [showCommandResults, setShowCommandResults] = useState(false);
+
+    useEffect(() => {
+        console.log("User Input: ", userInput);
+        console.log("Track Searched Value: ", trackSearchedValue);
+        console.log("Show Command Results: ", showCommandResults);
+        console.log("Show Track Search Results: ", showTrackSearchResults);
+        console.log("trackSearchedResults: ", trackSearchedResults);
+        console.log("Command Results: ", commandResults);
+    },[userInput, showCommandResults, showTrackSearchResults, trackSearchedResults, commandResults])
 
     useEffect(() => {
         // Connect to the socket server
@@ -62,10 +78,57 @@ const SpecificRoom = () => {
         if (event.key === 'Enter') {
             event.preventDefault();
             console.log("You typed: ", event.target.value)
-            sendMessage(event.target.value);
-            event.target.value = ''; // Clear input after sending message
+            if ((event.target.value).startsWith('!')) {
+                console.log("Play command!")
+                socket.current.emit('command', {'message': event.target.value, 'room_id': id})
+                event.target.value = ''
+            } else {
+                sendMessage(event.target.value);
+                event.target.value = ''; // Clear input after sending message
+            }
+        }
+        
+
+    };
+
+    const handleRoomInputChange = (event) => {
+        setUserInput(event.target.value);
+        if (event.target.value.startsWith('!pplay')) {
+            setShowCommandResults(false);
+            setTrackSearchedValue(event.target.value.slice(7));
+            setShowTrackSearchResults(true);
+        }
+        else if (event.target.value.startsWith('!pchat')) {
+            setShowCommandResults(false);
+            setShowTrackSearchResults(false);
+        } else if (event.target.value.startsWith('!')) {
+            setShowCommandResults(true);
+            setShowTrackSearchResults(false);
+        } else {
+            setShowCommandResults(false);
+            setShowTrackSearchResults(false);
         }
     };
+
+
+    useEffect(() => {
+        const fetchTrackSearchResults = async () => {
+            try {
+                if (trackSearchedValue) {
+                    const response = await axios.get(`http://127.0.0.1:5000/search?query=${trackSearchedValue}`, {
+                        withCredentials: true
+                });
+                    setTrackSearchedResults(response.data.search_results);
+                } else {
+                    setTrackSearchedResults([]);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchTrackSearchResults();
+    },[trackSearchedValue])
 
 
 
@@ -126,20 +189,32 @@ const SpecificRoom = () => {
             </div>
 
             <div className='room-content'>
-                <div className='messages-board'>
-                    {messages.map((message) => (
-                        <div className='message'>
-                            <div className='member-info'>
-                                <img className='member-avatar' src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' alt=''></img>
-                                <p className='member-name' style={{color:'#fff'}}>{message.user}</p>
-                            </div>
-
-                            <p className='member-text' style={{color:'#fff'}}>{message.text}</p>
-                        </div>
-                    ))}
-                </div>
                 <div className='chat-input'>
-                    <input type="text" placeholder="Type a message..." onKeyPress={handleKeyPress} />
+                    {showCommandResults && (
+                        <div className='command-results-box'>
+                            {commandResults.map((command, index) => (
+                                <li key={index} className='room-search-result' onClick={() => {setUserInput(command); setShowCommandResults(false);}}>
+                                    {command}
+                                </li>
+                            ))}
+                        </div>
+                    )}
+                    {showTrackSearchResults && (
+                        <div className='room-search-results-box'>
+                            <ul>
+                                {trackSearchedResults.map((track, index) => (
+                                    <li key={index} className='room-search-result' onClick={() => { setUserInput(`!pplay ${track.name}`); setShowTrackSearchResults(false); }}>
+                                        <img src={track.spotify_image_url} alt={track.name} className='room-search-result-img'/>
+                                        <div className='room-search-result-info'>
+                                            <span className='room-search-result-name'>{track.name}</span>
+                                            <span className='room-search-result-artists'>{track.artists}</span>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                    <input type="text" placeholder="Type a message..." value={userInput} onChange={handleRoomInputChange} onKeyPress={handleKeyPress}/>
                 </div>
             </div>
 

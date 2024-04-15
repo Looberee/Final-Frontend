@@ -10,7 +10,7 @@
     left: 0;
     width: 100vw; /* Adjust width as needed */
     height: 100%; /* Adjust height as needed */
-    background: url('https://w.wallhaven.cc/full/7p/wallhaven-7pq2de.jpg');
+    background: url('https://w.wallhaven.cc/full/3l/wallhaven-3lepy9.jpg');
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -25,11 +25,11 @@
 
 .member-sidebar
 {
-    background-color: rgba(49, 49, 49, 0.4);
+    background-color: rgba(49, 49, 49, 0.7);
     max-width: 250px;
     min-height: 90%;
     overflow-y: auto;
-    border-radius: 20px;
+    border-radius: 10px;
     margin: 20px;
 }
 
@@ -179,9 +179,9 @@
 {
     width: calc(100vw - 270px - 290px);
     min-height: 90%;
-    border-radius: 20px;
+    border-radius: 10px;
     margin: 20px;
-    background-color: rgba(49, 49, 49, 0.4);
+    background-color: rgba(49, 49, 49, 0.7);
     overflow-y: auto;
     position: relative;
 }
@@ -207,18 +207,62 @@
 .chat-input input {
     width: 100%;
     height: 40px;
-    padding: 10px;
+    padding: 10px 10px 10px 20px;
     border-radius: 20px;
+}
+
+.room-search-results-box ul {
+    border-bottom: 1px solid #999;
+    padding: 10px 10px 10px 20px;
+}
+
+.room-search-results-box ul .room-search-result {
+    list-style: none;
+    padding: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+    background: #fff;
+}
+
+.room-search-results-box ul .room-search-result:hover {
+    background-color: #999;
+}
+
+.room-search-results-box ul .room-search-result img 
+{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.room-search-result-info
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.room-search-result-info .room-search-result-name
+{
+    font-size: 16px;
+    color: #000;
+}
+
+.room-search-result-info .room-search-result-artists {
+    font-size: 12px;
+    color: #000;
 }
 /* Track Queue */
 
 .track-queue 
 {
     width: 270px;
-    background-color: rgba(49, 49, 49, 0.4);
+    background-color: rgba(49, 49, 49, 0.7);
     overflow-y: auto;
     min-height: 90%;
-    border-radius: 20px;
+    border-radius: 10px;
     margin: 20px;
 }
 
