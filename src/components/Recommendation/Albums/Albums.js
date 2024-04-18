@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import './Albums.css';
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisVertical, faPlay, faPlus, faInfoCircle, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsisVertical, faPlay, faPlus, faInfoCircle, faUser, faHeart, faHeadphonesSimple } from "@fortawesome/free-solid-svg-icons";
 import Select from 'react-select';
 import { useRecentTrack } from "../../../contexts/RecentTrackContext";
 import Modal from "react-modal";
@@ -37,7 +37,7 @@ const modalStyles = {
 
 const Dropdown = ({ track }) => {
     const { togglePlaylist } = usePlaylist();
-    const { waitingList, addToWaitingList } = useTrack();
+    const { waitingList, addToWaitingList, setIsTrackFavourite } = useTrack();
     const options = [
         { 
             value: 'option1', 
@@ -52,10 +52,19 @@ const Dropdown = ({ track }) => {
             value: 'option2', 
             label: (
                 <span style={{ fontSize: 'small' }}>
-                    <FontAwesomeIcon icon={faInfoCircle} /> Add to list for next track
+                    <FontAwesomeIcon icon={faHeadphonesSimple} /> Add to list for next track
                 </span>
             ),
             action : () => handleAddToWaitingList(track) 
+        },
+        { 
+            value: 'option3', 
+            label: (
+                <span style={{ fontSize: 'small' }}>
+                    <FontAwesomeIcon icon={faHeart} /> Add to favourites
+                </span>
+            ),
+            action : () => handleAddToFavourites(track)
         },
     ];
 
@@ -97,6 +106,21 @@ const Dropdown = ({ track }) => {
         console.log("Track will be added to waiting list: ", track);
         addToWaitingList(track);
 
+    }
+
+    const handleAddToFavourites = async (track) => {
+        try
+        {
+            const response = await axios.post('http://127.0.0.1:5000/personal/favourites/track', 
+            { 'spotify_id' : track.spotify_id }, 
+            { withCredentials : true });
+            console.log('Message : ', response.data.message)
+            setIsTrackFavourite((pre) => !pre)
+        }
+        catch (error)
+        {
+            console.error('Failed to add track to favourites:', error);
+        }
     }
 
     return (

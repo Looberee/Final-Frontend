@@ -59,7 +59,8 @@ useEffect(() => {
             console.log('The access token will expire in 1 minute.');
         }, timeUntilExpiration - oneMinute);
     } else {
-        console.log('The access token will expire in less than 1 minute.');
+        console.log('The access token will expire in less than 1 minute. Forcing refresh token now!');
+        refreshTokens();
     }
 
     return () => clearTimeout(timerId);
@@ -68,38 +69,29 @@ useEffect(() => {
 const refreshTokens = async () => {
     try {
         const response = await axios.post('http://127.0.0.1:5000/refresh', {}, {
-            headers: {
-                'Authorization': `Bearer ${refreshToken}`
-            },
-            withCredentials: true,
+            withCredentials: true, // This will send the HttpOnly cookie
         });
         console.log("Successfully refreshed tokens: ", response.data.refresh);
         login(response.data.access_token);
-        setRefreshToken(response.data.refresh_token);
     } catch (error) {
         console.error('Error refreshing tokens:', error);
         throw error;
     }
 };
 
-
 const login = (token) => {
     const { exp } = jwtDecode(token);
-    setAccessToken(token);
     setExpiresAt(exp * 1000);
 };
 
 const logout = async () => {
-    setAccessToken(null);
-    setRefreshToken(null);
     setExpiresAt(null);
     try {
         const response = await axios.get('http://127.0.0.1:5000/logout', {
-            withCredentials: true
+            withCredentials: true // This will send the HttpOnly cookie
         });
         console.log('Logout successful:', response.data);
         window.location.pathname = '/home';
-
     } catch (error) {
         console.error('Error logging out:', error);
     }

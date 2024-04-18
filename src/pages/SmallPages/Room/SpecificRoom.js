@@ -28,6 +28,7 @@ const SpecificRoom = () => {
         console.log("Show Track Search Results: ", showTrackSearchResults);
         console.log("trackSearchedResults: ", trackSearchedResults);
         console.log("Command Results: ", commandResults);
+        console.log("Message: ", messages);
     },[userInput, showCommandResults, showTrackSearchResults, trackSearchedResults, commandResults])
 
     useEffect(() => {
@@ -42,8 +43,11 @@ const SpecificRoom = () => {
             console.log('Received message:', data.msg);
             setMessages((prevObject) => [...prevObject, {"text" : data.msg, "user" : data.user}]);
         });
-    
-        // Emit join event
+
+        // socket.current.on('member_list', (data) => {
+        //     console.log("Member data: ", data);
+        //     setUsers(data.member_list);
+        // });
     
         return () => {
             // Emit leave event when the component is unmounted or user leaves the page
@@ -60,6 +64,8 @@ const SpecificRoom = () => {
     },[messages])
 
 
+
+
     // Handle leaving the specific room and emitting a leave event
     const handleLeaveRoom = () => {
         // Emit leave event when the user leaves manually
@@ -70,10 +76,6 @@ const SpecificRoom = () => {
         console.log("User has left the room!");
     };
 
-    const sendMessage = (message) => {
-            socket.current.emit('send_message', { room_id: id, message: message});
-    }
-
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
@@ -82,9 +84,11 @@ const SpecificRoom = () => {
                 console.log("Play command!")
                 socket.current.emit('command', {'message': event.target.value, 'room_id': id})
                 event.target.value = ''
+                setUserInput('')
             } else {
-                sendMessage(event.target.value);
+                socket.current.emit('send_message', {'message': event.target.value, "room_id": id})
                 event.target.value = ''; // Clear input after sending message
+                setUserInput('')
             }
         }
         
@@ -135,7 +139,7 @@ const SpecificRoom = () => {
     return (
         <div className='specific-room-container'>
             <div className='member-sidebar'>
-                <h1 className='branch-title'>Pyppo</h1>
+                <h1 className='branch-title' onClick={handleLeaveRoom}>Pyppo</h1>
 
                 <div className='host-container'>
                     <div className='host-title-container'>
@@ -158,37 +162,31 @@ const SpecificRoom = () => {
                     </div>
 
                     <ul className='members-list'>
-                        <li className='member-object'>
-                            <img className='member-avatar' src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' alt=''></img>
-                            <span className='member-name'>User 1</span>
-                        </li>
+                        {users.map((username, index) => (
+                            <li className='member-object'>
+                                <img className='member-avatar' src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' alt=''></img>
+                                <span className='member-name'>{username}</span>
+                            </li> 
+                        ))}
 
-                        <li className='member-object'>
-                            <img className='member-avatar' src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' alt=''></img>
-                            <span className='member-name'>User 1</span>
-                        </li>
-
-                        <li className='member-object'>
-                            <img className='member-avatar' src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' alt=''></img>
-                            <span className='member-name'>User 1</span>
-                        </li>
-
-                        <li className='member-object'>
-                            <img className='member-avatar' src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' alt=''></img>
-                            <span className='member-name'>User 1</span>
-                        </li>
-
-                        <li className='member-object'>
-                            <img className='member-avatar' src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' alt=''></img>
-                            <span className='member-name'>User 1</span>
-                        </li>
-
-                        
                     </ul>
                 </div>
             </div>
 
             <div className='room-content'>
+                <div className='messages-board'>
+                    {messages.map((message, index) =>(
+                        <div key={index} className='message'>
+                            <div className='member-info'>
+                                <img className='member-avatar' src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'/>
+                                <span className='member-name'>{message.user}</span>
+                            </div>
+                            <p className='member-text' style={{color:'#fff'}}>{message.text}</p>
+
+                        </div>
+                    ))}
+                </div>
+
                 <div className='chat-input'>
                     {showCommandResults && (
                         <div className='command-results-box'>

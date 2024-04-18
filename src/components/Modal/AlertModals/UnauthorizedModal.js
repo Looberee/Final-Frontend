@@ -61,6 +61,7 @@ const UnauthorizedModal = () => {
 
     const handleLogin = () => {
         navigate('/login')
+        closeModal();
     }
 
     return (

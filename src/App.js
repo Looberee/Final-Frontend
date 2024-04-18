@@ -30,6 +30,7 @@ import Room from './pages/SmallPages/Room/Room';
 import { RoomProvider } from './contexts/RoomContext';
 import Cookies from 'js-cookie';
 import { useModal } from './contexts/ModalContext';
+import ArtistDetail from './pages/SmallPages/ArtistDetail/ArtistDetail';
 
 import io from 'socket.io-client';
 import { ModalProvider } from './contexts/ModalContext';
@@ -123,8 +124,8 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout}) => {
               <div className='content'>
                 {searchValue ? <Searched searchValue={searchValue}/> :
                 <Routes>
-                  {/* <Route path="/" element={<Home />} />
-                  <Route path="/home" element={<Home />} /> */}
+                  <Route path="/" element={<Home />} />
+                  <Route path="/home" element={<Home />} />
                   <Route path="/personal/playlists/:encode_id/tracks" element={<UserPlaylist />} />
                   <Route path="/personal/profile" element={<UserProfile/>}/>
                   <Route path='/waiting/tracks' element={<WaitingList />} />
@@ -133,6 +134,7 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout}) => {
                   <Route path='/artists' element={<Artists/>}/>
                   <Route path='/tracks' element={<Tracks/>}/>
                   <Route path='/room' element={<Room/>}/>
+                  <Route path='/artist/:artist_id' element={<ArtistDetail/>}/>
                 </Routes>}
                 <TrackPlayer/>
 

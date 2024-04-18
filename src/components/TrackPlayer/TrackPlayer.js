@@ -531,7 +531,7 @@ const TrackPlayer = () => {
                 <FontAwesomeIcon icon={faVolumeUp} className="track-player-volume" />
                 <FontAwesomeIcon
                     icon={faHeart}
-                    className={`track-player-favourite ${isTrackFavourite ? 'active' : ''}`}
+                    className={`track-player-favourite ${isTrackFavourite && pyppoTrack != null ? 'active' : ''}`}
 
                     onClick={() => toggleFavourite(isPlayingTrack)}
                 />

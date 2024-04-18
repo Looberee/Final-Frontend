@@ -3,6 +3,7 @@ import { useTrack } from "../../../contexts/TrackContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import './Tracks.css'
+import Albums from "../../../components/Recommendation/Albums/Albums";
 
 const Track = ({title, fetched_tracks}) => {
     const [trackTitle, setTrackTitle] = useState("Title");
@@ -92,11 +93,11 @@ const Tracks = () => {
 
     return (
         <div>
-            <Track title={"Each Catchy Chorus and Infectious Rhythm is an Euphoric Journey"} fetched_tracks={popTracks} />
-            <Track title={"Each Raw Guitar Riff and Thunderous Beat is an Electrifying Experience"} fetched_tracks={rockTracks} />
-            <Track title={"Every Thumping Bassline and Hypnotic Synth is a Transcendent Escape"} fetched_tracks={edmTracks} />
-            <Track title={"Each Soulful Note and Swinging Rhythm is a Timeless Journey"} fetched_tracks={jazzTracks} />
-            <Track title={"Each Pixelated Adventure and Strategic Maneuver is an Immersive Odyssey"} fetched_tracks={gamingTracks} />
+            <Albums title={"Each Catchy Chorus and Infectious Rhythm is an Euphoric Journey"} tracks={popTracks} />
+            <Albums title={"Each Raw Guitar Riff and Thunderous Beat is an Electrifying Experience"} tracks={rockTracks} />
+            <Albums title={"Every Thumping Bassline and Hypnotic Synth is a Transcendent Escape"} tracks={edmTracks} />
+            <Albums title={"Each Soulful Note and Swinging Rhythm is a Timeless Journey"} tracks={jazzTracks} />
+            <Albums title={"Each Pixelated Adventure and Strategic Maneuver is an Immersive Odyssey"} tracks={gamingTracks} />
 
         </div>
     )

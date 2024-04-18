@@ -1,0 +1,81 @@
+.artist-profile-container
+{
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.05), 
+        rgba(0, 0, 0, 0.8)
+        ), url('https://w.wallhaven.cc/full/1p/wallhaven-1pl8og.png');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: inline-flex;
+    padding-left: 30px;
+    gap: 20px;
+
+}
+
+.artist-image-container
+{
+
+}
+
+.artist-image-container img
+{
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 20px;
+}
+
+
+.artist-info-container
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    gap: 5px;
+    color: #fff;
+}
+
+.artist-info-container h1
+{
+    font-size: 80px;
+}
+
+.artist-info-container .artist-status-container
+{
+    display: inline-flex;
+    justify-content: center;
+    align-self: start;
+    align-items: center;
+    gap: 20px;
+}
+
+.artist-info-container .artist-status-container .crown-icon 
+{
+    color: #f1c40f;
+    font-size: 25px;
+
+}
+.artist-status-container
+{
+    display: inline-flex;
+    gap: 20px;
+    justify-content: center;
+}
+.artist-status-container .heart-icon
+{
+    font-size: 25px;
+    transition: 0.5s ease;
+    cursor: pointer;
+}
+
+.artist-status-container .heart-icon.active
+{
+    color: red;
+    transform: scale(1.2);
+}
+

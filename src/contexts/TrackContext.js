@@ -40,7 +40,23 @@ export const TrackProvider = ({ children }) => {
                 catch (err) {
                     console.error('Error checking favourite:', err);
                 }
-        }
+            }
+            // else if (pyppoTrack.spotify_id)
+            // {
+            //     try {
+            //         console.log('Check Favourite Track with Spotify Id:', pyppoTrack.spotify_id);
+            //         const response = await axios.post('http://127.0.0.1:5000/personal/favourites/track/check',{
+            //             'spotify_id' : pyppoTrack.spotify_id
+            //         },{
+            //             withCredentials : true
+            //         })
+            //         console.log("Is Favourite Track: ",response.data.favourite)
+            //         setIsTrackFavourite(response.data.favourite);
+            //     }
+            //     catch (err) {
+            //         console.error('Error checking favourite:', err);
+            //     }
+            // }
 
         if (pyppoTrack)
         {
