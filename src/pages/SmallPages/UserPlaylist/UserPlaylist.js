@@ -50,7 +50,7 @@ const TrackRow = ({ track, trackOrder, playlist_encode_id }) => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:5000/profile', { withCredentials: true });
+                const response = await axios.get('http://127.0.0.1:8080/profile', { withCredentials: true });
                 setProfile(response.data.profile);
             } catch (error) {
                 console.error('Error fetching user profile:', error);
@@ -78,7 +78,7 @@ const TrackRow = ({ track, trackOrder, playlist_encode_id }) => {
     const handleDeleteTrackInPlaylist = async (track) => {
         try {
             const response = await axios.delete(
-                `http://127.0.0.1:5000/personal/playlists/${playlist_encode_id}/track/${track.id}`,
+                `http://127.0.0.1:8080/personal/playlists/${playlist_encode_id}/track/${track.id}`,
                 {
                     withCredentials: true
                 }
@@ -93,7 +93,7 @@ const TrackRow = ({ track, trackOrder, playlist_encode_id }) => {
     const handleAddToFavourites = async (track) => {
         try
         {
-            const response = await axios.post('http://127.0.0.1:5000/personal/favourites/track', 
+            const response = await axios.post('http://127.0.0.1:8080/personal/favourites/track', 
             { 'spotify_id' : track.spotify_id }, 
             { withCredentials : true });
             console.log('Message : ', response.data.message)
@@ -106,7 +106,7 @@ const TrackRow = ({ track, trackOrder, playlist_encode_id }) => {
 
     const handleRemoveFromFavourites = async (track) => {
         try {
-            const response = await axios.delete('http://127.0.0.1:5000/personal/favourites/track', {
+            const response = await axios.delete('http://127.0.0.1:8080/personal/favourites/track', {
                 data: { 'spotify_id' : track.spotify_id },
                 withCredentials: true
             });
@@ -201,7 +201,7 @@ const UserPlaylist = ({onTrackSelected}) => {
             try {
                 // Fetch playlist tracks from the server
                 const token = localStorage.getItem('token');
-                const response = await axios.get(`http://127.0.0.1:5000/personal/playlists/${encode_id}/tracks`, {
+                const response = await axios.get(`http://127.0.0.1:8080/personal/playlists/${encode_id}/tracks`, {
                     withCredentials: true
                 });
                 console.log("Track from the specific playlist: ", response.data.playlist.tracks);
@@ -260,7 +260,7 @@ const UserPlaylist = ({onTrackSelected}) => {
             console.log("This is the name: " + name)
             const token = localStorage.getItem('token');
             const response = await axios.put(
-                'http://127.0.0.1:5000/personal/playlists',
+                'http://127.0.0.1:8080/personal/playlists',
                 { encode_id: encode_id, new_name: name }, // Send encode_id and new_name in the request body
                 {
                     withCredentials: true
@@ -279,7 +279,7 @@ const UserPlaylist = ({onTrackSelected}) => {
         try {
             const token = localStorage.getItem('token');
             const response = await axios.delete(
-                'http://127.0.0.1:5000/personal/playlists', // Correct endpoint
+                'http://127.0.0.1:8080/personal/playlists', // Correct endpoint
                 {
                     withCredentials: true,
                     data: { encode_id: encode_id } // Pass encode_id in the request body

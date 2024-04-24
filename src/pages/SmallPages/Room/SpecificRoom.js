@@ -5,6 +5,7 @@ import axios from 'axios';
 import './SpecificRoom.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faL, faMusic, faPlay, faUserTie, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { useTrack } from '../../../contexts/TrackContext';
 
 const SpecificRoom = () => {
     const { id } = useParams();
@@ -21,15 +22,15 @@ const SpecificRoom = () => {
     const [commandResults, setCommandResults] = useState(['!pplay', '!pchat']);
     const [showCommandResults, setShowCommandResults] = useState(false);
 
-    useEffect(() => {
-        console.log("User Input: ", userInput);
-        console.log("Track Searched Value: ", trackSearchedValue);
-        console.log("Show Command Results: ", showCommandResults);
-        console.log("Show Track Search Results: ", showTrackSearchResults);
-        console.log("trackSearchedResults: ", trackSearchedResults);
-        console.log("Command Results: ", commandResults);
-        console.log("Message: ", messages);
-    },[userInput, showCommandResults, showTrackSearchResults, trackSearchedResults, commandResults])
+    // useEffect(() => {
+    //     console.log("User Input: ", userInput);
+    //     console.log("Track Searched Value: ", trackSearchedValue);
+    //     console.log("Show Command Results: ", showCommandResults);
+    //     console.log("Show Track Search Results: ", showTrackSearchResults);
+    //     console.log("trackSearchedResults: ", trackSearchedResults);
+    //     console.log("Command Results: ", commandResults);
+    //     console.log("Message: ", messages);
+    // },[userInput, showCommandResults, showTrackSearchResults, trackSearchedResults, commandResults])
 
     useEffect(() => {
         // Connect to the socket server
@@ -40,14 +41,20 @@ const SpecificRoom = () => {
     
         // Listen for incoming messages
         socket.current.on('message', (data) => {
-            console.log('Received message:', data.msg);
-            setMessages((prevObject) => [...prevObject, {"text" : data.msg, "user" : data.user}]);
+            if (data.room_id === id)
+            {
+                console.log('Received message:', data.msg);
+                setMessages((prevObject) => [...prevObject, {"text" : data.msg, "user" : data.user}]);
+            }
+            else
+            {
+                console.log('Received message:', data.msg);
+                setMessages((prevObject) => [...prevObject, {"text" : data.msg, "user" : data.user}]);
+            }
+            
         });
 
-        // socket.current.on('member_list', (data) => {
-        //     console.log("Member data: ", data);
-        //     setUsers(data.member_list);
-        // });
+
     
         return () => {
             // Emit leave event when the component is unmounted or user leaves the page
@@ -59,10 +66,68 @@ const SpecificRoom = () => {
         };
     }, []);
 
+    // useEffect(() => {
+    //     console.log("Message: ", messages)
+    //     console.log("Users: ", users);
+    // },[messages])
+
     useEffect(() => {
-        console.log("Message: ", messages)
+        socket.current.on('member_list', (data) => {
+            console.log("Member data: ", data);
+            setUsers(data.member_list);
+        });
     },[messages])
 
+    // useEffect(() => {
+    //     socket.current.on('track_list', (data) => {
+    //         console.log("Track data: ", data);
+    //         setTrackSelectedList(data.track_list);
+    //     });
+    // },[messages])
+
+    // useEffect(() => {
+    //     console.log("Track Selected: ", trackSelectedList );
+    // },[trackSelectedList]);
+
+    // useEffect(() => {
+    //     if (trackSelectedList.length > 0) {
+    //         socket.current.emit('play_this_track', {'track' :trackSelectedList[0], 'device_id': myDeviceId});
+    //     }
+    //     else{
+    //         console.log("No track selected in list!", trackSelectedList)
+    //         console.log("Device_id: ", myDeviceId)
+    //     }
+    // })
+
+    // useEffect(() => {
+    //     socket.current.on('play_sync', function(data) {
+    //         console.log('play_sync data:', data);
+    
+    //         var track = data['track'];
+    //         var position = data['position'];
+    //         const access_token = localStorage.get('spotify_token')
+    
+    //         console.log('myDeviceId:', myDeviceId);
+    //         console.log('access_token:', access_token);
+    //         console.log('track:', track);
+    //         console.log('position:', position);
+    
+    //         // Start playing the track
+    //         fetch(`https://api.spotify.com/v1/me/player/play?device_id=${myDeviceId}`, {
+    //             method: 'PUT',
+    //             body: JSON.stringify({ uris: [`spotify:track:${track["spotify_id"]}`] }),
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${access_token}`  // Use the OAuth token from your application's state
+    //             },
+    //         }).then(() => {
+    //             // Seek to the broadcasted playback position
+    //             myPlayer.seek(position);
+    //         });
+    //     });
+
+    //     return () => socket.off('play_sync');
+    // },[])
 
 
 
@@ -80,38 +145,31 @@ const SpecificRoom = () => {
         if (event.key === 'Enter') {
             event.preventDefault();
             console.log("You typed: ", event.target.value)
-            if ((event.target.value).startsWith('!')) {
-                console.log("Play command!")
-                socket.current.emit('command', {'message': event.target.value, 'room_id': id})
-                event.target.value = ''
-                setUserInput('')
-            } else {
-                socket.current.emit('send_message', {'message': event.target.value, "room_id": id})
-                event.target.value = ''; // Clear input after sending message
-                setUserInput('')
-            }
-        }
+            socket.current.emit('send_message', {'message': event.target.value, "room_id": id})
+            event.target.value = ''; // Clear input after sending message
+            setUserInput('')
+    }
         
 
     };
 
     const handleRoomInputChange = (event) => {
         setUserInput(event.target.value);
-        if (event.target.value.startsWith('!pplay')) {
-            setShowCommandResults(false);
-            setTrackSearchedValue(event.target.value.slice(7));
-            setShowTrackSearchResults(true);
-        }
-        else if (event.target.value.startsWith('!pchat')) {
-            setShowCommandResults(false);
-            setShowTrackSearchResults(false);
-        } else if (event.target.value.startsWith('!')) {
-            setShowCommandResults(true);
-            setShowTrackSearchResults(false);
-        } else {
-            setShowCommandResults(false);
-            setShowTrackSearchResults(false);
-        }
+        // if (event.target.value.startsWith('!pplay')) {
+        //     setShowCommandResults(false);
+        //     setTrackSearchedValue(event.target.value.slice(7));
+        //     setShowTrackSearchResults(true);
+        // }
+        // else if (event.target.value.startsWith('!pchat')) {
+        //     setShowCommandResults(false);
+        //     setShowTrackSearchResults(false);
+        // } else if (event.target.value.startsWith('!')) {
+        //     setShowCommandResults(true);
+        //     setShowTrackSearchResults(false);
+        // } else {
+        //     setShowCommandResults(false);
+        //     setShowTrackSearchResults(false);
+        // }
     };
 
 
@@ -119,7 +177,7 @@ const SpecificRoom = () => {
         const fetchTrackSearchResults = async () => {
             try {
                 if (trackSearchedValue) {
-                    const response = await axios.get(`http://127.0.0.1:5000/search?query=${trackSearchedValue}`, {
+                    const response = await axios.get(`http://127.0.0.1:8080/search?query=${trackSearchedValue}`, {
                         withCredentials: true
                 });
                     setTrackSearchedResults(response.data.search_results);
@@ -134,6 +192,10 @@ const SpecificRoom = () => {
         fetchTrackSearchResults();
     },[trackSearchedValue])
 
+    // const handleCommand = (track) => {
+    //     setTrackSelectedList((prevObject) => [...prevObject, track]);
+    // }
+
 
 
     return (
@@ -141,7 +203,7 @@ const SpecificRoom = () => {
             <div className='member-sidebar'>
                 <h1 className='branch-title' onClick={handleLeaveRoom}>Pyppo</h1>
 
-                <div className='host-container'>
+                {/* <div className='host-container'>
                     <div className='host-title-container'>
                         <FontAwesomeIcon className='lock-icon' icon={faUserTie} />
                         <h2 className='host-title'>Host</h2>
@@ -152,7 +214,7 @@ const SpecificRoom = () => {
                         <span className='host-name'>Host</span>
                     </div>
 
-                </div>
+                </div> */}
 
                 <div className='member-container'>
 
@@ -188,7 +250,7 @@ const SpecificRoom = () => {
                 </div>
 
                 <div className='chat-input'>
-                    {showCommandResults && (
+                    {/* {showCommandResults && (
                         <div className='command-results-box'>
                             {commandResults.map((command, index) => (
                                 <li key={index} className='room-search-result' onClick={() => {setUserInput(command); setShowCommandResults(false);}}>
@@ -196,12 +258,12 @@ const SpecificRoom = () => {
                                 </li>
                             ))}
                         </div>
-                    )}
-                    {showTrackSearchResults && (
+                    )} */}
+                    {/* {showTrackSearchResults && (
                         <div className='room-search-results-box'>
                             <ul>
                                 {trackSearchedResults.map((track, index) => (
-                                    <li key={index} className='room-search-result' onClick={() => { setUserInput(`!pplay ${track.name}`); setShowTrackSearchResults(false); }}>
+                                    <li key={index} className='room-search-result' onClick={() => { setUserInput(`!pplay ${track.name}`); setShowTrackSearchResults(false); setTrackSelected(track) }}>
                                         <img src={track.spotify_image_url} alt={track.name} className='room-search-result-img'/>
                                         <div className='room-search-result-info'>
                                             <span className='room-search-result-name'>{track.name}</span>
@@ -211,12 +273,12 @@ const SpecificRoom = () => {
                                 ))}
                             </ul>
                         </div>
-                    )}
+                    )} */}
                     <input type="text" placeholder="Type a message..." value={userInput} onChange={handleRoomInputChange} onKeyPress={handleKeyPress}/>
                 </div>
             </div>
 
-            <div className='track-queue'>
+            {/* <div className='track-queue'>
                 <h1 className='branch-title'>Track Queue</h1>
 
                 <div className='track-queue-container'>
@@ -226,10 +288,10 @@ const SpecificRoom = () => {
                     </div>
 
                     <div className='track-queue-object'>
-                        <img className='track-queue-avatar' src='https://res.cloudinary.com/dckgpl1ys/image/upload/v1711105274/y2p2lbvpvxu3ewh7evbz.jpg' alt=''></img>
+                        <img className='track-queue-avatar' src={trackSelectedList.length > 0 && trackSelectedList[0].spotify_image_url ? trackSelectedList[0].spotify_image_url : ""} alt=''></img>
                         <div className='track-queue-info'>
-                            <span className='track-queue-name'>Play Fast!</span>
-                            <span className='track-queue-composer'>Embark Studio</span>
+                            <span className='track-queue-name'>{trackSelectedList.length > 0 && trackSelectedList[0].name ? trackSelectedList[0].name : ""}</span>
+                            <span className='track-queue-composer'>{trackSelectedList.length > 0 && trackSelectedList[0].artists ? trackSelectedList[0].artists : ""}</span>
                         </div>
                     </div>
 
@@ -243,17 +305,18 @@ const SpecificRoom = () => {
                     </div>
 
                     <ul className='track-queues-list'>
-                        <li className='track-queue-object'>
-                            <img className='track-queue-avatar' src='https://res.cloudinary.com/dckgpl1ys/image/upload/v1711105274/y2p2lbvpvxu3ewh7evbz.jpg' alt=''></img>
-                            <div className='track-queue-info'>
-                                <span className='track-queue-name'>Play Fast!</span>
-                                <span className='track-queue-composer'>Embark Studio</span>
-                            </div>
-                        </li>
-
+                        {trackSelectedList.slice(1).map((track, index) => (
+                            <li key={index} className='track-queue-object'>
+                                <img className='track-queue-avatar' src={track.spotify_image_url} alt=''></img>
+                                <div className='track-queue-info'>
+                                    <span className='track-queue-name'>{track.name}</span>
+                                    <span className='track-queue-composer'>{track.artists}</span>
+                                </div>
+                            </li>
+                        ))}
                     </ul>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 };

@@ -36,7 +36,7 @@ const FavouriteTrackRow = ({ track, trackOrder }) => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:5000/profile', { withCredentials: true });
+                const response = await axios.get('http://127.0.0.1:8080/profile', { withCredentials: true });
                 setProfile(response.data.profile);
             } catch (error) {
                 console.error('Error fetching user profile:', error);
@@ -118,7 +118,7 @@ const FavouritePlaylist = ({onTrackSelected}) => {
     useEffect(() => {
         const fetchPlaylistTracks = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:5000/personal/favourites/tracks`, {
+                const response = await axios.get(`http://127.0.0.1:8080/personal/favourites/tracks`, {
                     withCredentials: true
                 });
                 console.log("Track from the specific playlist: ", response.data.favourite_tracks);

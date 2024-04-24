@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import CustomSidebar from './components/CustomSidebar/CustomSidebar';
 import { DarkThemeProvider } from './contexts/DarkThemeContext';
 import Home from './pages/SmallPages/Home/Home';
@@ -92,59 +93,82 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout}) => {
   const isBigPage = location.pathname === '/login' || location.pathname === '/register' || /\/room\/\d+/.test(location.pathname);
   const { pyppoTrack } = useTrack();
   const { openModalId } = useModal();
+  const [routeClicked, setRouteClicked] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const navigate = useNavigate()
 
   useEffect(() => {
-    const socket = io('http://127.0.0.1:5000');
+    const socket = io('http://127.0.0.1:8080');
 
     socket.on('spotify_token_refreshed', (data) => {
         localStorage.removeItem('spotify_token');
+        console.log("Reseting!")
 
         localStorage.setItem('spotify_token', data.spotify_access_token);
     });
-
-    // Clean up the effect
-    return () => socket.disconnect();
 }, []);
 
   useEffect(() => {
     console.log(openModalId);
   },[openModalId])
 
+  // const handleInputChange = (event) => {
+  //   const value = event.target.value;
+  //   setSearchValue(value);
+
+  //   // Navigate to the search page whenever the input value changes
+  //   history.push({
+  //       pathname: '/search',
+  //       search: `?query=${encodeURIComponent(value)}`,
+  //   });
+  // }
+
+  useEffect(() => {
+    if (searchValue) {
+        setIsSearching(true);
+    }
+  }, [searchValue]);
+
+  useEffect(() => {
+    if (isSearching) {
+        navigate({
+            pathname: '/search',
+            search: `?query=${encodeURIComponent(searchValue)}`,
+        });
+        setIsSearching(false);
+    }
+  }, [isSearching, searchValue, navigate]);
+
   return (
     <div>
       {!isBigPage && (
-        <div className='App'>
-          
-          <Navbar isLoggedIn={isLoggedIn} onLogout={onLogout} setSearchValue={setSearchValue} />
-          <RecentTrackProvider>
-            <PlaylistProvider>
-            <div className='sidenav-content'>
-
-              <CustomSidebar isLoggedIn={isLoggedIn} onLogout={onLogout} />
-              <div className='content'>
-                {searchValue ? <Searched searchValue={searchValue}/> :
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/home" element={<Home />} />
-                  <Route path="/personal/playlists/:encode_id/tracks" element={<UserPlaylist />} />
-                  <Route path="/personal/profile" element={<UserProfile/>}/>
-                  <Route path='/waiting/tracks' element={<WaitingList />} />
-                  <Route path="/genres" element={<Genres/>}/>
-                  <Route path='/genres/:genre_name' element={<GenreDetail />} />
-                  <Route path='/artists' element={<Artists/>}/>
-                  <Route path='/tracks' element={<Tracks/>}/>
-                  <Route path='/room' element={<Room/>}/>
-                  <Route path='/artist/:artist_id' element={<ArtistDetail/>}/>
-                </Routes>}
-                <TrackPlayer/>
-
-
-              </div>
-
+            <div className='App'>
+      <Navbar isLoggedIn={isLoggedIn} onLogout={onLogout} setSearchValue={setSearchValue} />
+      <RecentTrackProvider>
+        <PlaylistProvider>
+          <div className='sidenav-content'>
+            <CustomSidebar isLoggedIn={isLoggedIn} onLogout={onLogout} />
+            <div className='content'>
+              <Routes>
+                <Route path='/search' element={<Searched searchValue={searchValue} />} />
+                <Route path="/" element={<Home />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/personal/playlists/:encode_id/tracks" element={<UserPlaylist />} />
+                <Route path="/personal/profile" element={<UserProfile/>}/>
+                <Route path='/waiting/tracks' element={<WaitingList />} />
+                <Route path="/genres" element={<Genres/>}/>
+                <Route path='/genres/:genre_name' element={<GenreDetail />} />
+                <Route path='/artists' element={<Artists/>}/>
+                <Route path='/tracks' element={<Tracks/>}/>
+                <Route path='/room' element={<Room/>}/>
+                <Route path='/artist/:artist_id' element={<ArtistDetail/>}/>
+              </Routes>
+              <TrackPlayer />
             </div>
-            </PlaylistProvider>
-          </RecentTrackProvider>
-        </div>
+          </div>
+        </PlaylistProvider>
+      </RecentTrackProvider>
+    </div>
       )}
 
       <Routes>

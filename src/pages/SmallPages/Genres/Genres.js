@@ -38,7 +38,7 @@ const Genres = () => {
     useEffect(() => {
         const fetchGenres = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:5000/recommendation/genres');
+                const response = await axios.get('http://127.0.0.1:8080/recommendation/genres');
                 setGenres(response.data.genres);
                 console.log("Genres: ", response.data.genres);
             } catch (error) {

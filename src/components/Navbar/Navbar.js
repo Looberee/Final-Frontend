@@ -43,13 +43,13 @@ const Navbar = ({ isLoggedIn, onLogout, setSearchValue }) => {
                     </div>
 
                     <div className="notification-profile-container">
-                        <a className="notification">
+                        {/* <a className="notification">
                             <FontAwesomeIcon className="notification-icon" icon={faBell} />
-                        </a>
+                        </a> */}
 
                         <a className="profile-login">
                             {alreadyAuth ? (
-                                <FontAwesomeIcon icon={faCircleUser} className="user-nav-icon"/>
+                                <div></div>
                             ) : (
                                 <Link to="/login" className="login-button">Log in</Link>
                             )}

@@ -51,7 +51,7 @@ const Artists = () => {
     useEffect(() => {
         const fetchArtists = async (genre) => {
             try {
-                const response = await fetch(`http://127.0.0.1:5000/recommendation/artists/${genre}`);
+                const response = await fetch(`http://127.0.0.1:8080/recommendation/artists/${genre}`);
                 const data = await response.json();
                 return data.sorted_artists; // Return sorted artists
             } catch (error) {

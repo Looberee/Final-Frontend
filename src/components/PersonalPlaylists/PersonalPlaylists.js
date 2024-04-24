@@ -13,7 +13,7 @@ export const ProfilePlaylist = () => {
     useEffect(() => {
         const getPlaylists = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:5000/personal/playlists', {withCredentials : true})
+                const response = await axios.get('http://127.0.0.1:8080/personal/playlists', {withCredentials : true})
                 setPlaylists(response.data.user_playlists)
             }
             catch (err) {
@@ -56,7 +56,7 @@ const PersonalPlaylists = () => {
 
     const fetchPlaylists = async () => {
         try {
-            const response = await axios.get('http://127.0.0.1:5000/personal/playlists', {
+            const response = await axios.get('http://127.0.0.1:8080/personal/playlists', {
                 withCredentials: true
             });
             setData(response.data);
@@ -75,7 +75,7 @@ const PersonalPlaylists = () => {
         try {
             const token = localStorage.getItem('token');
             await axios.post(
-                'http://127.0.0.1:5000/personal/playlists',
+                'http://127.0.0.1:8080/personal/playlists',
                 {},
                 {
                     withCredentials: true

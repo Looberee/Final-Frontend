@@ -3,6 +3,15 @@
     src: url('../../fonts/poppins/Poppins-Medium.ttf');
 }
 
+:root {
+    --icon-sidebar-background: #090f1b;
+    --icon-sidebar-color: #756f7d;
+    --icon-sidebar-color-hover:#fff;
+    --track-sidebar-background: #101823;
+    --playlist-info-color: #676b77;
+    /* Add more variables as needed */
+}
+
 *
 {
     margin: 0;

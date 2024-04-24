@@ -14,17 +14,20 @@ import { isElement } from 'lodash';
 import RoomOptions from '../RoomOptions/RoomOptions';
 import { useModal } from '../../contexts/ModalContext';
 import UnauthorizedModal from '../../components/Modal/AlertModals/UnauthorizedModal';
+import { useDarkTheme } from '../../contexts/DarkThemeContext';
 
 const CustomSidebar = () => {
     const [storedPlaylists, setStoredPlaylists] = useState([]);
     const [recentTracks, setRecentTracks] = useState([]);
-    const [activeItem, setActiveItem] = useState(null);
+    const [activeItem, setActiveItem] = useState('home'); // Initialize activeItem with 'home'
+    const [activeExtraItem, setActiveExtraItem] = useState('moon');
     const { recentTrackState, toggleRecentTrack } = useRecentTrack();
     const navigate = useNavigate();
     const { logout, isAuthenticated, alreadyAuth } = useAuth();
     const { setPyppoTrack, setToggleDuplicate } = useTrack();
     const { roomState, setRoomState } = useRoom();
     const { openModal } = useModal();
+    const { toggleDarkMode } = useDarkTheme();
 
     const sidebarItems = [
         { id: 'home', icon: faHome },
@@ -35,7 +38,7 @@ const CustomSidebar = () => {
 
     const extraSidebarItems = [
         { id: 'moon', icon: faMoon },
-        { id: 'sun', icon: faSun },
+        // { id: 'sun', icon: faSun },
         { id: 'rightFromBracket', icon: faRightFromBracket }
     ];
 
@@ -99,18 +102,29 @@ const CustomSidebar = () => {
                 handleOpenUnauthorized();
             }
         }
-        else if ( item === 'moon')
-        {
-            if (alreadyAuth)
-            {
-
-            }
-            else
-            {
-                setActiveItem(false)
+        else if (item === 'moon') {
+            if (alreadyAuth) {
+                setRoomState(false);
+                setActiveExtraItem('moon');
+                toggleDarkMode(); // Add this line
+            } else {
+                setActiveItem(false);
+                setActiveExtraItem(false);
                 handleOpenUnauthorized();
             }
         }
+        else if (item === 'sun') {
+            if (alreadyAuth) {
+                setRoomState(false);
+                setActiveExtraItem('sun');
+                toggleDarkMode(); // Add this line
+            } else {
+                setActiveItem(false);
+                setActiveExtraItem(false);
+                handleOpenUnauthorized();
+            }
+        }
+
     };
 
     const handleOpenUnauthorized = () => {
@@ -126,7 +140,7 @@ const CustomSidebar = () => {
         const fetchRecentTracks = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get('http://127.0.0.1:5000/personal/recent/tracks', {
+                const response = await axios.get('http://127.0.0.1:8080/personal/recent/tracks', {
                     withCredentials: true
                 });
                 setRecentTracks(response.data.recent_tracks);
@@ -174,13 +188,13 @@ const CustomSidebar = () => {
                 ))}
             </ul>
 
-                <hr></hr>
+                {alreadyAuth ? <hr></hr> : <div></div>}
 
                 <ul className='extra'>
                     {extraSidebarItems.map((item) => (
                         <li key={item.id}>
                             <a href='#' onClick={() => handleClick(item.id)}>
-                                <FontAwesomeIcon className={`i-sidebar ${activeItem === item.id ? 'active' : ''}`} icon={item.icon} />
+                                {alreadyAuth ? <FontAwesomeIcon className={`i-sidebar ${activeExtraItem === item.id ? 'active' : ''}`} icon={item.icon} /> : <div></div>}
                             </a>
                         </li>
                     ))}

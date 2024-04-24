@@ -13,6 +13,7 @@ export const TrackProvider = ({ children }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [toggleDuplicate, setToggleDuplicate] = useState(false);
     const [isTrackFavourite, setIsTrackFavourite] = useState(false);
+    const [myPlayer, setMyPlayer] = useState();
 
     useEffect(() => {
         console.log("--------------------------------------------------------")
@@ -29,7 +30,7 @@ export const TrackProvider = ({ children }) => {
         const handleCheckFavourite = async () => {
                 try {
                     console.log('Check Favourite Track:', pyppoTrack.id);
-                    const response = await axios.post('http://127.0.0.1:5000/personal/favourites/track/check',{
+                    const response = await axios.post('http://127.0.0.1:8080/personal/favourites/track/check',{
                         'track_id' : pyppoTrack.id
                     },{
                         withCredentials : true
@@ -45,7 +46,7 @@ export const TrackProvider = ({ children }) => {
             // {
             //     try {
             //         console.log('Check Favourite Track with Spotify Id:', pyppoTrack.spotify_id);
-            //         const response = await axios.post('http://127.0.0.1:5000/personal/favourites/track/check',{
+            //         const response = await axios.post('http://127.0.0.1:8080/personal/favourites/track/check',{
             //             'spotify_id' : pyppoTrack.spotify_id
             //         },{
             //             withCredentials : true
@@ -85,7 +86,8 @@ export const TrackProvider = ({ children }) => {
                 waitingList, addToWaitingList,removeFromWaitingList,
                 isPlaying, setIsPlaying, toggleIsPlaying,
                 toggleDuplicate, setToggleDuplicate,
-                isTrackFavourite, setIsTrackFavourite
+                isTrackFavourite, setIsTrackFavourite,
+                myPlayer, setMyPlayer
             }}
         >
             {children}

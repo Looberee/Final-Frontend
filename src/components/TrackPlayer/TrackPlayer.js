@@ -27,7 +27,7 @@ const TrackPlayer = () => {
     const [counter, setCounter] = useState(0);
     const [intervalId, setIntervalId] = useState(null);
 
-    const { pyppoTrack, setPyppoTrack, isPlaying, setIsPlaying, myDeviceId, setMyDeviceId, waitingList, removeFromWaitingList, toggleDuplicate, setToggleDuplicate, isTrackFavourite, setIsTrackFavourite} = useTrack();
+    const { pyppoTrack, setPyppoTrack, isPlaying, setIsPlaying, myDeviceId, setMyDeviceId, waitingList, removeFromWaitingList, toggleDuplicate, setToggleDuplicate, isTrackFavourite, setIsTrackFavourite, setMyPlayer} = useTrack();
     const { toggleRecentTrack, recentTrackState } = useRecentTrack();
     const [shuffleState, setShuffleState] = useState(false);
     const [shuffleActive, setShuffleActive] = useState(false);
@@ -91,6 +91,7 @@ const TrackPlayer = () => {
                 });
 
                 setPyppoPlayer(player);
+                setMyPlayer(player);
 
             } else {
                 // Spotify object not available yet, try again after a delay
@@ -232,7 +233,7 @@ const TrackPlayer = () => {
     const handleAddToFavourites = async (track) => {
         try
         {
-            const response = await axios.post('http://127.0.0.1:5000/personal/favourites/track', 
+            const response = await axios.post('http://127.0.0.1:8080/personal/favourites/track', 
             { 'spotify_id' : track.spotify_id }, 
             { withCredentials : true });
             console.log('Message : ', response.data.message)
@@ -245,7 +246,7 @@ const TrackPlayer = () => {
 
     const handleRemoveFromFavourites = async (track) => {
         try {
-            const response = await axios.delete('http://127.0.0.1:5000/personal/favourites/track', {
+            const response = await axios.delete('http://127.0.0.1:8080/personal/favourites/track', {
                 data: { 'spotify_id' : track.spotify_id },
                 withCredentials: true
             });
@@ -284,7 +285,7 @@ const TrackPlayer = () => {
             console.log("Slider value in seek function: ", sliderValue)
             console.log("Is Playing Track: ", isPlayingTrack.name)
             console.log("Track duration: ",isPlayingTrack.duration)
-            const response = await axios.post('http://127.0.0.1:5000/playback/seek', { newPositionMs }, {withCredentials: true});
+            const response = await axios.post('http://127.0.0.1:8080/playback/seek', { newPositionMs }, {withCredentials: true});
             console.log('Seek request sent successfully');
             // setSliderValue(response.data.new_position_ms / isPlayingTrack.duration * 100);
         } catch (error) {
@@ -301,7 +302,7 @@ const TrackPlayer = () => {
 
     const handlePlayTrackInPlayer = async () => {
         try {
-            const response = await axios.post('http://127.0.0.1:5000/playback/play', { myDeviceId, trackUri }, {
+            const response = await axios.post('http://127.0.0.1:8080/playback/play', { myDeviceId, trackUri }, {
                 withCredentials: true,
             });
             setIsPlaying(true);
@@ -313,7 +314,7 @@ const TrackPlayer = () => {
 
     const handleResumeTrackInPlayer = async () => {
         try {
-            const response = await axios.post('http://127.0.0.1:5000/playback/resume', { myDeviceId }, {
+            const response = await axios.post('http://127.0.0.1:8080/playback/resume', { myDeviceId }, {
                 withCredentials: true
             });
             console.log('Playback control request sent successfully');
@@ -327,7 +328,7 @@ const TrackPlayer = () => {
 
     const handlePauseTrackInPlayer = async () => {
         try {
-            const response = await axios.post('http://127.0.0.1:5000/playback/pause', { myDeviceId }, {
+            const response = await axios.post('http://127.0.0.1:8080/playback/pause', { myDeviceId }, {
                 withCredentials: true
             });
             console.log('Playback control request sent successfully');
@@ -366,7 +367,7 @@ const TrackPlayer = () => {
     const handleClickNext = async () => {
         try {
             setTrackEnd(true);
-            const response = await axios.post('http://127.0.0.1:5000/playback/next', { myDeviceId }, {
+            const response = await axios.post('http://127.0.0.1:8080/playback/next', { myDeviceId }, {
                 withCredentials: true
             });
             console.log('Playback control request sent successfully');
@@ -385,7 +386,7 @@ const TrackPlayer = () => {
     const handleClickPrevious = async () => {
         try {
             setTrackEnd(true);
-            const response = await axios.post('http://127.0.0.1:5000/playback/previous', { myDeviceId }, {
+            const response = await axios.post('http://127.0.0.1:8080/playback/previous', { myDeviceId }, {
                 withCredentials: true
             });
             console.log('Playback control request sent successfully');
@@ -403,7 +404,7 @@ const TrackPlayer = () => {
 
     const handleShuffle = async () => {
         try {
-            const response = await axios.post('http://127.0.0.1:5000/playback/shuffle', {
+            const response = await axios.post('http://127.0.0.1:8080/playback/shuffle', {
                 myDeviceId: deviceId,
                 shuffleState: !shuffleState // Toggle shuffle state
             }, {
@@ -423,7 +424,7 @@ const TrackPlayer = () => {
     
     const handleRepeat = async (repeatMode) => {
         try {
-            const response = await axios.post('http://127.0.0.1:5000/playback/repeat', {
+            const response = await axios.post('http://127.0.0.1:8080/playback/repeat', {
                 myDeviceId: deviceId, // Assuming deviceId is a simple string or number
                 repeatState: repeatMode
             }, {
@@ -464,7 +465,7 @@ const TrackPlayer = () => {
 
     const handleAddRecentTrack = async () => {
         try {
-            const response = await axios.post('http://127.0.0.1:5000/personal/recent/tracks', {
+            const response = await axios.post('http://127.0.0.1:8080/personal/recent/tracks', {
                 'spotify_id' : isPlayingTrack.spotify_id,
                 'played_at' : Date.now()
             }, {

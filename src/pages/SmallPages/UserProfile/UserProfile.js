@@ -10,7 +10,8 @@ import { ProfilePlaylist } from '../../../components/PersonalPlaylists/PersonalP
 import PayPalButton from '../../../components/PaypalButton/PaypalButton';
 import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCrown } from '@fortawesome/free-solid-svg-icons';
+import { faCircleHalfStroke, faCrown, faDoorOpen, faGem } from '@fortawesome/free-solid-svg-icons';
+import { faBots } from '@fortawesome/free-brands-svg-icons';
 
 const UserProfile = () => {
     const [profileData, setProfileData] = useState();
@@ -53,7 +54,7 @@ const UserProfile = () => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:5000/profile', { withCredentials: true });
+                const response = await axios.get('http://127.0.0.1:8080/profile', { withCredentials: true });
                 setProfileData(response.data.profile);
                 setIsLoading(false);
             } catch (error) {
@@ -95,8 +96,27 @@ const UserProfile = () => {
                             contentLabel="Standard Modal"
                             style={modalStyles}
                         >
-                            <h1 style={{color:'#fff'}}>Standard Modal</h1>
-                            <p style={{color:'#fff'}}>This is a standard modal</p>
+                            <div className='modal-payment-header'>
+                                <h1 className='modal-payment-title'>Update to Pyppo Premium</h1>
+                                <FontAwesomeIcon icon={faGem} className='modal-payment-icon'/>
+                            </div>
+
+                            <ul className='offers-container'>
+                                <li className='offer' style={{color:'#fff'}}>
+                                    <FontAwesomeIcon icon={faCircleHalfStroke} className='payment-modal-icon'/>
+                                    <span>Dark Mode / Light Mode switch</span>
+                                </li>
+
+                                <li className='offer' style={{color:'#fff'}}>
+                                    <FontAwesomeIcon icon={faDoorOpen} className='payment-modal-icon'/>
+                                    <span>Pyppo Room Live</span>
+                                </li>
+
+                                <li className='offer' style={{color:'#fff'}}>
+                                    <FontAwesomeIcon icon={faBots} className='payment-modal-icon'/>
+                                    <span>Chat bot in pyppo room</span>
+                                </li>
+                            </ul>
                             <PayPalButton />
                         </Modal>
                         

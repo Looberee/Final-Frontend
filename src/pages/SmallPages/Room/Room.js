@@ -5,11 +5,13 @@ import './Room.css';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { useRoom } from '../../../contexts/RoomContext';
 
 const socket = io('http://127.0.0.1:5001', { withCredentials: true });
 
 const Room = () => {
     const [allRooms, setAllRooms] = useState([]);
+    const { toggleRoom, setToggleRoom } = useRoom();
 
     useEffect(() => {
         const fetchAllRoom = async () => {
@@ -23,17 +25,10 @@ const Room = () => {
         }
 
         fetchAllRoom();
-    }, [])
+    }, [toggleRoom])
 
     const handleJoinRoom = (room) => {
-        if (room.room_type === 'private') {
-            const password = prompt('Enter password:');
-            if (password) {
-                console.log("This room has a password, and the password input is:", password);
-                socket.emit('join', { room_id: room.id, password });
-            }
-        }
-
+        socket.emit('join', { room_id: room.id});
     };
     
     

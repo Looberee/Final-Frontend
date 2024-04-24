@@ -54,3 +54,19 @@
     transition: 0.5s ease;
     margin-top: 20px;
 }
+
+.room-modal-function-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.room-modal-function-button {
+    background-color: #f5a623;
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.5s ease;
+    margin-top: 20px;
+}

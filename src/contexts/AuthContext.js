@@ -68,7 +68,7 @@ useEffect(() => {
 
 const refreshTokens = async () => {
     try {
-        const response = await axios.post('http://127.0.0.1:5000/refresh', {}, {
+        const response = await axios.post('http://127.0.0.1:8080/refresh', {}, {
             withCredentials: true, // This will send the HttpOnly cookie
         });
         console.log("Successfully refreshed tokens: ", response.data.refresh);
@@ -87,7 +87,7 @@ const login = (token) => {
 const logout = async () => {
     setExpiresAt(null);
     try {
-        const response = await axios.get('http://127.0.0.1:5000/logout', {
+        const response = await axios.get('http://127.0.0.1:8080/logout', {
             withCredentials: true // This will send the HttpOnly cookie
         });
         console.log('Logout successful:', response.data);
@@ -99,7 +99,7 @@ const logout = async () => {
 
 const isAuthenticated = async () => {
     try {
-        const response = await axios.get('http://127.0.0.1:5000/check-auth', {
+        const response = await axios.get('http://127.0.0.1:8080/check-auth', {
             withCredentials: true
         });
         return response.data.isAuthenticated;

@@ -19,9 +19,11 @@ const Home = () => {
         const fetchHomeTrack = async () =>
         { 
             try {
-                const response = await axios.get('http://127.0.0.1:5000/')
+                const response = await axios.get('http://localhost:8080/home')
 
                 setDatabaseTracks(response.data.tracks);
+                console.log(response.data.tracks)
+                console.log(response.data.ncs_tracks)
                 setNcsTracks(response.data.ncs_tracks);
                 setElectronicTracks(response.data.electronic_tracks);
                 setRelaxTracks(response.data.relax_tracks);

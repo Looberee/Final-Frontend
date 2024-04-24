@@ -16,7 +16,7 @@ const ArtistDetail = () => {
     useEffect(() => {
         const fetchArtistDetail = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:5000/artist/${artist_id}`);
+                const response = await axios.get(`http://127.0.0.1:8080/artist/${artist_id}`);
                 console.log(response.data);
                 setArtist(response.data);
             } 
@@ -31,7 +31,7 @@ const ArtistDetail = () => {
     useEffect(() => {
         const fetchArtistTopTracks = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:5000/artist/${artist_id}/top-tracks`);
+                const response = await axios.get(`http://127.0.0.1:8080/artist/${artist_id}/top-tracks`);
                 console.log(response.data);
                 setArtistTopTracks(response.data);
             }
@@ -44,9 +44,66 @@ const ArtistDetail = () => {
         fetchArtistTopTracks();
     },[])
 
-    const handleAddFavouriteArtist = (artist) => {
+    useEffect(() => {
+        const checkFavouriteArtist = async () => {
+            try {
+                const response = await axios.post('http://127.0.0.1:8080/personal/favourites/artist/check', {
+                    "artist_id": artist_id
+                }
+                , { withCredentials: true })
+                setIsFavouriteArtist(response.data.favourite);
+                console.log("Favourited: ", response.data);
+                
+            }
+            catch (error) {
+                console.error('Error checking favourite artist:', error);
+            }
+        }
+
+        checkFavouriteArtist();
+    },[isFavouriteArtist])
+
+    const handleToggleFavouriteArtist = () => {
         console.log(isFavouriteArtist)
-        setIsFavouriteArtist(!isFavouriteArtist);
+        if (!isFavouriteArtist)
+        {
+            handleAddFavouriteArtist();
+            setIsFavouriteArtist(true);
+        }
+        else {
+            handleRemoveFavoriteArtist();
+            setIsFavouriteArtist(false);
+        }
+    }
+
+    const handleAddFavouriteArtist = async () => {
+        try {
+            const response = await axios.post(
+                'http://127.0.0.1:8080/personal/favourites/artist', 
+                {"artist_id": artist_id}, 
+                {withCredentials: true}
+            )
+            console.log(response.data.message)
+        }
+        catch (error) {
+            console.error('Error adding favourite artist:', error);
+        }
+    }
+
+    const handleRemoveFavoriteArtist = async () => {
+        try {
+            const response = await axios.delete(
+                'http://127.0.0.1:8080/personal/favourites/artist',
+                {
+                    data: { "artist_id" : artist_id },
+                    withCredentials : true
+                }
+            )
+            console.log(response.data.message)
+        }
+        catch (err) {
+            console.error('Error removing favourite artist:', err);
+        };
     }
 
     return (
@@ -64,7 +121,7 @@ const ArtistDetail = () => {
 
                     <div className='artist-status-container'>
                         <h3 className='artist-followers'>{artist ? artist.followers : "0"} followers</h3>
-                        <FontAwesomeIcon className={`heart-icon ${isFavouriteArtist ? 'active' : ''}`}  icon={faHeart} onClick={() => handleAddFavouriteArtist(artist)}/>
+                        <FontAwesomeIcon className={`heart-icon ${isFavouriteArtist ? 'active' : ''}`}  icon={faHeart} onClick={handleToggleFavouriteArtist}/>
                     </div>
                 </div>               
             </div>

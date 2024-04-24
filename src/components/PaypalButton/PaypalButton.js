@@ -47,7 +47,7 @@ const PayPalButton = () => {
                 console.log('Money transferred successfully:', transferResponse);
                 console.log("Transfered Object: ", captureResponse)
 
-                axios.post('http://127.0.0.1:5000/paypal/payment/capture', captureResponse, {withCredentials: true})
+                axios.post('http://127.0.0.1:8080/paypal/payment/capture', captureResponse, {withCredentials: true})
                 .then(response => {
                     console.log('Payment captured successfully:', response.data);
                 })

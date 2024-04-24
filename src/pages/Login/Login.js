@@ -24,7 +24,7 @@ const Login = ({onLogin}) => {
         
         try {
             // Handle Login events
-            const response = await axios.post('http://127.0.0.1:5000/login', {
+            const response = await axios.post('http://127.0.0.1:8080/login', {
                 username,
                 password
             }, {withCredentials: true});  // Make sure to include this to send cookies
@@ -68,6 +68,16 @@ const Login = ({onLogin}) => {
 
     const handleBackToHome = () => {
         navigate('/');
+    }
+
+    const handleLoginWithSpotify = async () => {
+        try {
+            const res = await axios.get('http://127.0.0.1:8080/spotify/user-login')
+
+        }
+        catch (error) {
+            console.log(error.message);
+        }
     }
 
 
@@ -122,13 +132,9 @@ const Login = ({onLogin}) => {
                             </div>
 
                             <div className="flex-c-m">
-                                <a href="#" className="login100-social-item bg2">
+                                <div className="login100-social-item bg2" style={{cursor:'pointer'}} onClick={handleLoginWithSpotify}>
                                     <FontAwesomeIcon icon={faSpotify} />
-                                </a>
-
-                                <a href="#" className="login100-social-item bg3">
-                                    <FontAwesomeIcon icon={faGoogle} />
-                                </a>
+                                </div>
                             </div>
                         </form>
                     </div>

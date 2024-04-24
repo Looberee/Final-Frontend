@@ -177,7 +177,7 @@
 
 .room-content
 {
-    width: calc(100vw - 270px - 290px);
+    width: calc(100vw - 270px );
     min-height: 90%;
     border-radius: 10px;
     margin: 20px;

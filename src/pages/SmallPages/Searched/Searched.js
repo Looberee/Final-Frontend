@@ -14,6 +14,7 @@ import UnauthorizedModal from "../../../components/Modal/AlertModals/Unauthorize
 import { useAuth } from "../../../contexts/AuthContext";
 import { useModal } from "../../../contexts/ModalContext";
 import LoadingSpinner from "../../../components/LoadingSpinner/LoadingSpinner"; // Import loading spinner component
+import { Artist } from "../Artists/Artists";
 
 const modalStyles = {
     content: {
@@ -90,7 +91,7 @@ const Dropdown = ({ track }) => {
     
         // Send a POST request to the Flask route using Axios
         try {
-            const response = await axios.post(`http://127.0.0.1:5000/personal/playlists/${playlistId}/track/${track.spotify_id}`, data, {
+            const response = await axios.post(`http://127.0.0.1:8080/personal/playlists/${playlistId}/track/${track.spotify_id}`, data, {
                 withCredentials: true
             });
             console.log('Response:', response.data);
@@ -111,7 +112,7 @@ const Dropdown = ({ track }) => {
     const handleAddToFavourites = async (track) => {
         try
         {
-            const response = await axios.post('http://127.0.0.1:5000/personal/favourites/track', 
+            const response = await axios.post('http://127.0.0.1:8080/personal/favourites/track', 
             { 'spotify_id' : track.spotify_id }, 
             { withCredentials : true });
             console.log('Message : ', response.data.message)
@@ -152,6 +153,7 @@ const Dropdown = ({ track }) => {
 
 const Searched = ({ searchValue }) => {
     const [searchResults, setSearchResults] = useState([]);
+    const [artistResults, setArtistResults] = useState([]);
     const [loading, setLoading] = useState(false); // Add loading state
     const [error, setError] = useState(null);
     const [hoveredTrack, setHoveredTrack] = useState(null);
@@ -168,10 +170,12 @@ const Searched = ({ searchValue }) => {
                 setLoading(true); // Set loading to true when fetching data
                 if (searchValue) {
                     const spotifyAccessToken = localStorage.getItem('spotify_token');
-                    const response = await axios.get(`http://127.0.0.1:5000/search?query=${searchValue}`, {
+                    const response = await axios.get(`http://127.0.0.1:8080/search?query=${searchValue}`, {
                         withCredentials: true
                 });
                     setSearchResults(response.data.search_results);
+                    setArtistResults(response.data.artists_results);
+                    console.log(response.data.artists_results)
                 } else {
                     setSearchResults([]);
                 }
@@ -257,6 +261,9 @@ const Searched = ({ searchValue }) => {
             )}
 
             <UnauthorizedModal />
+
+            <Artist title="Artists" genre="Artist" fetched_artists={artistResults} />
+
         </div>
     );
 };

@@ -90,7 +90,7 @@ const Dropdown = ({ track }) => {
     
         // Send a POST request to the Flask route using Axios
         try {
-            const response = await axios.post(`http://127.0.0.1:5000/personal/playlists/${playlistId}/track/${track.spotify_id}`, data, {
+            const response = await axios.post(`http://127.0.0.1:8080/personal/playlists/${playlistId}/track/${track.spotify_id}`, data, {
                 withCredentials: true
             });
             console.log('Response:', response.data);
@@ -111,7 +111,7 @@ const Dropdown = ({ track }) => {
     const handleAddToFavourites = async (track) => {
         try
         {
-            const response = await axios.post('http://127.0.0.1:5000/personal/favourites/track', 
+            const response = await axios.post('http://127.0.0.1:8080/personal/favourites/track', 
             { 'spotify_id' : track.spotify_id }, 
             { withCredentials : true });
             console.log('Message : ', response.data.message)
@@ -209,7 +209,7 @@ const Albums = ({ title, tracks }) => {
                         onDoubleClick={() => handleTrackSelected(track)}
                         >
                         <div className="searched-cover">
-                            <img className="searched-track-image" src={track.spotify_image_url} loading="lazy" key={`${track.id}-${imageKey}`} onLoad={generateImageKey}/>
+                            <img className="searched-track-image" src={track.spotify_image_url ? track.spotify_image_url : track.cloudinary_img_url} loading="lazy" key={`${track.id}-${imageKey}`} onLoad={generateImageKey}/>
                             {hoveredTrack === index && (
                                 <div className="play-button" onClick={() => handleTrackSelected(track)}>
                                     <FontAwesomeIcon icon={faPlay} className="searched-track-play" />

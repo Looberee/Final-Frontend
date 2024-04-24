@@ -16,7 +16,7 @@ const Register = () => {
         event.preventDefault();
 
         try {
-            const response = await axios.post('http://127.0.0.1:5000/register', {
+            const response = await axios.post('http://127.0.0.1:8080/register', {
                 username,
                 email,
                 password,

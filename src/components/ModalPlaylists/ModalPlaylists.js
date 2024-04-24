@@ -14,7 +14,7 @@ const ModalPlaylists = ({ onAddToPlaylist }) => {
     const fetchPlaylists = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get('http://127.0.0.1:5000/personal/playlists', {
+            const response = await axios.get('http://127.0.0.1:8080/personal/playlists', {
                 withCredentials: true
             });
             setData(response.data);
@@ -33,7 +33,7 @@ const ModalPlaylists = ({ onAddToPlaylist }) => {
         try {
             const token = localStorage.getItem('token');
             await axios.post(
-                'http://localhost:5000/personal/playlists',
+                'http://localhost:8080/personal/playlists',
                 {},
                 {
                     withCredentials: true
