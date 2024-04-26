@@ -10,6 +10,7 @@ import { useRecentTrack } from "../../../contexts/RecentTrackContext";
 import { useTrack } from "../../../contexts/TrackContext";
 import { useModal } from "../../../contexts/ModalContext";
 import EditPlaylistModal from "../../../components/Modal/StandardModals/EditPlaylistModal";
+import toast from "react-hot-toast";
 
 const TrackRow = ({ track, trackOrder, playlist_encode_id }) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -85,8 +86,10 @@ const TrackRow = ({ track, trackOrder, playlist_encode_id }) => {
             );
             console.log('Track deleted successfully:', response.data);
             togglePlaylist();
+            toast.success("The track has been removed from the current playlist!")
         } catch (error) {
             console.error('Error deleting track:', error);
+            toast.error("Failed to remove the track from the current playlist!")
         }
     };
 
@@ -97,10 +100,12 @@ const TrackRow = ({ track, trackOrder, playlist_encode_id }) => {
             { 'spotify_id' : track.spotify_id }, 
             { withCredentials : true });
             console.log('Message : ', response.data.message)
+            toast.success("The track has been added to the favorite list!")
         }
         catch (error)
         {
             console.error('Failed to add track to favourites:', error);
+            toast.error("Failed to add track to favourites list!")
         }
     }
 
@@ -111,9 +116,11 @@ const TrackRow = ({ track, trackOrder, playlist_encode_id }) => {
                 withCredentials: true
             });
             console.log('Message : ', response.data.message)
+            toast.success("The track has been removed from the favorite list!")
         }
         catch (err) {
             console.error('Failed to remove track from favourites:', err)
+            toast.error("Failed to remove track from favourites list!")
         }
     }
 
@@ -270,6 +277,7 @@ const UserPlaylist = ({onTrackSelected}) => {
             setPlaylistName(name); // Update the local state with the new name
             setIsEditModalOpen(false);
             togglePlaylist();
+            toast.success("Playlist name updated successfully!")
         } catch (error) {
             console.error('Error updating playlist name:', error);
         }
@@ -288,6 +296,7 @@ const UserPlaylist = ({onTrackSelected}) => {
             console.log('Playlist deleted successfully:', response.data);
             setIsDeleteModalOpen(false);
             togglePlaylist();
+            toast.success("Playlist deleted successfully!")
         } catch (error) {
             console.error('Error deleting playlist:', error);
         }

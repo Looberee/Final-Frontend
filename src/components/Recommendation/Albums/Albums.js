@@ -14,6 +14,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 import { useModal } from "../../../contexts/ModalContext";
 import UnauthorizedModal from "../../Modal/AlertModals/UnauthorizedModal";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
+import { toast, Toaster } from 'react-hot-toast';
 
 const modalStyles = {
     content: {
@@ -30,7 +31,7 @@ const modalStyles = {
     padding: '20px'
     },
     overlay: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.2)',
     zIndex: '1000'
     }
 };
@@ -96,15 +97,20 @@ const Dropdown = ({ track }) => {
             console.log('Response:', response.data);
             togglePlaylist();
             setIsModalOpen(false);
+            toast.success("A track has been added to your playlist!")
         } catch (error) {
             console.error('Error:', error);
-            // Handle error if needed
+            if (error.response && error.response.status === 400) {
+                // If the status is 400, display a toast
+                toast.error("You are adding the same track in the same playlist!");
+            }
         }
     };
 
     const handleAddToWaitingList = (track) => {
         console.log("Track will be added to waiting list: ", track);
         addToWaitingList(track);
+        toast.success(`${track.name} has been added to the waiting list`);
 
     }
 
@@ -146,6 +152,7 @@ const Dropdown = ({ track }) => {
                 style={modalStyles} // Accessible label for screen readers
             >
                 <ModalPlaylists onAddToPlaylist={handleGetPlaylist}/>
+                
             </Modal>
         </div>
     );
@@ -220,7 +227,7 @@ const Albums = ({ title, tracks }) => {
                         <div className="searched-track-info">
                             <h3>{track.name}</h3>
                             <p>{track.artists}</p>
-                            {hoveredTrack === index && (
+                            {hoveredTrack === index && alreadyAuth && (
                                 <div className="setting-button">
                                     <Dropdown track={track} isOpen={isOpen} setIsOpen={setIsOpen}/>
                                 </div>
@@ -232,6 +239,7 @@ const Albums = ({ title, tracks }) => {
             </ul>
 
             <UnauthorizedModal />
+
         </div>
     );
 };

@@ -5,6 +5,8 @@ import axios from 'axios';
 import { faLock, faMailBulk, faUser } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { toast, Toaster } from 'react-hot-toast';
+
 const Register = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -14,6 +16,23 @@ const Register = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        // if (!username) {
+        //     toast.error('Username is missing');
+        //     return;
+        // }
+        // if (!email) {
+        //     toast.error('Email is missing');
+        //     return;
+        // }
+        // if (!password) {
+        //     toast.error('Password is missing');
+        //     return;
+        // }
+        // if (!confirmPassword) {
+        //     toast.error('Confirm password is missing');
+        //     return;
+        // }
 
         try {
             const response = await axios.post('http://127.0.0.1:8080/register', {
@@ -29,9 +48,15 @@ const Register = () => {
             setEmail('');
             setPassword('');
             setConfirmPassword('');
+
+            toast.success("Succesfully registered! Please login to continue")
+            setTimeout(() => {
+                navigate('/login');
+            },[3000]);
+
         } catch (error) {
             console.error('Registration failed:', error);
-            // Handle registration failure, e.g., show error message to user
+            toast.error('Registration failed! Please try again');
         }
 
         console.log(username, email, password, confirmPassword);
@@ -91,7 +116,7 @@ const Register = () => {
                                 </button>
                             </div>
                         </div>
-
+                    <Toaster />
                     </form>
                 </div>
             </div>

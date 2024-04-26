@@ -64,7 +64,7 @@ export const TrackProvider = ({ children }) => {
             handleCheckFavourite();
         }
 
-    },[pyppoTrack])
+    },[pyppoTrack, isTrackFavourite])
 
     const addToWaitingList = (newTrack) => {
         setWaitingList([...waitingList, newTrack]);

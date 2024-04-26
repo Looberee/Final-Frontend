@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import jwtDecode from 'jwt-decode'; // Library for decoding JWT tokens
 import axios from 'axios';
+import { toast, Toaster } from 'react-hot-toast'
 
 const AuthContext = createContext();
 
@@ -91,7 +92,11 @@ const logout = async () => {
             withCredentials: true // This will send the HttpOnly cookie
         });
         console.log('Logout successful:', response.data);
-        window.location.pathname = '/home';
+        toast.success('Logout sucessfully!')
+        setTimeout(() => {
+            window.location.pathname = '/home';
+        },[2000])
+
     } catch (error) {
         console.error('Error logging out:', error);
     }

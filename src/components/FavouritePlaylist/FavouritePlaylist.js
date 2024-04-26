@@ -13,7 +13,7 @@ const FavouriteTrackRow = ({ track, trackOrder }) => {
     const [isPlayingActive, setIsPlayingActive] = useState(false);
     const [isFavourited, setIsFavourited] = useState(false);
     const { toggleRecentTrack } = useRecentTrack();
-    const { setPyppoTrack, setIsPlaying } = useTrack();
+    const { setPyppoTrack, setIsPlaying, isTrackFavourite } = useTrack();
     const [profile, setProfile] = useState();
 
     const toggleFavourites = () => {
@@ -113,6 +113,7 @@ const FavouritePlaylist = ({onTrackSelected}) => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [playlistTracks, setPlaylistTracks] = useState([]);
     const { encode_id } = useParams();
+    const { isTrackFavourite } = useTrack()
 
 
     useEffect(() => {
@@ -130,7 +131,7 @@ const FavouritePlaylist = ({onTrackSelected}) => {
         };
     
         fetchPlaylistTracks();
-    }, []);
+    }, [isTrackFavourite]);
 
 
     const modalStyles = {

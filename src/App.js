@@ -33,10 +33,11 @@ import Cookies from 'js-cookie';
 import { useModal } from './contexts/ModalContext';
 import ArtistDetail from './pages/SmallPages/ArtistDetail/ArtistDetail';
 
-import io from 'socket.io-client';
+import io, { Socket } from 'socket.io-client';
 import { ModalProvider } from './contexts/ModalContext';
 import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
 import SpecificRoom from './pages/SmallPages/Room/SpecificRoom';
+import axios from 'axios';
 
 
 const App = () => {
@@ -98,15 +99,33 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout}) => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const socket = io('http://127.0.0.1:8080');
+    const checkScope = async () => {
+        try {
+            const response = await axios.get('https://api.spotify.com/v1/melody/v1/check_scope?scope=web-playback', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('spotify_token')}`
+                }
+            });
+        } catch (error) {
+            if (error.response && error.response.status === 401) {
+                try {
+                    const response = await axios.post('http://127.0.0.1:8080/spotify/refresh');
+                    if (localStorage.getItem('spotify_token') !== response.data.spotify_access_token) {
+                      console.log(response.data.message);
+                      console.log(response.data.spotify_access_token)
+                      localStorage.setItem('spotify_token', response.data.spotify_access_token);
+                    }
 
-    socket.on('spotify_token_refreshed', (data) => {
-        localStorage.removeItem('spotify_token');
-        console.log("Reseting!")
+                }
+                catch (err) {
+                    console.error('Error refreshing spotify token:', err);
+                }
+            }
+        }
+    };
 
-        localStorage.setItem('spotify_token', data.spotify_access_token);
-    });
-}, []);
+    checkScope();
+}, [pyppoTrack]);
 
   useEffect(() => {
     console.log(openModalId);

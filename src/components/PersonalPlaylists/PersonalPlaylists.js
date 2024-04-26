@@ -6,6 +6,8 @@ import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { Link } from "react-router-dom"; // Import Link from React Router
 import { usePlaylist } from "../../contexts/PlaylistContext";
 
+import { toast, Toaster } from 'react-hot-toast';
+
 
 export const ProfilePlaylist = () => {
     const [playlists, setPlaylists] = useState([]);
@@ -51,7 +53,7 @@ const PersonalPlaylists = () => {
     const [data, setData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { playlistState } = usePlaylist();
+    const { playlistState, togglePlaylist } = usePlaylist();
     const [ isTextActive , setIsTextActive] = useState(false);
 
     const fetchPlaylists = async () => {
@@ -73,15 +75,15 @@ const PersonalPlaylists = () => {
 
     const handleCreatePlaylist = async () => {
         try {
-            const token = localStorage.getItem('token');
-            await axios.post(
+            const response = await axios.post(
                 'http://127.0.0.1:8080/personal/playlists',
                 {},
                 {
                     withCredentials: true
                 }
             );
-            fetchPlaylists();
+            toast.success(`${response.data.playlist_name} has been created succesfully!`)
+            togglePlaylist();
         } catch (error) {
             console.error('Error creating playlist:', error);
         }
@@ -115,6 +117,7 @@ const PersonalPlaylists = () => {
                 {playlistItems}
                 <span className='create-playlist' onClick={handleCreatePlaylist}>+Create new playlist</span>
             </ul>
+            <Toaster />
         </div>
     );
 };

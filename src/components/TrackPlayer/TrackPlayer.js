@@ -6,6 +6,7 @@ import './TrackPlayer.css';
 import { useTrack } from '../../contexts/TrackContext';
 import { useRecentTrack } from '../../contexts/RecentTrackContext';
 import { useAuth } from '../../contexts/AuthContext';
+import toast from 'react-hot-toast';
 
 const TrackPlayer = () => {
     const { accessToken } = useAuth();
@@ -237,6 +238,7 @@ const TrackPlayer = () => {
             { 'spotify_id' : track.spotify_id }, 
             { withCredentials : true });
             console.log('Message : ', response.data.message)
+            toast.success("The current track has been added to the favorite list")
         }
         catch (error)
         {
@@ -251,6 +253,7 @@ const TrackPlayer = () => {
                 withCredentials: true
             });
             console.log('Message : ', response.data.message)
+            toast.success("Remove the current track from the favorite list sucessfully!")
         }
         catch (err) {
             console.error('Failed to remove track from favourites:', err)
@@ -377,7 +380,7 @@ const TrackPlayer = () => {
             setIsPlayingTrack(response.data.nextTrack);
             setPyppoTrack(response.data.nextTrack);
             toggleRecentTrack();
-
+            toast.success("The next track has been played!")
         } catch (error) {
             console.error('Failed to send playback control request:', error);
         }     
@@ -396,6 +399,7 @@ const TrackPlayer = () => {
             setIsPlayingTrack(response.data.previousTrack);
             setPyppoTrack(response.data.previousTrack);
             toggleRecentTrack();
+            toast.success("The previous track has been played!")
 
         } catch (error) {
             console.error('Failed to send playback control request:', error);
@@ -414,6 +418,7 @@ const TrackPlayer = () => {
             if (success) {
                 console.log(message);
                 setShuffleState(!shuffleState); // Update local state after successful shuffle
+                toast.success("Shuffle the current track")
             } else {
                 console.error('Failed to toggle shuffle:', message);
             }
@@ -452,8 +457,10 @@ const TrackPlayer = () => {
             setRepeatActive(!repeatActive);
             if (repeatActive) {
                 handleRepeat('off');
+                toast.success("The current track will not be repeated")
             } else {
                 handleRepeat('track');
+                toast.success("Repeat the current track")
             }
         }
     }
@@ -529,7 +536,6 @@ const TrackPlayer = () => {
             </div>
 
             <div className="settings-icon">
-                <FontAwesomeIcon icon={faVolumeUp} className="track-player-volume" />
                 <FontAwesomeIcon
                     icon={faHeart}
                     className={`track-player-favourite ${isTrackFavourite && pyppoTrack != null ? 'active' : ''}`}

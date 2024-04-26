@@ -10,6 +10,8 @@ import { useRoom } from '../../contexts/RoomContext';
 import { Link } from 'react-router-dom';
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 
+import { toast, Toaster } from 'react-hot-toast';
+
 const Login = ({onLogin}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -36,6 +38,7 @@ const Login = ({onLogin}) => {
                 onLogin();
             } else {
                 console.log('Login failed');
+
             }
 
             if (response.data.access_token && response.data.refresh_token) {
@@ -48,9 +51,11 @@ const Login = ({onLogin}) => {
             {
                 localStorage.setItem('spotify_token', response.data.spotify_token);
             }
+            toast.success('Logged in successfully');
     
         } catch (error) {
             console.log(error.message);
+            toast.error('Wrong username or password!');
         }
     };
     
@@ -61,7 +66,9 @@ const Login = ({onLogin}) => {
                 navigate('/room')
             }
             else {
-                navigate('/');
+                setTimeout(() => {
+                    navigate('/');
+                }, 2000); // Wait for 2 seconds before navigating
             }
         }
     }, [isLoggedIn, navigate]);
@@ -122,6 +129,7 @@ const Login = ({onLogin}) => {
                                     <button className="login100-form-btn">
                                         Login
                                     </button>
+                                    <Toaster />
                                 </div>
                             </div>
 

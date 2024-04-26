@@ -13,7 +13,7 @@ const WaitingList = () => {
         <div>
             <h1 className='list-title'>Waiting List</h1>
 
-            <ul>
+            <ul className='waiting-list-container'>
                 {waitingList.map((track, index) => (
                     <li key={index} className="track">
                         <div className="track-cover">
