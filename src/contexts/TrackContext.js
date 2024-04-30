@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 
 const TrackContext = createContext();
@@ -31,7 +32,7 @@ export const TrackProvider = ({ children }) => {
                 try {
                     console.log('Check Favourite Track:', pyppoTrack.id);
                     const response = await axios.post('http://127.0.0.1:8080/personal/favourites/track/check',{
-                        'track_id' : pyppoTrack.id
+                        'spotify_id' : pyppoTrack.spotify_id
                     },{
                         withCredentials : true
                     })
@@ -59,7 +60,7 @@ export const TrackProvider = ({ children }) => {
             //     }
             // }
 
-        if (pyppoTrack)
+        if (pyppoTrack || isTrackFavourite)
         {
             handleCheckFavourite();
         }

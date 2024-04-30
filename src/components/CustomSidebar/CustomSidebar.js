@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './CustomSidebar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faMusic, faUser, faHeadphonesSimple, faDoorOpen, faSun, faMoon, faRightFromBracket, faBookmark, faMicrophoneLines, faBuildingUser } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faMusic, faUser, faHeadphonesSimple, faDoorOpen, faSun, faMoon, faRightFromBracket, faBookmark, faMicrophoneLines, faBuildingUser, faUsers } from '@fortawesome/free-solid-svg-icons';
 import PersonalPlaylists from '../PersonalPlaylists/PersonalPlaylists';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -18,6 +18,7 @@ import { useDarkTheme } from '../../contexts/DarkThemeContext';
 
 const CustomSidebar = () => {
     const [storedPlaylists, setStoredPlaylists] = useState([]);
+    const [fiveFavouriteArtists, setFiveFavouriteArtists] = useState([]);
     const [recentTracks, setRecentTracks] = useState([]);
     const [activeItem, setActiveItem] = useState('home'); // Initialize activeItem with 'home'
     const [activeExtraItem, setActiveExtraItem] = useState('moon');
@@ -136,6 +137,22 @@ const CustomSidebar = () => {
     },[])
 
     useEffect(() => {
+        const handleGetArtists = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8080/personal/favourites/artists/random', { withCredentials : true})
+                console.log(response.data.favorite_artists)
+                setFiveFavouriteArtists(response.data.favorite_artists);
+            }
+            catch (err) {
+                console.error('Error fetching favourite artists:', err);
+            }
+            
+        }
+
+        handleGetArtists();
+    },[])
+
+    useEffect(() => {
         // Fetch recent tracks when component mounts
         const fetchRecentTracks = async () => {
             try {
@@ -170,6 +187,8 @@ const CustomSidebar = () => {
         setPyppoTrack(track);
         toggleRecentTrack();
     }
+
+
 
     return (
         <div className='sidebar'>
@@ -259,6 +278,32 @@ const CustomSidebar = () => {
                                         <span className='recent-track-artist'>{track.artists.join(', ')}</span>
                                     </div>
                                 </a>
+                            </li>
+                        ))}
+                    </ul>
+                </div> : <UnauthorizedModal />}
+
+                { alreadyAuth ?    
+                <div className='recently-played-track'>
+                    <div className='title'>
+                        <FontAwesomeIcon className='' icon={faUsers} />
+                        <span>Favourite artists</span>
+                    </div>
+
+                    <ul className='recent-tracks'>
+                        {fiveFavouriteArtists.map((artist, index) => (
+                            <li key={index} className='recent-track-container'>
+                                <Link 
+                                    to={`/artist/${artist.artist_id}`} 
+                                    className='recent-track-link'
+                                    key={`/artist/${artist.artist_id}`} // Add this line
+                                >
+                                    <img src={artist.spotify_artist_image_url} alt={artist.name} />
+
+                                    <div className='recent-track-info'>
+                                        <span className='recent-track-name'>{artist.name}</span>
+                                    </div>
+                                </Link>
                             </li>
                         ))}
                     </ul>

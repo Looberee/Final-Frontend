@@ -12,7 +12,7 @@ import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { toast, Toaster } from 'react-hot-toast';
 
-const Login = ({onLogin}) => {
+const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -35,21 +35,21 @@ const Login = ({onLogin}) => {
                 console.log('Login successful');
                 setIsLoggedIn(true);
                 setAlreadyAuth(true);
-                onLogin();
             } else {
                 console.log('Login failed');
-
-            }
-
-            if (response.data.access_token && response.data.refresh_token) {
-                setAccessToken(response.data.access_token);
-                setRefreshToken(response.data.refresh_token);
-                login(response.data.access_token);
             }
 
             if (response.data.spotify_token)
             {
                 localStorage.setItem('spotify_token', response.data.spotify_token);
+
+
+            }
+            if (response.data.spotify_expire_at)
+            {
+                localStorage.setItem('spotify_expires_at', response.data.spotify_expire_at);
+                const spotifyExpireAt = new Date(response.data.spotify_expire_at * 1000);
+                console.log(spotifyExpireAt);
             }
             toast.success('Logged in successfully');
     

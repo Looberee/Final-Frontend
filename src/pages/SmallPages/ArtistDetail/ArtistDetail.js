@@ -26,7 +26,7 @@ const ArtistDetail = () => {
         }
 
         fetchArtistDetail();
-    },[isFavouriteArtist]);
+    },[isFavouriteArtist, artist_id]);
 
     useEffect(() => {
         const fetchArtistTopTracks = async () => {
@@ -42,7 +42,7 @@ const ArtistDetail = () => {
 
 
         fetchArtistTopTracks();
-    },[])
+    },[artist_id])
 
     useEffect(() => {
         const checkFavouriteArtist = async () => {

@@ -127,9 +127,12 @@ const TrackPlayer = () => {
     },[trackEnd, waitingList])
 
     useEffect(() => {
-        handlePlayTrackInPlayer();
-        setIsPlaying(true);
-        setAlreadyPlayed(true);
+        if (trackUri)
+        {
+            handlePlayTrackInPlayer();
+            setIsPlaying(true);
+            setAlreadyPlayed(true);
+        }
     },[trackUri])
 
     useEffect(() => {
@@ -140,10 +143,10 @@ const TrackPlayer = () => {
 
         if (isPlayingTrack === null && waitingList.length > 0 )
         {
-
             setPyppoTrack(waitingList[0]);
             setIsPlayingTrack(waitingList[0]);  
             removeFromWaitingList(waitingList[0]);
+            toggleRecentTrack();
             setTrackEnd(false); 
         }
 
@@ -239,6 +242,7 @@ const TrackPlayer = () => {
             { withCredentials : true });
             console.log('Message : ', response.data.message)
             toast.success("The current track has been added to the favorite list")
+
         }
         catch (error)
         {
@@ -262,21 +266,24 @@ const TrackPlayer = () => {
 
 
     const toggleFavourite = (track) => {
-        setIsTrackFavourite(prevState => !prevState);
         if (track)
         {
             if (!isTrackFavourite)
             {
                 handleAddToFavourites(track);
+                setIsTrackFavourite(true);
             }
             else
             {
                 handleRemoveFromFavourites(track);
+                setIsTrackFavourite(false);
             }
+
+
         }
         else
         {
-            console.log("Something wrong here")
+            toast.error("No track is playing now!")
         }
     };
 
@@ -370,17 +377,25 @@ const TrackPlayer = () => {
     const handleClickNext = async () => {
         try {
             setTrackEnd(true);
-            const response = await axios.post('http://127.0.0.1:8080/playback/next', { myDeviceId }, {
-                withCredentials: true
-            });
-            console.log('Playback control request sent successfully');
-            setTrackEnd(false);
-            setIsPlaying(true);
-            setAlreadyPlayed(true)
-            setIsPlayingTrack(response.data.nextTrack);
-            setPyppoTrack(response.data.nextTrack);
-            toggleRecentTrack();
-            toast.success("The next track has been played!")
+
+            if (waitingList.length > 0) {
+                setIsPlayingTrack(null);
+            }
+            else {
+                const response = await axios.post('http://127.0.0.1:8080/playback/next', { myDeviceId }, {
+                    withCredentials: true
+                });
+                console.log('Playback control request sent successfully');
+                setTrackEnd(false);
+                setIsPlaying(true);
+                setAlreadyPlayed(true)
+                setIsPlayingTrack(response.data.nextTrack);
+                setPyppoTrack(response.data.nextTrack);
+                toggleRecentTrack();
+                toast.success("The next track has been played!")
+            }
+
+            
         } catch (error) {
             console.error('Failed to send playback control request:', error);
         }     
@@ -538,9 +553,11 @@ const TrackPlayer = () => {
             <div className="settings-icon">
                 <FontAwesomeIcon
                     icon={faHeart}
-                    className={`track-player-favourite ${isTrackFavourite && pyppoTrack != null ? 'active' : ''}`}
+                    className={`track-player-favourite ${isTrackFavourite ? 'active' : ''}`}
+
 
                     onClick={() => toggleFavourite(isPlayingTrack)}
+                    
                 />
             </div>
         </div>

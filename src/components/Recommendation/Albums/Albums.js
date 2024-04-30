@@ -121,7 +121,7 @@ const Dropdown = ({ track }) => {
             { 'spotify_id' : track.spotify_id }, 
             { withCredentials : true });
             console.log('Message : ', response.data.message)
-            setIsTrackFavourite((pre) => !pre)
+            setIsTrackFavourite(true);
         }
         catch (error)
         {

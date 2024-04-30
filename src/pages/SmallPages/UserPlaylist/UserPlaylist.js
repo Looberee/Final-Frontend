@@ -18,7 +18,7 @@ const TrackRow = ({ track, trackOrder, playlist_encode_id }) => {
     const [isFavourited, setIsFavourited] = useState(false);
     const { playlistState, togglePlaylist } = usePlaylist();
     const { toggleRecentTrack } = useRecentTrack();
-    const { setPyppoTrack, setIsPlaying } = useTrack();
+    const { setPyppoTrack, setIsPlaying, setIsTrackFavourite, isTrackFavourite } = useTrack();
     const [profile, setProfile] = useState();
 
     useEffect(() => {
@@ -48,18 +48,18 @@ const TrackRow = ({ track, trackOrder, playlist_encode_id }) => {
         toggleRecentTrack();
     };
 
-    useEffect(() => {
-        const fetchUserProfile = async () => {
-            try {
-                const response = await axios.get('http://127.0.0.1:8080/profile', { withCredentials: true });
-                setProfile(response.data.profile);
-            } catch (error) {
-                console.error('Error fetching user profile:', error);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchUserProfile = async () => {
+    //         try {
+    //             const response = await axios.get('http://127.0.0.1:8080/profile', { withCredentials: true });
+    //             setProfile(response.data.profile);
+    //         } catch (error) {
+    //             console.error('Error fetching user profile:', error);
+    //         }
+    //     };
 
-        fetchUserProfile();
-    }, []);
+    //     fetchUserProfile();
+    // }, []);
 
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
@@ -132,10 +132,12 @@ const TrackRow = ({ track, trackOrder, playlist_encode_id }) => {
             if (!isFavourited)
             {
                 handleAddToFavourites(track);
+                setIsTrackFavourite(true);
             }
             else
             {
                 handleRemoveFromFavourites(track);
+                setIsTrackFavourite(false);
             }
         }
         else

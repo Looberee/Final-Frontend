@@ -33,19 +33,6 @@ const FavouriteTrackRow = ({ track, trackOrder }) => {
         toggleRecentTrack();
     };
 
-    useEffect(() => {
-        const fetchUserProfile = async () => {
-            try {
-                const response = await axios.get('http://127.0.0.1:8080/profile', { withCredentials: true });
-                setProfile(response.data.profile);
-            } catch (error) {
-                console.error('Error fetching user profile:', error);
-            }
-        };
-
-        fetchUserProfile();
-    }, []);
-
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = Math.floor(seconds % 60);

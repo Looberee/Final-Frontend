@@ -4,12 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import CustomSidebar from './components/CustomSidebar/CustomSidebar';
 import { DarkThemeProvider } from './contexts/DarkThemeContext';
 import Home from './pages/SmallPages/Home/Home';
-import Playlists from './components/PersonalPlaylists/PersonalPlaylists';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
-import Banner from './components/Banner/Banner';
 import Navbar from './components/Navbar/Navbar';
-import Albums from './components/Recommendation/Albums/Albums';
 import './App.css';
 import TrackPlayer from './components/TrackPlayer/TrackPlayer';
 import UserProfile from './pages/SmallPages/UserProfile/UserProfile';
@@ -20,7 +17,6 @@ import { UserProvider } from './contexts/UserContext'; // Import UserProvider
 import { RecentTrackProvider } from './contexts/RecentTrackContext';
 import { PlaylistProvider } from './contexts/PlaylistContext';
 import { AuthProvider } from './contexts/AuthContext';
-import { useAuth } from './contexts/AuthContext';
 import Genres from './pages/SmallPages/Genres/Genres';
 import GenreDetail from './pages/SmallPages/Genres/GenreDetail';
 import Tracks from './pages/SmallPages/Tracks/Tracks';
@@ -41,18 +37,6 @@ import axios from 'axios';
 
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  const token = Cookies.get('access_token_cookie');
-
-  useEffect(() => {
-    if (token) {
-      console.log('Access token: ' + token);
-    }
-    else{
-      console.log('No access token');
-    }
-  },[])
 
   useEffect(() => {
     window.process = {
@@ -60,14 +44,6 @@ const App = () => {
     };
   }, []);
 
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setIsLoggedIn(false);
-  };
 
   return (
     <DarkThemeProvider>
@@ -77,7 +53,7 @@ const App = () => {
             <TrackProvider>
               <RoomProvider>
                 <Router>
-                  <AppContent isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout}/>
+                  <AppContent />
                 </Router>
               </RoomProvider>
             </TrackProvider>
@@ -88,7 +64,7 @@ const App = () => {
   );
 };
 
-const AppContent = ({ isLoggedIn, onLogin, onLogout}) => {
+const AppContent = () => {
   const location = useLocation();
   const [searchValue, setSearchValue] = useState('');
   const isBigPage = location.pathname === '/login' || location.pathname === '/register' || /\/room\/\d+/.test(location.pathname);
@@ -106,41 +82,43 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout}) => {
                     'Authorization': `Bearer ${localStorage.getItem('spotify_token')}`
                 }
             });
+
+            // Get the current time in Unix timestamp format
+            const currentTime = Math.floor(Date.now() / 1000);
+            localStorage.setItem('current_time', currentTime)
+
+            // Get the Spotify token expiry time
+            const spotifyExpireAt = localStorage.getItem('spotify_expires_at');
+
+            const timeRemaining = (spotifyExpireAt - currentTime) / 60;
+
+            localStorage.setItem('Time remaining', timeRemaining.toFixed(2));
+
+            // If the Spotify token will expire in 5 minutes or less, refresh it
+            if (spotifyExpireAt - currentTime <= 300) {
+                const refreshResponse = await axios.post('http://127.0.0.1:8080/spotify/refresh', {withCredentials: true})
+                localStorage.setItem('spotify_token', refreshResponse.data.spotify_token)
+                localStorage.setItem('spotify_expires_at', refreshResponse.data.spotify_expires_at)
+            }
+
+            // Handle response...
         } catch (error) {
             if (error.response && error.response.status === 401) {
-                try {
-                    const response = await axios.post('http://127.0.0.1:8080/spotify/refresh');
-                    if (localStorage.getItem('spotify_token') !== response.data.spotify_access_token) {
-                      console.log(response.data.message);
-                      console.log(response.data.spotify_access_token)
-                      localStorage.setItem('spotify_token', response.data.spotify_access_token);
-                    }
-
-                }
-                catch (err) {
-                    console.error('Error refreshing spotify token:', err);
-                }
+                // Refresh the token if the request fails with a 401 status
+                const socket = io('http://127.0.0.1:8080');
+                socket.emit('refresh_spotify_token');
             }
         }
     };
 
     checkScope();
-}, [pyppoTrack]);
+}, []);
+
 
   useEffect(() => {
     console.log(openModalId);
   },[openModalId])
 
-  // const handleInputChange = (event) => {
-  //   const value = event.target.value;
-  //   setSearchValue(value);
-
-  //   // Navigate to the search page whenever the input value changes
-  //   history.push({
-  //       pathname: '/search',
-  //       search: `?query=${encodeURIComponent(value)}`,
-  //   });
-  // }
 
   useEffect(() => {
     if (searchValue) {
@@ -162,11 +140,11 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout}) => {
     <div>
       {!isBigPage && (
             <div className='App'>
-      <Navbar isLoggedIn={isLoggedIn} onLogout={onLogout} setSearchValue={setSearchValue} />
+      <Navbar  setSearchValue={setSearchValue} />
       <RecentTrackProvider>
         <PlaylistProvider>
           <div className='sidenav-content'>
-            <CustomSidebar isLoggedIn={isLoggedIn} onLogout={onLogout} />
+            <CustomSidebar/>
             <div className='content'>
               <Routes>
                 <Route path='/search' element={<Searched searchValue={searchValue} />} />
@@ -191,8 +169,8 @@ const AppContent = ({ isLoggedIn, onLogin, onLogout}) => {
       )}
 
       <Routes>
-        <Route path='/login' element={<Login onLogin={onLogin} />} />
-        <Route path='/register' element={<Register onRegister={onLogin} />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
         <Route path='/room/:id' element={<SpecificRoom />} />
       </Routes>
     </div>
