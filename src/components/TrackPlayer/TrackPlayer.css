@@ -194,4 +194,54 @@
     transform: scale(1.1);
 }
 
+@media (min-width: 768px) and (max-width: 1024px){
+    .track-player {
+        width: calc(100%);
+        gap: 30px;
+    }
+
+}
+
+@media only screen and (max-width: 768px) {
+    .track-player {
+        width: calc(100%);
+        gap: 100px;
+    }
+
+    .track-player-slider {
+        display: none;
+    }
+
+
+}
+
+@media only screen and (max-width: 480px) {
+    .track-player {
+        width: calc(100%);
+        gap: 5px;
+    }
+
+    .controls {
+        gap: 25px;
+    }
+
+    .controls .repeat, .controls .shuffle {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .track-player {
+        width: calc(100%);
+        gap: 20px;
+    }
+
+    .controls {
+        gap: 5px;
+    }
+
+    .controls .repeat, .controls .shuffle, .controls .backward, .controls .forward {
+        display: none;
+    }
+}
 

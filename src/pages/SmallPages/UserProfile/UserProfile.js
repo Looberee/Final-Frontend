@@ -10,13 +10,18 @@ import { ProfilePlaylist } from '../../../components/PersonalPlaylists/PersonalP
 import PayPalButton from '../../../components/PaypalButton/PaypalButton';
 import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleHalfStroke, faCrown, faDoorOpen, faGem } from '@fortawesome/free-solid-svg-icons';
+import { faCircleHalfStroke, faCrown, faDoorOpen, faGem, faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { faBots } from '@fortawesome/free-brands-svg-icons';
+import toast from 'react-hot-toast';
 
 const UserProfile = () => {
     const [profileData, setProfileData] = useState();
     const [isLoading, setIsLoading] = useState(true);
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [editProfileModalIsOpen, setEditProfileModalIsOpen] = useState(false);
+    const [profileName, setProfileName] = useState('');
+    const [profileEmail, setProfileEmail] = useState('');
+    const [triggerUpdate, setTriggerUpdate] = useState(false);
 
     const openPaymentModal = () => {
         setModalIsOpen(true);
@@ -25,6 +30,15 @@ const UserProfile = () => {
     const closePaymentModal = () => {
         setModalIsOpen(false);
     };
+
+    const openEditProfileModal = () => {
+        setEditProfileModalIsOpen(true);
+    }
+
+    const closeEditProfileModal = () => {
+        setEditProfileModalIsOpen(false);
+        setTriggerUpdate((pre) => !pre);
+    }
 
     const modalStyles = {
         content: {
@@ -56,6 +70,8 @@ const UserProfile = () => {
             try {
                 const response = await axios.get('http://127.0.0.1:8080/profile', { withCredentials: true });
                 setProfileData(response.data.profile);
+                setProfileName(response.data.profile.username);
+                setProfileEmail(response.data.profile.email);
                 setIsLoading(false);
             } catch (error) {
                 console.error('Error fetching user profile:', error);
@@ -63,7 +79,51 @@ const UserProfile = () => {
         };
 
         fetchUserProfile();
-    }, []);
+    }, [triggerUpdate]);
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+        // Validation check
+        if (!profileName) {
+            toast.error('Name cannot be empty');
+            return;
+        }
+
+        if (!profileEmail) {
+            toast.error('Email cannot be empty');
+            return;
+        }
+
+        if (!emailRegex.test(profileEmail)) { 
+            toast.error('Please enter a valid email');
+            return;
+        }
+    
+        try {
+            const response = await axios.put('http://127.0.0.1:8080/profile', {
+                username: profileName,
+                email: profileEmail,
+            }, {withCredentials : true});
+
+            if (response.data.exists_name) {
+                toast.error("Username has already exists")
+                return;
+            }
+
+            if (response.data.exists_email) {
+                toast.error("Email has already exists")
+                return;
+            }
+    
+
+            toast.success("Profile updated successfully!")
+            closeEditProfileModal();
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (     
         <div>
@@ -78,8 +138,16 @@ const UserProfile = () => {
 
                         <div className='info-container'>
                             <div className='username-status-container'>
-                                <h1 className='username'>{profileData.username}</h1>
+                                <h1 className='username' onClick={openEditProfileModal}>{profileData.username}</h1>
                                 {profileData.role === 'regular' ? '' :<FontAwesomeIcon className='crown-icon' icon={faCrown} />}
+                                <Modal isOpen={editProfileModalIsOpen} onRequestClose={closeEditProfileModal} contentLabel="Standard Modal" style={modalStyles}>
+                                    <h1 className='edit-profile-title'>Edit Profile</h1>
+                                    <form className='edit-profile-form' onSubmit={handleSubmit}>
+                                        <input type='text' placeholder='Username' className='edit-profile-username' value={profileName} onChange={(e) => setProfileName(e.target.value)} />
+                                        <input type='text' placeholder='Email' className='edit-profile-email' value={profileEmail} onChange={(e) => setProfileEmail(e.target.value)} />
+                                        <button className='edit-profile-btn' type='submit'>Save</button>
+                                    </form>
+                                </Modal>
                             </div>
 
                             <div className='role-status-container'>

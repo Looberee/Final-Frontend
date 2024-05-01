@@ -115,3 +115,15 @@
         bottom: 1rem;
     }
 }
+
+@media (max-width: 320px) {
+    .genre-slider-nav {
+        display: none !important;
+        opacity: 0;
+    }
+
+    .genre-slider-point {
+        display: none;
+        opacity: 0;
+    }
+}

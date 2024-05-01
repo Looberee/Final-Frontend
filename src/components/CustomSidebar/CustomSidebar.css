@@ -325,10 +325,20 @@ hr
     cursor: pointer;
 }
 
-@media (min-width: 768px) and (max-width: 1024px){
-    .icon-sidebar
+@media only screen and (max-width: 1024px) {
+    .recently-played-track
     {
-        display: none;
+        max-height: 500px;
+    }
+
+}
+
+
+@media (min-width: 768px) and (max-width: 1024px) {
+
+    .recently-played-track
+    {
+        height: 67%;
     }
 }
 
@@ -340,14 +350,16 @@ hr
 
     .track-sidebar
     {
-        width: auto;
+        display: none;
     }
+
+
 }
 
 @media only screen and (max-width: 480px) {
     .track-sidebar{
-        padding: 10px;
-        width: auto;
+        padding: 0px;
+        width: 0;
     }
 
     .personal-playlists
@@ -363,8 +375,8 @@ hr
 
 @media only screen and (max-width: 400px) {
     .track-sidebar{
-        padding: 10px;
-        width: auto;
+        padding: 0px;
+        width: 0;
     }
 
     .personal-playlists
@@ -378,28 +390,4 @@ hr
     }
 }
 
-@media only screen and (max-width: 360px) {
-    /* Additional styles for even smaller screens */
-    .track-sidebar{
-        display: none;
-    }
 
-    .icon-sidebar
-    {
-        display: block;
-        width: 100%;
-    }
-}
-
-@media only screen and (max-width: 320px) {
-    /* Additional styles for even smaller screens */
-    .track-sidebar{
-        display: none;
-    }
-
-    .icon-sidebar
-    {
-        width: 50px;
-        display: block;
-    }
-}

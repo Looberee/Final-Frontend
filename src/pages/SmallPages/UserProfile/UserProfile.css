@@ -54,13 +54,36 @@
     justify-content: center;
     align-self: start;
     align-items: center;
-    gap: 20px;
 }
+
+.info-container .username-status-container .username {
+    cursor: pointer;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.info-container .username-status-container .username::after {
+    content: "";
+    position: absolute;
+    top: 85%;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: #fff;
+    border-radius: 10px;
+    transition: width 0.3s;
+}
+
+.info-container .username-status-container .username:hover::after {
+    width: 100%;
+}
+
 
 .info-container .username-status-container .crown-icon 
 {
     color: #f1c40f;
     font-size: 25px;
+    margin-left: 20px;
 
 }
 
@@ -129,4 +152,31 @@
     background: linear-gradient(to right, #f1c40f, #2ecc71);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+.edit-profile-title {
+    color: #fff;
+}
+
+.edit-profile-form {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.edit-profile-username, .edit-profile-email {
+    padding: 10px;
+    background-color: #171d29;
+    border-radius: 20px;
+    color: #fff;
+}
+
+.edit-profile-btn {
+    padding: 10px;
+    background-color: #f1c40f;
+    color: #fff;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: 0.5s ease;
 }

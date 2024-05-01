@@ -12,14 +12,13 @@ import { useModal } from "../../../contexts/ModalContext";
 import EditPlaylistModal from "../../../components/Modal/StandardModals/EditPlaylistModal";
 import toast from "react-hot-toast";
 
-const TrackRow = ({ track, trackOrder, playlist_encode_id }) => {
+const TrackRow = ({ track, trackOrder, playlist_encode_id, profile }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isPlayingActive, setIsPlayingActive] = useState(false);
     const [isFavourited, setIsFavourited] = useState(false);
     const { playlistState, togglePlaylist } = usePlaylist();
     const { toggleRecentTrack } = useRecentTrack();
     const { setPyppoTrack, setIsPlaying, setIsTrackFavourite, isTrackFavourite } = useTrack();
-    const [profile, setProfile] = useState();
 
     useEffect(() => {
         if (track.is_favourite)
@@ -47,19 +46,6 @@ const TrackRow = ({ track, trackOrder, playlist_encode_id }) => {
         setPyppoTrack(track);
         toggleRecentTrack();
     };
-
-    // useEffect(() => {
-    //     const fetchUserProfile = async () => {
-    //         try {
-    //             const response = await axios.get('http://127.0.0.1:8080/profile', { withCredentials: true });
-    //             setProfile(response.data.profile);
-    //         } catch (error) {
-    //             console.error('Error fetching user profile:', error);
-    //         }
-    //     };
-
-    //     fetchUserProfile();
-    // }, []);
 
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
@@ -204,6 +190,7 @@ const UserPlaylist = ({onTrackSelected}) => {
     const { openModal } = useModal();
     const { isTrackFavourite, setIsTrackFavourite } = useTrack();
     const [favouriteTracks, setFavouriteTracks] = useState([]);
+    const [profile, setProfile] = useState();
 
     useEffect(() => {
         const fetchPlaylistTracks = async () => {
@@ -226,6 +213,19 @@ const UserPlaylist = ({onTrackSelected}) => {
             fetchPlaylistTracks();
         }
     }, [encode_id, playlistState]);
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8080/profile', { withCredentials: true });
+                setProfile(response.data.profile);
+            } catch (error) {
+                console.error('Error fetching user profile:', error);
+            }
+        };
+
+        fetchUserProfile();
+    }, []);
 
 
     const modalStyles = {
@@ -351,6 +351,7 @@ const UserPlaylist = ({onTrackSelected}) => {
                             playlist_encode_id = {encode_id}
                             track={track}
                             trackOrder={index + 1} // Pass function to toggle favourite state
+                            profile={profile}
                         />
                     ))
                 ) : (

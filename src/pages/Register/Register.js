@@ -116,7 +116,7 @@ const Register = () => {
                                 </button>
                             </div>
                         </div>
-                    <Toaster />
+
                     </form>
                 </div>
             </div>

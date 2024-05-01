@@ -129,7 +129,6 @@ const Login = () => {
                                     <button className="login100-form-btn">
                                         Login
                                     </button>
-                                    <Toaster />
                                 </div>
                             </div>
 

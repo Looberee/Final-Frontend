@@ -35,6 +35,8 @@ import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
 import SpecificRoom from './pages/SmallPages/Room/SpecificRoom';
 import axios from 'axios';
 
+import { toast, Toaster } from 'react-hot-toast';
+
 
 const App = () => {
 
@@ -54,6 +56,7 @@ const App = () => {
               <RoomProvider>
                 <Router>
                   <AppContent />
+                  <Toaster containerStyle={{ zIndex: 9999 }} />
                 </Router>
               </RoomProvider>
             </TrackProvider>
@@ -105,13 +108,20 @@ const AppContent = () => {
         } catch (error) {
             if (error.response && error.response.status === 401) {
                 // Refresh the token if the request fails with a 401 status
-                const socket = io('http://127.0.0.1:8080');
-                socket.emit('refresh_spotify_token');
+                const refreshResponse = await axios.post('http://127.0.0.1:8080/spotify/refresh', {withCredentials: true})
+                localStorage.setItem('spotify_token', refreshResponse.data.spotify_token)
+                localStorage.setItem('spotify_expires_at', refreshResponse.data.spotify_expires_at)
             }
         }
     };
 
     checkScope();
+
+    // Then run checkScope every 2 minutes
+    const intervalId = setInterval(checkScope, 2 * 60 * 1000);
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(intervalId);
 }, []);
 
 
@@ -161,6 +171,7 @@ const AppContent = () => {
                 <Route path='/artist/:artist_id' element={<ArtistDetail/>}/>
               </Routes>
               <TrackPlayer />
+
             </div>
           </div>
         </PlaylistProvider>

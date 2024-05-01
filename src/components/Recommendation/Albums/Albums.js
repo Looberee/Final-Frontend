@@ -205,7 +205,7 @@ const Albums = ({ title, tracks }) => {
     const loadingTracks = Array.from({ length: 6 - memoizedFilteredTracks.length }, (_, index) => index);
 
     return (
-        <div>
+        <div className="albums-container">
             <h1 className="searched-tracks-title">{title}</h1>
 
             <ul className="searched-tracks-list">

@@ -318,7 +318,17 @@ const TrackPlayer = () => {
             setIsPlaying(true);
             setAlreadyPlayed(true)
         } catch (error) {
-            console.error('Failed to send playback control request:', error);
+            if (error.message.includes('https://api.spotify.com/v1/melody/v1/check_scope?scope=web-playback')) {
+                try {
+                    // Refresh the Spotify token
+                    toast.error("401 from Spotify");
+
+                    // Retry the playback control request
+                    // Your code to send playback control request...
+                } catch (refreshError) {
+                    console.error('Failed to refresh Spotify token and retry playback control request:', refreshError);
+                }
+            }
         }
     }
 
@@ -433,7 +443,12 @@ const TrackPlayer = () => {
             if (success) {
                 console.log(message);
                 setShuffleState(!shuffleState); // Update local state after successful shuffle
-                toast.success("Shuffle the current track")
+                if (!shuffleState) {
+                    toast.success("Shuffle has been enabled")
+                }
+                else {
+                    toast.success("Shuffle has been disabled")
+                }
             } else {
                 console.error('Failed to toggle shuffle:', message);
             }
@@ -498,6 +513,36 @@ const TrackPlayer = () => {
         } catch (error) {
             console.log(isPlayingTrack.spotify_id)
             console.error('Error adding recent track:', error);
+        }
+    };
+
+    const checkScope = async () => {
+        try {
+            const response = await axios.get('https://api.spotify.com/v1/melody/v1/check_scope?scope=web-playback', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('spotify_token')}`
+                }
+            });
+    
+            // ...rest of your code...
+    
+        } catch (error) {
+            if (error.response && error.response.status === 401) {
+                // Refresh the token if the request fails with a 401 status
+                const refreshResponse = await axios.post('http://127.0.0.1:8080/spotify/refresh', {withCredentials: true})
+                localStorage.setItem('spotify_token', refreshResponse.data.spotify_token)
+                localStorage.setItem('spotify_expires_at', refreshResponse.data.spotify_expires_at)
+    
+                // After refreshing the token, try to play again
+                try {
+                    // Replace this with your actual play function
+                    await handlePlayTrackInPlayer();
+                } catch (playError) {
+                    console.error('Failed to play after refreshing token:', playError);
+                }
+            } else {
+                console.error('Failed to check scope:', error);
+            }
         }
     };
     

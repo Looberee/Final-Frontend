@@ -117,7 +117,6 @@ const PersonalPlaylists = () => {
                 {playlistItems}
                 <span className='create-playlist' onClick={handleCreatePlaylist}>+Create new playlist</span>
             </ul>
-            <Toaster />
         </div>
     );
 };

@@ -8,13 +8,12 @@ import axios from "axios";
 import { useRecentTrack } from "../../contexts/RecentTrackContext";
 import { useTrack } from "../../contexts/TrackContext";
 
-const FavouriteTrackRow = ({ track, trackOrder }) => {
+const FavouriteTrackRow = ({ track, trackOrder, profile }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isPlayingActive, setIsPlayingActive] = useState(false);
     const [isFavourited, setIsFavourited] = useState(false);
     const { toggleRecentTrack } = useRecentTrack();
     const { setPyppoTrack, setIsPlaying, isTrackFavourite } = useTrack();
-    const [profile, setProfile] = useState();
 
     const toggleFavourites = () => {
         setIsFavourited(prevState => !prevState);
@@ -101,6 +100,7 @@ const FavouritePlaylist = ({onTrackSelected}) => {
     const [playlistTracks, setPlaylistTracks] = useState([]);
     const { encode_id } = useParams();
     const { isTrackFavourite } = useTrack()
+    const [profile, setProfile] = useState();
 
 
     useEffect(() => {
@@ -119,6 +119,19 @@ const FavouritePlaylist = ({onTrackSelected}) => {
     
         fetchPlaylistTracks();
     }, [isTrackFavourite]);
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8080/profile', { withCredentials: true });
+                setProfile(response.data.profile);
+            } catch (error) {
+                console.error('Error fetching user profile:', error);
+            }
+        };
+
+        fetchUserProfile();
+    }, []);
 
 
     const modalStyles = {
@@ -157,6 +170,7 @@ const FavouritePlaylist = ({onTrackSelected}) => {
                             playlist_encode_id = {encode_id}
                             track={track}
                             trackOrder={index + 1}
+                            profile={profile}
                         />
                     ))
                 ) : (
