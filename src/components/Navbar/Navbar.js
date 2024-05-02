@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import './Navbar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell, faRightFromBracket, faCircleUser } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faRightFromBracket, faCircleUser, faBars } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useRoom } from "../../contexts/RoomContext";
@@ -13,7 +13,14 @@ const Navbar = ({ isLoggedIn, onLogout, setSearchValue }) => {
     const handleInputChange = (event) => {
         const { value } = event.target;
         setSearchValue(value);
-        };
+    };
+
+    const handleSidebarResponsive = () => {
+        const track_sidebar = document.querySelector('.track-sidebar');
+        track_sidebar.classList.toggle('responsive');
+        const icon_sidebar = document.querySelector('.icon-sidebar');
+        icon_sidebar.classList.toggle('responsive');
+    }
 
     return (
         <div>
@@ -21,19 +28,7 @@ const Navbar = ({ isLoggedIn, onLogout, setSearchValue }) => {
                 <div className="branch-container">
                     <Link to="/" onClick={() => setRoomState(false)}><h1>Pyppo</h1></Link>
 
-                    {/* <ul className="nav-options">
-                        <li className="option">
-                            <a href="">What's new?</a>
-                        </li>
-
-                        <li className="option">
-                            <a href="">Trending</a>
-                        </li>
-
-                        <li className="option">
-                            <a href="">Features</a>
-                        </li>            
-                    </ul> */}
+                    <FontAwesomeIcon icon={faBars} className="bars-responsive" onClick={handleSidebarResponsive} />
                 </div>
 
 

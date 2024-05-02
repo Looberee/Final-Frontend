@@ -30,17 +30,22 @@
 {
     background-color: #090f1b;
     width: 50px;
-    max-height: calc(100% - 60px);
+    min-height: calc(120px);
     display: flex;
     flex-direction: column;
     gap: 50px;
-    overflow: hidden;
+    overflow: auto;
+}
+
+.icon-sidebar::-webkit-scrollbar
+{
+    display: none;
 }
 
 .main
 {
     margin-top: 20px;
-    height: 80%;
+    height: 50%;
     display: flex;
     flex-direction: column;
     gap: 1px;
@@ -325,6 +330,10 @@ hr
     cursor: pointer;
 }
 
+.icon-sidebar.responsive, .track-sidebar.responsive {
+    display: block;
+}
+
 @media only screen and (max-width: 1024px) {
     .recently-played-track
     {
@@ -354,40 +363,18 @@ hr
     }
 
 
+
+
 }
 
 @media only screen and (max-width: 480px) {
-    .track-sidebar{
-        padding: 0px;
-        width: 0;
-    }
-
-    .personal-playlists
-    {
-        width: 150px;
-    }
-
-    .playlist-info
-    {
-        width: auto;
+    .icon-sidebar {
+        display: none;
     }
 }
 
 @media only screen and (max-width: 400px) {
-    .track-sidebar{
-        padding: 0px;
-        width: 0;
-    }
 
-    .personal-playlists
-    {
-        width: 100px;
-    }
-
-    .playlist-info
-    {
-        width: auto;
-    }
 }
 
 

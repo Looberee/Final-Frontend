@@ -34,6 +34,18 @@
     cursor: pointer;
 }
 
+.bars-responsive 
+{
+    color: #fff;
+    /* display: flex; */
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    transform: translateY(3px);
+    cursor: pointer;
+    display: none;
+}
+
 
 .nav-options
 {
@@ -200,6 +212,10 @@
     }
 
     .notification, .profile {
+    }
+
+    .bars-responsive {
+        display: flex;
     }
 }
 

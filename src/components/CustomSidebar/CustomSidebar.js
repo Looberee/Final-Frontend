@@ -16,6 +16,7 @@ import { useModal } from '../../contexts/ModalContext';
 import UnauthorizedModal from '../../components/Modal/AlertModals/UnauthorizedModal';
 import { useDarkTheme } from '../../contexts/DarkThemeContext';
 
+
 const CustomSidebar = () => {
     const [storedPlaylists, setStoredPlaylists] = useState([]);
     const [fiveFavouriteArtists, setFiveFavouriteArtists] = useState([]);
@@ -29,6 +30,7 @@ const CustomSidebar = () => {
     const { roomState, setRoomState } = useRoom();
     const { openModal } = useModal();
     const { toggleDarkMode } = useDarkTheme();
+
 
     const sidebarItems = [
         { id: 'home', icon: faHome },
@@ -191,7 +193,7 @@ const CustomSidebar = () => {
 
 
     return (
-        <div className='sidebar'>
+        <div className={'sidebar'}>
             <div className='icon-sidebar'>
             <ul className='main'>
                 {/* Map over the sidebarItems array to render each item dynamically */}
