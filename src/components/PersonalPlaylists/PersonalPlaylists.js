@@ -26,7 +26,9 @@ export const ProfilePlaylist = () => {
     },[])
 
     return (
+
         <div>
+            {playlists.length > 0 ? 
             <div className="profile-playlist-container">
                 <h1 className="profile-playlist-title">Personal Playlists</h1>
 
@@ -44,7 +46,7 @@ export const ProfilePlaylist = () => {
                     ))}
                     </ul>
                 </div>
-            </div>
+            </div> : <div></div> }
         </div>
     )
 }

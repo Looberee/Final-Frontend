@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { toast, Toaster } from 'react-hot-toast';
+import Modal from 'react-modal';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -18,6 +19,7 @@ const Login = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const { setAccessToken, setRefreshToken, login, setAlreadyAuth } = useAuth();
     const { roomState } = useRoom();
+    const [isModalOpen, setIsModalOpen] = useState(false); //
 
     const navigate = useNavigate();
 
@@ -87,6 +89,35 @@ const Login = () => {
         }
     }
 
+    const handleOpenForgotPassword = () => {
+        handleOpenModal();
+    }
+
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const customStyles = {
+        overlay: {
+            backgroundColor: 'rgba(255, 255, 255, 0.75)' // white overlay with 75% opacity
+        },
+        content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'white',
+            width: '700px',
+            height: '500px',
+            zIndex : '8888'
+        }
+    };
 
     return (
         <div>
@@ -114,10 +145,9 @@ const Login = () => {
 
                             <div className="text-right p-t-8 p-b-31">
                                 <div className='login-actions'>
-                                    <a href="#">
+                                    <Link to={'/reset-password'}>
                                         Forgot password?
-                                    </a>
-
+                                    </Link>
 
                                     <Link to='/register'>Sign up here!</Link>
                                 </div>

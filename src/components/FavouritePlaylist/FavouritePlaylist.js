@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import './FavouritePlaylist.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisVertical, faHeart, faUser, faMusic, faClock, faCalendarDays, faPlay, faPause, faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsisVertical, faHeart, faUser, faMusic, faClock, faCalendarDays, faPlay, faPause, faPenToSquare, faTrash, faCaretUp, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import Modal from "react-modal";
 import { useParams } from 'react-router-dom';
 import axios from "axios";
@@ -94,13 +94,12 @@ const FavouriteTrackRow = ({ track, trackOrder, profile }) => {
 }
 
 
-const FavouritePlaylist = ({onTrackSelected}) => {
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+const FavouritePlaylist = () => {
     const [playlistTracks, setPlaylistTracks] = useState([]);
     const { encode_id } = useParams();
     const { isTrackFavourite } = useTrack()
     const [profile, setProfile] = useState();
+    const [isCollapse, setIsCollapse] = useState(false);
 
 
     useEffect(() => {
@@ -154,29 +153,37 @@ const FavouritePlaylist = ({onTrackSelected}) => {
         }
     };
 
-    return (
-        <div className="favourite-playlist-container">
-            <div className="favourite-playlist-wrapper">
-                <div className="favourite-playlist-detail">
-                    <h1 className="favourite-playlist-name">Favourite Tracks</h1>
-                </div>
-            </div>
+    const handleCollapseList = () => {
+        setIsCollapse(prevState => !prevState);
+    }
 
-            <div className="tracks-in-playlist">
-                {playlistTracks && playlistTracks.length > 0 ? (
-                    playlistTracks.map((track, index) => (
-                        <FavouriteTrackRow
-                            key={track.id}
-                            playlist_encode_id = {encode_id}
-                            track={track}
-                            trackOrder={index + 1}
-                            profile={profile}
-                        />
-                    ))
-                ) : (
-                    <div style={{color:'#fff'}}>No tracks found</div>
-                )}
-            </div>
+    return (
+        <div>
+            {playlistTracks.length > 0 ?
+            <div className="favourite-playlist-container">
+                <div className="favourite-playlist-wrapper">
+                    <div className="favourite-playlist-detail">
+                        <h1 className="favourite-playlist-name">Favourite Tracks</h1>
+                        <FontAwesomeIcon icon={isCollapse ? faCaretUp : faCaretDown } className="favourite-caret-up" onClick={handleCollapseList}/>
+                    </div>
+                </div>
+
+                <div className={`tracks-in-playlist ${!isCollapse ? 'collapsed' : '' }`}>
+                    {playlistTracks && playlistTracks.length > 0 ? (
+                        playlistTracks.map((track, index) => (
+                            <FavouriteTrackRow
+                                key={track.id}
+                                playlist_encode_id = {encode_id}
+                                track={track}
+                                trackOrder={index + 1}
+                                profile={profile}
+                            />
+                        ))
+                    ) : (
+                        <div style={{color:'#fff'}}>No tracks found</div>
+                    )}
+                </div>
+            </div> : <div></div> }
         </div>
     );
 }

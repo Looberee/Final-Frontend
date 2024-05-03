@@ -35,12 +35,25 @@
     height: 250px;
     object-fit: cover;
     border-radius: 10px;
+
 }
 
 .favourite-playlist-container h1
 {
     font-size: 60px;
     color: #fff;
+}
+
+.favourite-playlist-container .favourite-caret-up {
+    color: #fff;
+    font-size: 32px;
+    transform: translateY(5px);
+    padding: 3px 9px;
+    background: #2CA311;
+    cursor: pointer;
+    border-radius: 50%;
+
+
 }
 
 .favourite-playlist-ed-btn
@@ -68,6 +81,15 @@
     background-color: #090f1b;
     transition: 0.2s ease;
     padding: 5px 0;
+    transition: 1 ease;
+
+}
+
+.tracks-in-playlist.collapsed
+{
+    height: 0;
+    overflow: hidden;
+    transition: 1 ease;
 }
 
 .tracks-in-playlist:hover
@@ -300,3 +322,20 @@
 {
     background-color: #2CA311;
 }
+
+@media only screen and (max-width: 480px) {
+    .col-genre,.col-duration,.col-release {
+        max-width: 0;
+        opacity: 0;
+        display: none !important;;
+    }
+
+    .col-info {
+        padding-left: 30px;
+    }
+
+    .favourite-playlist-detail .favourite-playlist-name {
+        font-size: 40px;
+    }
+}
+

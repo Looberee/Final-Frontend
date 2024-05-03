@@ -1,0 +1,153 @@
+.favourite-artists-container
+{
+    width: 100%;
+    min-height: 100%;
+}
+
+.favourite-artists-wrapper
+{
+    width: 100%;
+    height: 300px;
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center;
+    background-image: linear-gradient(rgba(0,0,0,0.05), rgba(0,0,0,0.9)),url('https://w.wallhaven.cc/full/kx/wallhaven-kx6yqm.png');
+    background-size: cover; /* Ensure the background image covers the entire element */
+    background-position: center;
+    gap: 30px;
+    padding: 30px;
+}
+
+.favourite-artists-detail
+{
+    width: 100%;
+    height: 300px;
+    display: inline-flex;
+    align-items: center;
+    gap: 30px;
+    padding: 30px;
+}
+
+
+.favourite-artist-detail img
+{
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+
+}
+
+.favourite-artists-container h1
+{
+    font-size: 60px;
+    color: #fff;
+}
+
+.favourite-artists-container .favourite-caret-up {
+    color: #fff;
+    font-size: 32px;
+    transform: translateY(5px);
+    padding: 3px 9px;
+    background: #2CA311;
+    cursor: pointer;
+    border-radius: 50%;
+
+
+}
+
+.collapsed {
+    display: none;
+
+}
+
+/* SECTION 2 */
+
+.id-animation
+{
+    position: relative;
+}
+/* artists Row */
+
+.row
+{
+    width: 100%;
+    height: 80px;
+    display: inline-flex;
+    margin: 20px 0;
+    align-items: center;
+    color: #ddd;
+    position: relative;
+}
+
+.row::after
+{
+    content: '';
+    position: absolute; 
+    bottom: 0;
+    left: 20%;
+    transform: translateY(20px);
+    width: 60%;
+    height: 0.5px;
+    background-color: #756f7d;
+}
+
+.favourite-artist-info {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.favourite-artist-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+    position: relative;
+    transition: 0.5s ease;
+}
+
+.favourite-artist-name {
+    font-size: 20px;
+    color: #fff;
+    transition: 0.5s ease;
+}
+
+
+.col-genre,.col-followers
+{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+    font-size: 15px;
+    color: #756f7d;
+    transition: 0.5s ease;
+    min-width: 300px;
+
+}
+
+.col-name:hover, .col-genre:hover ,.col-release:hover, .col-duration:hover, .col-followers:hover
+{
+    color: #fff;
+    cursor: pointer;
+}
+
+
+@media only screen and (max-width: 480px) {
+    .col-genre,.col-duration,.col-release {
+        max-width: 0;
+        opacity: 0;
+        display: none !important;;
+    }
+
+    .col-info {
+        padding-left: 30px;
+    }
+
+    .favourite-artists-detail .favourite-artists-name {
+        font-size: 40px;
+    }
+}
+

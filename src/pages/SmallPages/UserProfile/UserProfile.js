@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleHalfStroke, faCrown, faDoorOpen, faGem, faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { faBots } from '@fortawesome/free-brands-svg-icons';
 import toast from 'react-hot-toast';
+import FavouriteArtists from '../../../components/FavouriteArtists/FavouriteArtists';
 
 const UserProfile = () => {
     const [profileData, setProfileData] = useState();
@@ -128,7 +129,7 @@ const UserProfile = () => {
     return (     
         <div>
             {isLoading ? (
-                <LoadingSpinner />
+                <div></div>
             ) : (
                 <div>
                     <div className='profile-container'>
@@ -190,9 +191,13 @@ const UserProfile = () => {
                         
                     </div>
 
-                    <ProfilePlaylist />
+                    <div style={{display:'flex', flexDirection:'column', gap:'20px'}}>
+                        <ProfilePlaylist />
 
-                    <FavouritePlaylist />
+                        <FavouritePlaylist/>
+
+                        <FavouriteArtists />
+                    </div>
                 </div>
             )}
         </div>

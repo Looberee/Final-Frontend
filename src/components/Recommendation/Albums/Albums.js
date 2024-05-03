@@ -110,7 +110,7 @@ const Dropdown = ({ track }) => {
     const handleAddToWaitingList = (track) => {
         console.log("Track will be added to waiting list: ", track);
         addToWaitingList(track);
-        toast.success(`${track.name} has been added to the waiting list`);
+        toast.success(`${track.name} has been added to your waiting list`);
 
     }
 
@@ -121,10 +121,12 @@ const Dropdown = ({ track }) => {
             { 'spotify_id' : track.spotify_id }, 
             { withCredentials : true });
             console.log('Message : ', response.data.message)
+            toast.success(`${track.name} has been added to your favourites`);
             setIsTrackFavourite(true);
         }
         catch (error)
         {
+            toast.error(`${track.name} has already been in your favourites`);
             console.error('Failed to add track to favourites:', error);
         }
     }

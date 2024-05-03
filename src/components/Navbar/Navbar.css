@@ -237,6 +237,10 @@
     .notification-icon{
         display: none;
     }
+
+    .login-button {
+        display: none;
+    }
 }
 
 /* Phone Portrait */

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './CustomSidebar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faMusic, faUser, faHeadphonesSimple, faDoorOpen, faSun, faMoon, faRightFromBracket, faBookmark, faMicrophoneLines, faBuildingUser, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faMusic, faUser, faHeadphonesSimple, faDoorOpen, faSun, faMoon, faRightFromBracket, faBookmark, faMicrophoneLines, faBuildingUser, faUsers, faCircleUser } from '@fortawesome/free-solid-svg-icons';
 import PersonalPlaylists from '../PersonalPlaylists/PersonalPlaylists';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -40,9 +40,10 @@ const CustomSidebar = () => {
     ];
 
     const extraSidebarItems = [
-        { id: 'moon', icon: faMoon },
+        // { id: 'moon', icon: faMoon },
         // { id: 'sun', icon: faSun },
-        { id: 'rightFromBracket', icon: faRightFromBracket }
+        { id: 'rightFromBracket', icon: faRightFromBracket },
+        { id : 'circleUser', icon: faCircleUser, link: '/login'}
     ];
 
     const menuOptions = [
@@ -195,31 +196,44 @@ const CustomSidebar = () => {
     return (
         <div className={'sidebar'}>
             <div className='icon-sidebar'>
-            <ul className='main'>
-                {/* Map over the sidebarItems array to render each item dynamically */}
-                {sidebarItems.map((item) => (
-                    <li key={item.id}>
-                        <a className="special-a" onClick={() => handleClick(item.id)}>
-                            <FontAwesomeIcon 
-                                className={`i-sidebar ${item.id === 'door' ? (roomState ? 'room' : '') : (activeItem === item.id ? 'active' : '')}`} 
-                                icon={item.icon} 
-                            />
-                        </a>
-                    </li>
-                ))}
-            </ul>
-
-                {alreadyAuth ? <hr></hr> : <div></div>}
-
-                <ul className='extra'>
-                    {extraSidebarItems.map((item) => (
+                <ul className='main'>
+                    {/* Map over the sidebarItems array to render each item dynamically */}
+                    {sidebarItems.map((item) => (
                         <li key={item.id}>
-                            <a href='#' onClick={() => handleClick(item.id)}>
-                                {alreadyAuth ? <FontAwesomeIcon className={`i-sidebar ${activeExtraItem === item.id ? 'active' : ''}`} icon={item.icon} /> : <div></div>}
+                            <a className="special-a" onClick={() => handleClick(item.id)}>
+                                <FontAwesomeIcon 
+                                    className={`i-sidebar ${item.id === 'door' ? (roomState ? 'room' : '') : (activeItem === item.id ? 'active' : '')}`} 
+                                    icon={item.icon} 
+                                />
                             </a>
                         </li>
                     ))}
                 </ul>
+
+                {alreadyAuth ? <hr></hr> : <div></div>}
+
+                <ul className='extra'>
+                    <li key={'moon'}>
+                        <a href='#' onClick={() => handleClick('moon')}>
+                            <FontAwesomeIcon className={`i-sidebar active`} icon={faMoon} /> 
+                        </a>
+                    </li>
+                    {extraSidebarItems.map((item) => {
+                        if ((alreadyAuth && item.id === 'rightFromBracket') || (!alreadyAuth && item.id === 'circleUser')) {
+                            return (
+                                <li key={item.id}>
+                                    <a href={alreadyAuth ? item.link : '/login'} onClick={() => handleClick(item.id)}>
+                                        <FontAwesomeIcon 
+                                            className={`i-sidebar ${alreadyAuth && activeExtraItem === item.id ? 'authorized' : ''}`} 
+                                            icon={item.icon} style={{cursor: 'pointer'}}
+                                        />
+                                    </a>
+                                </li>
+                            );
+                        }
+                    })}
+                </ul>
+
             </div>
 
             <div className={`room-sidebar ${roomState ? 'room' : '' }`}>

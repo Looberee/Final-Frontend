@@ -15,6 +15,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 import { useModal } from "../../../contexts/ModalContext";
 import LoadingSpinner from "../../../components/LoadingSpinner/LoadingSpinner"; // Import loading spinner component
 import { Artist } from "../Artists/Artists";
+import { toast } from "react-hot-toast";
 
 const modalStyles = {
     content: {
@@ -95,16 +96,17 @@ const Dropdown = ({ track }) => {
                 withCredentials: true
             });
             console.log('Response:', response.data);
+            toast.success("A track has been added to your playlist!")
             togglePlaylist();
             setIsModalOpen(false);
         } catch (error) {
             console.error('Error:', error);
-            // Handle error if needed
+            toast.error("You are adding the same track in the same playlist!");
         }
     };
 
     const handleAddToWaitingList = (track) => {
-        console.log("Track will be added to waiting list: ", track);
+        toast.success(`${track.name} has been added to your waiting list`);
         addToWaitingList(track);
 
     }
@@ -116,9 +118,11 @@ const Dropdown = ({ track }) => {
             { 'spotify_id' : track.spotify_id }, 
             { withCredentials : true });
             console.log('Message : ', response.data.message)
+            toast.success(`${track.name} has been added to your favourites`);
         }
         catch (error)
         {
+            toast.error(`${track.name} has already been in your favourites`);
             console.error('Failed to add track to favourites:', error);
         }
     }

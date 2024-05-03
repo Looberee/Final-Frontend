@@ -21,6 +21,7 @@
     padding: 0 30px;
 }
 
+
 .searched-track {
     background-color: #090f1b;
     flex: 0 0 120px;
@@ -33,6 +34,7 @@
     max-width: 100%;
     position: relative;
 }
+
 
 .searched-track:hover
 {

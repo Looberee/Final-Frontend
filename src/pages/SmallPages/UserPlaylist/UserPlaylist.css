@@ -300,3 +300,19 @@
 {
     background-color: #2CA311;
 }
+
+@media only screen and (max-width: 480px) {
+    .col-genre,.col-duration,.col-release, .col-settings {
+        max-width: 0;
+        opacity: 0;
+        display: none !important;;
+    }
+
+    .user-playlist-detail .user-playlist-name {
+        font-size: 40px;
+    }
+
+    .col-info {
+        padding-left: 30px;
+    }
+}
