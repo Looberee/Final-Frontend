@@ -145,7 +145,7 @@ const Login = () => {
 
                             <div className="text-right p-t-8 p-b-31">
                                 <div className='login-actions'>
-                                    <Link to={'/reset-password'}>
+                                    <Link to={'/email-confirm'}>
                                         Forgot password?
                                     </Link>
 

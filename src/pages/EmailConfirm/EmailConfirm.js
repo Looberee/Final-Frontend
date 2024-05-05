@@ -9,25 +9,25 @@ import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 const EmailConfirm = () => {
     const [email, setEmail] = useState('');
 
-    useEffect(() => {
-        // Get the token from the URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
+    // useEffect(() => {
+    //     // Get the token from the URL
+    //     const urlParams = new URLSearchParams(window.location.search);
+    //     const token = urlParams.get('token');
 
 
-        // Send a GET request to the backend server to confirm the email
-        axios.get('http://127.0.0.1:8080/confirm-email/' + token)
-            .then(response => {
-                setMessage(response.data.message);
-                toast.success(`${message}`)
-                console.message(response.data.message);
+    //     // Send a GET request to the backend server to confirm the email
+    //     axios.get('http://127.0.0.1:8080/confirm-email/' + token)
+    //         .then(response => {
+    //             setMessage(response.data.message);
+    //             toast.success(`${message}`)
+    //             console.message(response.data.message);
                 
-            })
-            .catch(error => {
-                console.error('Error confirming email:', error);
-                setMessage('Error confirming email');
-            });
-    }, []);
+    //         })
+    //         .catch(error => {
+    //             console.error('Error confirming email:', error);
+    //             setMessage('Error confirming email');
+    //         });
+    // }, []);
 
 
     const handleResetPassword = async (event) => {
@@ -49,7 +49,7 @@ const EmailConfirm = () => {
             const response = await axios.post('http://127.0.0.1:8080/request-reset', { email });
             console.log(response.data);
         } catch (error) {
-            if (error.response && error.response.status === 404) {
+            if (error.response && error.response.status === 404) {  
                 toast.error("This mail does not exist in Pyppo! Please try again.");
             } else {
                 // Handle other errors

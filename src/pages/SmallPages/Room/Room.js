@@ -28,7 +28,7 @@ const Room = () => {
     }, [toggleRoom])
 
     const handleJoinRoom = (room) => {
-        socket.emit('join', { room_id: room.id});
+        socket.emit('join', { room_encode_id: room.encode_id});
     };
     
     
@@ -40,10 +40,9 @@ const Room = () => {
 
             <ul className='allrooms'>
                 {allRooms && allRooms.map((room) => (
-                    <li className="allroom-container" style={{ color: '#fff' }} key={room.id} onClick={() => handleJoinRoom(room)}>
-                        <Link to={`/room/${room.id}`} className="allroom-box"> {/* Change to Link */}
+                    <li className="allroom-container" style={{ color: '#fff' }} key={room.encode_id} onClick={() => handleJoinRoom(room)}>
+                        <Link to={`/room/${room.encode_id}`} className="allroom-box"> {/* Change to Link */}
                             <h2 className="allroom-name">{room.name}</h2>
-                            <span className="allroom-type">{room.room_type == 'private' ? <FontAwesomeIcon className="private-room" icon={faLock} /> : ''}</span>
                         </Link>
                     </li>
                 ))}

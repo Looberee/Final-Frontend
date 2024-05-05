@@ -29,6 +29,7 @@ import Cookies from 'js-cookie';
 import { useModal } from './contexts/ModalContext';
 import ArtistDetail from './pages/SmallPages/ArtistDetail/ArtistDetail';
 import EmailConfirm from './pages/EmailConfirm/EmailConfirm';
+import ResetPassword from './pages/ResetPassword/ResetPassword';
 
 import io, { Socket } from 'socket.io-client';
 import { ModalProvider } from './contexts/ModalContext';
@@ -37,6 +38,8 @@ import SpecificRoom from './pages/SmallPages/Room/SpecificRoom';
 import axios from 'axios';
 
 import { toast, Toaster } from 'react-hot-toast';
+import NotFound from './pages/NotFound/NotFound';
+import { NotFoundPage } from './pages/NotFound/NotFound';
 
 
 const App = () => {
@@ -71,7 +74,7 @@ const App = () => {
 const AppContent = () => {
   const location = useLocation();
   const [searchValue, setSearchValue] = useState('');
-  const isBigPage = location.pathname === '/login' || location.pathname === '/register' || /\/room\/\d+/.test(location.pathname) || location.pathname === '/email-confirm';
+  const isBigPage = location.pathname === '/login' || location.pathname === '/register' || /\/room\/\d+/.test(location.pathname) || location.pathname === '/email-confirm' || /\/reset-password\/.*/.test(location.pathname);
   const { pyppoTrack } = useTrack();
   const { openModalId } = useModal();
   const [routeClicked, setRouteClicked] = useState(false);
@@ -170,9 +173,9 @@ const AppContent = () => {
                 <Route path='/tracks' element={<Tracks/>}/>
                 <Route path='/room' element={<Room/>}/>
                 <Route path='/artist/:artist_id' element={<ArtistDetail/>}/>
+                <Route path='*' element={<NotFound />} />
               </Routes>
               <TrackPlayer />
-
             </div>
           </div>
         </PlaylistProvider>
@@ -183,8 +186,9 @@ const AppContent = () => {
       <Routes>
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
-        <Route path='/room/:id' element={<SpecificRoom />} />
+        <Route path='/room/:encode_id' element={<SpecificRoom />} />
         <Route path='/email-confirm' element={<EmailConfirm />} />
+        <Route path='/reset-password/:token' element={<ResetPassword />} />
       </Routes>
     </div>
   );

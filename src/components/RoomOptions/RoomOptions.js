@@ -92,7 +92,7 @@ const RoomOptions = () => {
 
     const handleEditRoom = async () => {
         try {
-            const response = await axios.put('http://127.0.0.1:5001/personal/rooms', {'room_id': specificRoom.id, 'new_name': roomName} , { withCredentials: true });
+            const response = await axios.put('http://127.0.0.1:5001/personal/rooms', {'room_encode_id': specificRoom.encode_id, 'new_name': roomName} , { withCredentials: true });
             setToggleRoom((pre) => !pre)
             closeModal();
             toast.success("Your room has been edited succesfully!")
@@ -108,7 +108,7 @@ const RoomOptions = () => {
             const response = await axios({
                 method: 'delete',
                 url: 'http://127.0.0.1:5001/personal/rooms',
-                data: { 'room_id': specificRoom.id },
+                data: { 'room_encode_id': specificRoom.encode_id },
                 withCredentials: true
             });
             setToggleRoom((pre) => !pre)

@@ -15,6 +15,7 @@ import RoomOptions from '../RoomOptions/RoomOptions';
 import { useModal } from '../../contexts/ModalContext';
 import UnauthorizedModal from '../../components/Modal/AlertModals/UnauthorizedModal';
 import { useDarkTheme } from '../../contexts/DarkThemeContext';
+import toast from 'react-hot-toast';
 
 
 const CustomSidebar = () => {
@@ -97,8 +98,16 @@ const CustomSidebar = () => {
         {
             if (alreadyAuth)
             {
-                navigate('/room');
-                setRoomState(true);
+                const res = await axios.get('http://127.0.0.1:8080/profile', {withCredentials : true})
+                if (res.data.profile.role == 'premium')
+                    {
+                        navigate('/room');
+                        setRoomState(true);
+                    }
+                else {
+                    toast.error("You need to be a premium user to access this feature!")
+                }
+
             }
             else
             {

@@ -19,7 +19,7 @@ const ArtistDetail = () => {
     useEffect(() => {
         const fetchArtistDetail = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8080/artist/${artist_id}`);
+                const response = await axios.get(`http://127.0.0.1:8080/artists/${artist_id}`);
                 console.log(response.data);
                 setArtist(response.data);
             } 
@@ -34,7 +34,7 @@ const ArtistDetail = () => {
     useEffect(() => {
         const fetchArtistTopTracks = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8080/artist/${artist_id}/top-tracks`);
+                const response = await axios.get(`http://127.0.0.1:8080/artists/${artist_id}/top-tracks`);
                 console.log(response.data);
                 setArtistTopTracks(response.data);
             }
@@ -50,7 +50,7 @@ const ArtistDetail = () => {
     useEffect(() => {
         const checkFavouriteArtist = async () => {
             try {
-                const response = await axios.post('http://127.0.0.1:8080/personal/favourites/artist/check', {
+                const response = await axios.post('http://127.0.0.1:8080/personal/favourites/artists/check', {
                     "artist_id": artist_id
                 }
                 , { withCredentials: true })
@@ -82,7 +82,7 @@ const ArtistDetail = () => {
     const handleAddFavouriteArtist = async () => {
         try {
             const response = await axios.post(
-                'http://127.0.0.1:8080/personal/favourites/artist', 
+                'http://127.0.0.1:8080/personal/favourites/artists', 
                 {"artist_id": artist_id}, 
                 {withCredentials: true}
             )
@@ -99,7 +99,7 @@ const ArtistDetail = () => {
     const handleRemoveFavoriteArtist = async () => {
         try {
             const response = await axios.delete(
-                'http://127.0.0.1:8080/personal/favourites/artist',
+                'http://127.0.0.1:8080/personal/favourites/artists',
                 {
                     data: { "artist_id" : artist_id },
                     withCredentials : true
