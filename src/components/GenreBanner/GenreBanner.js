@@ -44,7 +44,6 @@ const GenreBanner = ({imageUrls, names}) => {
                     <span>Top tracks</span>
                     <h1>{trackNames[currentIndex]}</h1>
                     <p>Listen to new music and create your own playlists</p>
-                    <button>Play now</button>
                 </div>
 
                 <div className="genre-slider" style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}>

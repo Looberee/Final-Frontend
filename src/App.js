@@ -28,7 +28,7 @@ import { RoomProvider } from './contexts/RoomContext';
 import Cookies from 'js-cookie';
 import { useModal } from './contexts/ModalContext';
 import ArtistDetail from './pages/SmallPages/ArtistDetail/ArtistDetail';
-import ResetPassword from './pages/ResetPassword/ResetPassword';
+import EmailConfirm from './pages/EmailConfirm/EmailConfirm';
 
 import io, { Socket } from 'socket.io-client';
 import { ModalProvider } from './contexts/ModalContext';
@@ -71,7 +71,7 @@ const App = () => {
 const AppContent = () => {
   const location = useLocation();
   const [searchValue, setSearchValue] = useState('');
-  const isBigPage = location.pathname === '/login' || location.pathname === '/register' || /\/room\/\d+/.test(location.pathname) || location.pathname === '/reset-password';
+  const isBigPage = location.pathname === '/login' || location.pathname === '/register' || /\/room\/\d+/.test(location.pathname) || location.pathname === '/email-confirm';
   const { pyppoTrack } = useTrack();
   const { openModalId } = useModal();
   const [routeClicked, setRouteClicked] = useState(false);
@@ -184,7 +184,7 @@ const AppContent = () => {
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/room/:id' element={<SpecificRoom />} />
-        <Route path='/reset-password' element={<ResetPassword />} />
+        <Route path='/email-confirm' element={<EmailConfirm />} />
       </Routes>
     </div>
   );

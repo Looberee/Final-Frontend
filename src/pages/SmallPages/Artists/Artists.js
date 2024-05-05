@@ -5,9 +5,15 @@ import { Link } from "react-router-dom";
 
 export const Artist = ({ title, genre, fetched_artists }) => {
 
+    const [imageKey, setImageKey] = useState(Date.now());
+
     const getDetailArtist = (artist) => {
         console.log(artist.artist_id);
     }
+
+    const generateImageKey = () => {
+        setImageKey(Date.now());
+    };
 
     return (
         <div>
@@ -17,7 +23,7 @@ export const Artist = ({ title, genre, fetched_artists }) => {
                 <div className="artists-list-container">
                     <ul className="artists-list">
                         {fetched_artists.map(artist => (
-                            <Link to={`/artist/${artist.artist_id}`} key={artist.id} className="artist" onClick={() => getDetailArtist(artist)}>
+                            <Link to={`/artist/${artist.artist_id}`} key={artist.id} className="artist" onClick={() => getDetailArtist(artist)} onLoad={generateImageKey}>
                                 <div className="artist-cover">
                                     <img className="artist-image" src={artist.spotify_image_url} alt={artist.name} loading="lazy" />
                                 </div>

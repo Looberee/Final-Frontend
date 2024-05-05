@@ -3,6 +3,7 @@ import axios from "axios";
 import './PersonalPlaylists.css';
 import './ProfilePlaylist.css';
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import { PlaylistLoadingSpinner } from "../LoadingSpinner/LoadingSpinner";
 import { Link } from "react-router-dom"; // Import Link from React Router
 import { usePlaylist } from "../../contexts/PlaylistContext";
 
@@ -95,13 +96,13 @@ const PersonalPlaylists = () => {
         setIsTextActive(encode_id);
     }
 
-    if (isLoading || error) {
-        return (
-            <div>
-                <LoadingSpinner />
-            </div>
-        );
-    }
+    // if (isLoading || error) {
+    //     return (
+    //         <div>
+    //             <PlaylistLoadingSpinner />
+    //         </div>
+    //     );
+    // }
 
     const playlistItems = data && data.user_playlists ? data.user_playlists.map((playlist, index) =>
         <li className='playlist-container' key={index}>

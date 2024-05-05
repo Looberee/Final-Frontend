@@ -5,6 +5,8 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import Albums from '../../../components/Recommendation/Albums/Albums';
+import toast from 'react-hot-toast';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const ArtistDetail = () => {
 
@@ -12,6 +14,7 @@ const ArtistDetail = () => {
     const [isFavouriteArtist, setIsFavouriteArtist] = useState(false);
     const [artist, setArtist ] = useState('');
     const [artistTopTracks, setArtistTopTracks] = useState([]);
+    const { alreadyAuth } = useAuth();
 
     useEffect(() => {
         const fetchArtistDetail = async () => {
@@ -84,8 +87,11 @@ const ArtistDetail = () => {
                 {withCredentials: true}
             )
             console.log(response.data.message)
+            toast.success("Artist has been added to your favourites!")
         }
         catch (error) {
+            toast.error("You must login!")
+            setIsFavouriteArtist(false);
             console.error('Error adding favourite artist:', error);
         }
     }
@@ -100,8 +106,11 @@ const ArtistDetail = () => {
                 }
             )
             console.log(response.data.message)
+            toast.success("Artist has been removed from your favourites!")
         }
         catch (err) {
+            toast.error("You must login!")
+            setIsFavouriteArtist(false);
             console.error('Error removing favourite artist:', err);
         };
     }
@@ -121,7 +130,7 @@ const ArtistDetail = () => {
 
                     <div className='artist-status-container'>
                         <h3 className='artist-followers'>{artist ? artist.followers : "0"} followers</h3>
-                        <FontAwesomeIcon className={`heart-icon ${isFavouriteArtist ? 'active' : ''}`}  icon={faHeart} onClick={handleToggleFavouriteArtist}/>
+                        <FontAwesomeIcon className={`heart-icon ${isFavouriteArtist && alreadyAuth ? 'active' : ''}`}  icon={faHeart} onClick={handleToggleFavouriteArtist}/>
                     </div>
                 </div>               
             </div>

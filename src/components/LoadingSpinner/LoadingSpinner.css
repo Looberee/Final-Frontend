@@ -78,3 +78,32 @@
 {
     animation-delay: 0s;
 }
+
+
+.playlist-loader-container {
+    width: 175px;
+    height: 248px;
+    border-radius: 10px;
+    background-color: #090f1b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.playlist-loader {
+    height: 25px;
+    display: flex;
+    align-items: center;
+}
+
+.playlist-loader .stroke {
+    display: block;
+    position: relative;
+    background: #ccc;
+    height: 100%;
+    width: 4px;
+    border-radius: 50px;
+    margin: 0 1px;
+    animation: animate 1.5s linear infinite; 
+}

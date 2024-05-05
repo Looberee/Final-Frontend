@@ -226,7 +226,7 @@ const Searched = ({ searchValue }) => {
 
     return (
         <div>
-            <h1 className="searched-tracks-title">Based on what you searched</h1>
+            {!loading ? <h1 className="searched-tracks-title">Based on what you searched</h1> : <div></div>}
 
             {loading ? ( // Render loading spinners if loading is true
                 Array.from({ length: numLoadingSpinners }, (_, index) => (

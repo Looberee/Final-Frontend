@@ -5,6 +5,7 @@ import { useRoom } from "../../contexts/RoomContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import Modal from "react-modal";
+import { toast } from "react-hot-toast";
 
 const RoomOptions = () => {
     const [rooms, setRooms] = useState([]);
@@ -49,19 +50,23 @@ const RoomOptions = () => {
 
     };
 
-    useEffect(() =>{
+    useEffect(() => {
         const fetchRoom = async () => {
             try {
                 const response = await axios.get('http://127.0.0.1:5001/personal/rooms', { withCredentials: true });
                 console.log("Rooms: ", response.data.my_rooms);
                 setRooms(response.data.my_rooms);
-            }
-            catch (err) {
-                console.error('Error fetching rooms:', err);
+            } catch (err) {
+                if (err.response && err.response.status === 404) {
+                    // Set a state variable to indicate that no rooms were found
+                    setRooms([]);
+                } else {
+                    console.error('Error fetching rooms:', err);
+                }
             }
         }
         fetchRoom();
-    },[toggleRoom])
+    }, [toggleRoom])
 
     const handleCreateRoom = async () => {
         try {
@@ -70,6 +75,7 @@ const RoomOptions = () => {
                 url: 'http://127.0.0.1:5001/personal/rooms',
                 withCredentials: true
             });
+            toast.success("A room has been created succesfully!")
             setToggleRoom((pre) => !pre)
 
         }
@@ -88,10 +94,12 @@ const RoomOptions = () => {
         try {
             const response = await axios.put('http://127.0.0.1:5001/personal/rooms', {'room_id': specificRoom.id, 'new_name': roomName} , { withCredentials: true });
             setToggleRoom((pre) => !pre)
-            closeModal()
+            closeModal();
+            toast.success("Your room has been edited succesfully!")
         }
         catch (err) {
             console.error('Error editing room:', err);
+            toast.error("This room name is already in use by other user. Please try another name!")
         }
     };
 
@@ -104,9 +112,11 @@ const RoomOptions = () => {
                 withCredentials: true
             });
             setToggleRoom((pre) => !pre)
-            closeModal()
+            closeModal();
+            toast.success("Your room has been deleted succesfully!")
         }
         catch (err) {
+            toast.error("Failed to delete the room!")
             console.error('Error deleting room:', err);
         }
     };

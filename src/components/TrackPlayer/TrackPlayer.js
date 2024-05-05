@@ -9,7 +9,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 
 const TrackPlayer = () => {
-    const { accessToken } = useAuth();
+    const { alreadyAuth } = useAuth();
 
     const [pyppoPlayer, setPyppoPlayer] = useState();
     const [alreadyPlayed, setAlreadyPlayed] = useState(false);
@@ -18,8 +18,6 @@ const TrackPlayer = () => {
 
     const [isScaled, setIsScaled] = useState(false);
     const [sliderValue, setSliderValue] = useState(0);
-
-    const [spotifyStatus, setSpotifyStatus] = useState('Connecting to Spotify...');
     const [deviceId, setDeviceId] = useState();
     const [trackUri, setTrackUri] = useState()
 
@@ -35,23 +33,6 @@ const TrackPlayer = () => {
     const [repeatState, setRepeatState] = useState('off');
     const [repeatActive, setRepeatActive] = useState(false);
     const [trackEnd, setTrackEnd] = useState(false);
-
-    useEffect(() => {
-
-        console.log("???????????????????????")
-        console.log("Track in pyppo state: ", pyppoTrack)
-        console.log("Track is playing now: " + isPlayingTrack)
-        console.log("IsPlaying: " + isPlaying) 
-        console.log("Repeat: " + repeatActive)
-        console.log("Shuffle: " + shuffleActive)
-        console.log("Already played: " + alreadyPlayed)
-        console.log("Waiting List: ", waitingList)
-        console.log("???????????????????????")
-
-
-
-    },[isPlayingTrack, isPlaying, repeatActive, shuffleActive, alreadyPlayed, waitingList, pyppoTrack])
-
 
     useEffect(() => {
         const initSpotifyPlayer = () => {
@@ -178,6 +159,7 @@ const TrackPlayer = () => {
                             setAlreadyPlayed(true);
                             setTrackEnd(false);
                             setSliderValue(0);
+                            handlePlayTrackInPlayer();
                             return 0;
                         }
                     }
@@ -206,9 +188,6 @@ const TrackPlayer = () => {
         if (currentTrackPosition == '0:00' && isPlayingTrack == pyppoTrack) {
             if (repeatState === 'track') {
                 console.log("Repeat track")
-            }
-            else if (repeatState === 'context') {
-                console.log("Repeat context")
             }
             else
             {
@@ -246,6 +225,7 @@ const TrackPlayer = () => {
         }
         catch (error)
         {
+            toast.error("An error occurred while adding the current track to the favorite list")
             console.error('Failed to add track to favourites:', error);
         }
     }
@@ -260,6 +240,7 @@ const TrackPlayer = () => {
             toast.success("Remove the current track from the favorite list sucessfully!")
         }
         catch (err) {
+            toast.error("An error occurred while removing the current track from the favorite list")
             console.error('Failed to remove track from favourites:', err)
         }
     }
@@ -295,13 +276,21 @@ const TrackPlayer = () => {
             console.log("Slider value in seek function: ", sliderValue)
             console.log("Is Playing Track: ", isPlayingTrack.name)
             console.log("Track duration: ",isPlayingTrack.duration)
-            const response = await axios.post('http://127.0.0.1:8080/playback/seek', { newPositionMs }, {withCredentials: true});
+
+            if (!isPlaying) {
+                handleResumeTrackInPlayer();
+            }
+
+            const response = await axios.post('http://127.0.0.1:8080/playback/seek', { newPositionMs, 'isPlaying' : isPlaying }, {withCredentials: true});
+            setIsPlaying(true);
             console.log('Seek request sent successfully');
-            // setSliderValue(response.data.new_position_ms / isPlayingTrack.duration * 100);
+            
         } catch (error) {
             console.error('Failed to send seek request:', error);
         }
     };
+
+
     
 
     const handleClick = () => {
@@ -322,7 +311,7 @@ const TrackPlayer = () => {
                 try {
                     // Refresh the Spotify token
                     toast.error("401 from Spotify");
-
+                    handlePlayTrackInPlayer();
                     // Retry the playback control request
                     // Your code to send playback control request...
                 } catch (refreshError) {
@@ -361,7 +350,11 @@ const TrackPlayer = () => {
 
     const togglePlay = async () => {
         if (isPlaying) {
-            console.log('Pausing track in player...');
+            if (!alreadyAuth)
+            {
+                toast.error("Please log in to Pyppo to play a track!")
+                return;
+            }
             handlePauseTrackInPlayer()
             setTrackEnd(false);
             setIsPlaying((pre) => (!pre))
@@ -369,14 +362,22 @@ const TrackPlayer = () => {
         {
             if (alreadyPlayed)
             {
-                console.log('Resuming track in player...');
+                if (!alreadyAuth)
+                {
+                    toast.error("Please log in to Pyppo to play a track!")
+                    return;
+                }
                 handleResumeTrackInPlayer();
                 setTrackEnd(false);
                 setIsPlaying((pre) => (!pre))
             }
             else
             {
-                console.log('Playing track in player...');
+                if (!alreadyAuth)
+                {
+                    toast.error("Please log in to Pyppo to play a track!")
+                    return;
+                }
                 handlePlayTrackInPlayer();
                 setTrackEnd(false);
                 setIsPlaying((pre) => (!pre))
@@ -407,7 +408,7 @@ const TrackPlayer = () => {
 
             
         } catch (error) {
-            console.error('Failed to send playback control request:', error);
+            toast.error("Please log in to Pyppo to play a track!")
         }     
     }
 
@@ -427,12 +428,17 @@ const TrackPlayer = () => {
             toast.success("The previous track has been played!")
 
         } catch (error) {
-            console.error('Failed to send playback control request:', error);
+            toast.error("Please log in to Pyppo to play a track!")
         }
     }
 
     const handleShuffle = async () => {
         try {
+            if (!alreadyAuth)
+            {
+                toast.error("Please log in to Pyppo to play a track!")
+                return;
+            }
             const response = await axios.post('http://127.0.0.1:8080/playback/shuffle', {
                 myDeviceId: deviceId,
                 shuffleState: !shuffleState // Toggle shuffle state
@@ -453,12 +459,18 @@ const TrackPlayer = () => {
                 console.error('Failed to toggle shuffle:', message);
             }
         } catch (error) {
+            
             console.error('Error toggling shuffle:', error);
         }
     };
     
     const handleRepeat = async (repeatMode) => {
         try {
+            if (!alreadyAuth)
+            {
+                toast.error("Please log in to Pyppo to play a track!")
+                return;
+            }
             const response = await axios.post('http://127.0.0.1:8080/playback/repeat', {
                 myDeviceId: deviceId, // Assuming deviceId is a simple string or number
                 repeatState: repeatMode
@@ -480,10 +492,19 @@ const TrackPlayer = () => {
     const handleRepeatToggle = () => {
         if (isPlaying == false)
         {
-            
+            if (!alreadyAuth)
+            {
+                toast.error("Please log in to Pyppo to play a track!")
+                return;
+            }
         }
         else
         {
+            if (!alreadyAuth)
+            {
+                toast.error("Please log in to Pyppo to play a track!")
+                return;
+            }
             setRepeatActive(!repeatActive);
             if (repeatActive) {
                 handleRepeat('off');

@@ -3,7 +3,7 @@ import './UserPlaylist.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical, faHeart, faUser, faMusic, faClock, faCalendarDays, faPlay, faPause, faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Modal from "react-modal";
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { usePlaylist } from "../../../contexts/PlaylistContext";
 import { useRecentTrack } from "../../../contexts/RecentTrackContext";
@@ -191,6 +191,7 @@ const UserPlaylist = ({onTrackSelected}) => {
     const { isTrackFavourite, setIsTrackFavourite } = useTrack();
     const [favouriteTracks, setFavouriteTracks] = useState([]);
     const [profile, setProfile] = useState();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchPlaylistTracks = async () => {
@@ -299,6 +300,7 @@ const UserPlaylist = ({onTrackSelected}) => {
             setIsDeleteModalOpen(false);
             togglePlaylist();
             toast.success("Playlist deleted successfully!")
+            navigate('/')
         } catch (error) {
             console.error('Error deleting playlist:', error);
         }
