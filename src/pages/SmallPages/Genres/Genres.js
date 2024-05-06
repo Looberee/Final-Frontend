@@ -2,17 +2,13 @@ import React, { useEffect, useState} from 'react';
 import axios from 'axios';
 import { Link } from "react-router-dom";
 import './Genres.css';
+import { toast } from 'react-hot-toast';
 
 
 const GenreRow = ({ genres }) => {
     const capitalizeFirstLetter = (str) => {
         return str.replace(/\b\w/g, (char) => char.toUpperCase());
     };
-
-    const handleGetGenre = (genre) => {
-        console.log("This is Genre: " , genre);
-    }
-
 
     return (
         <div className="genres-list-container">
@@ -40,9 +36,9 @@ const Genres = () => {
             try {
                 const response = await axios.get('http://127.0.0.1:8080/recommendation/genres');
                 setGenres(response.data.genres);
-                console.log("Genres: ", response.data.genres);
             } catch (error) {
                 console.error('Error fetching genres:', error);
+                toast.error("Something goes wrong, please try again")
             }
         };
         fetchGenres();

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import GenreBanner from "../../../components/GenreBanner/GenreBanner";
 import Albums from "../../../components/Recommendation/Albums/Albums";
 import axios from "axios";
+import { toast } from 'react-hot-toast'
 
 const GenreDetail = () => {
     const { genre_name } = useParams();
@@ -18,10 +19,10 @@ const GenreDetail = () => {
         const fetchTracksGenre = async () => {
             try {
                 const response = await axios.get(`http://127.0.0.1:8080/recommendation/genres/${genre_name}`);
-                console.log(response.data.formatted_tracks);
                 setTracksGenre(response.data.formatted_tracks);
             } catch (error) {
                 console.error('Error fetching track genres:', error);
+                toast.error("Something goes wrong, please try again")
             }
         };
         fetchTracksGenre();

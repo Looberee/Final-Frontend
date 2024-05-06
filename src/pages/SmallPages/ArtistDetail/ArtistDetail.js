@@ -7,6 +7,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import Albums from '../../../components/Recommendation/Albums/Albums';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../../contexts/AuthContext';
+import { useArtist } from '../../../contexts/ArtistContext';
 
 const ArtistDetail = () => {
 
@@ -15,16 +16,17 @@ const ArtistDetail = () => {
     const [artist, setArtist ] = useState('');
     const [artistTopTracks, setArtistTopTracks] = useState([]);
     const { alreadyAuth } = useAuth();
+    const { setArtistState } = useArtist();
 
     useEffect(() => {
         const fetchArtistDetail = async () => {
             try {
                 const response = await axios.get(`http://127.0.0.1:8080/artists/${artist_id}`);
-                console.log(response.data);
                 setArtist(response.data);
             } 
             catch (error) {
                 console.error('Error fetching artist detail:', error);
+                toast.error("Something goes wrong, please try again")
             }
         }
 
@@ -35,11 +37,11 @@ const ArtistDetail = () => {
         const fetchArtistTopTracks = async () => {
             try {
                 const response = await axios.get(`http://127.0.0.1:8080/artists/${artist_id}/top-tracks`);
-                console.log(response.data);
                 setArtistTopTracks(response.data);
             }
             catch (err) {
                 console.error('Error fetching artist top tracks:', err);
+                toast.error("Something goes wrong, please try again")
             }
         }
 
@@ -55,11 +57,11 @@ const ArtistDetail = () => {
                 }
                 , { withCredentials: true })
                 setIsFavouriteArtist(response.data.favourite);
-                console.log("Favourited: ", response.data);
                 
             }
             catch (error) {
                 console.error('Error checking favourite artist:', error);
+                toast.error("Something goes wrong, please try again")
             }
         }
 
@@ -67,7 +69,6 @@ const ArtistDetail = () => {
     },[isFavouriteArtist])
 
     const handleToggleFavouriteArtist = () => {
-        console.log(isFavouriteArtist)
         if (!isFavouriteArtist)
         {
             handleAddFavouriteArtist();
@@ -86,7 +87,7 @@ const ArtistDetail = () => {
                 {"artist_id": artist_id}, 
                 {withCredentials: true}
             )
-            console.log(response.data.message)
+            setArtistState((pre) => !pre)
             toast.success("Artist has been added to your favourites!")
         }
         catch (error) {
@@ -105,7 +106,7 @@ const ArtistDetail = () => {
                     withCredentials : true
                 }
             )
-            console.log(response.data.message)
+            setArtistState((pre) => !pre)
             toast.success("Artist has been removed from your favourites!")
         }
         catch (err) {

@@ -7,6 +7,7 @@ import { useParams, Link } from 'react-router-dom';
 import axios from "axios";
 import { useRecentTrack } from "../../contexts/RecentTrackContext";
 import { useTrack } from "../../contexts/TrackContext";
+import { toast } from "react-hot-toast";
 
 const FavouriteArtistRow = ({ artist, artistOrder, profile }) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -64,11 +65,10 @@ const FavouriteArtists = () => {
                 const response = await axios.get(`http://127.0.0.1:8080/personal/favourites/artists`, {
                     withCredentials: true
                 });
-                console.log("Track from the specific playlist: ", response.data.favourite_artists);
                 setArtists(response.data.favourite_artists); 
     
             } catch (error) {
-                console.error('Error fetching playlist tracks:', error);
+                toast.error('Error fetching playlist tracks');
             }
         };
     
@@ -81,7 +81,7 @@ const FavouriteArtists = () => {
                 const response = await axios.get('http://127.0.0.1:8080/profile', { withCredentials: true });
                 setProfile(response.data.profile);
             } catch (error) {
-                console.error('Error fetching user profile:', error);
+                toast.error('Error fetching user profile');
             }
         };
 

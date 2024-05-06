@@ -6,6 +6,7 @@ import './SpecificRoom.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faL, faMusic, faPlay, faUserTie, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { useTrack } from '../../../contexts/TrackContext';
+import toast from 'react-hot-toast';
 
 const SpecificRoom = () => {
     const { encode_id } = useParams();
@@ -20,14 +21,12 @@ const SpecificRoom = () => {
 
     useEffect(() => {
         socket.current.connect();
-
-        console.log('Connected to socket server');
+        toast.success("Connected to socket server");
 
         socket.current.emit('join', {room_encode_id: encode_id });
     
         // Listen for incoming messages
         socket.current.on('message', (data) => {
-            console.log('Received message:', data.msg);
             setMessages((prevObject) => [...prevObject, {"text" : data.msg, "user" : data.user}]);
         });
 
@@ -36,7 +35,7 @@ const SpecificRoom = () => {
             socket.current.emit('leave', {room_encode_id: encode_id });
             // Disconnect from the socket server
             socket.current.disconnect();
-            console.log('Disconnected from socket server');
+            toast.success("Disconnected from socket server");
             window.location.href= '/home';
         };
     }, []);
@@ -44,7 +43,6 @@ const SpecificRoom = () => {
 
     useEffect(() => {
         socket.current.on('member_list', (data) => {
-            console.log("Member data: ", data);
             setUsers(data.member_list);
         });
     },[messages])
@@ -71,13 +69,11 @@ const SpecificRoom = () => {
         window.location.href= '/home';
         socket.current.on('leave', (data) => {
         })
-        console.log("User has left the room!");
     };
 
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
-            console.log("You typed: ", event.target.value)
             socket.current.emit('send_message', {'message': event.target.value, "room_encode_id": encode_id})
             event.target.value = ''; // Clear input after sending message
             setUserInput('')
@@ -102,6 +98,7 @@ const SpecificRoom = () => {
                 }
             } catch (error) {
                 console.log(error);
+                toast.error("Something goes wrong, please try again")
             }
         };
 

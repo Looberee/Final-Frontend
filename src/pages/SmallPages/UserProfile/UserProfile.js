@@ -76,6 +76,7 @@ const UserProfile = () => {
                 setIsLoading(false);
             } catch (error) {
                 console.error('Error fetching user profile:', error);
+                toast.error("Something goes wrong, please try again")
             }
         };
 
@@ -123,6 +124,7 @@ const UserProfile = () => {
             closeEditProfileModal();
         } catch (error) {
             console.error(error);
+            toast.error("Something goes wrong, please try again")
         }
     };
 
@@ -171,20 +173,20 @@ const UserProfile = () => {
                             </div>
 
                             <ul className='offers-container'>
-                                <li className='offer' style={{color:'#fff'}}>
+                                {/* <li className='offer' style={{color:'#fff'}}>
                                     <FontAwesomeIcon icon={faCircleHalfStroke} className='payment-modal-icon'/>
                                     <span>Dark Mode / Light Mode switch</span>
-                                </li>
+                                </li> */}
 
                                 <li className='offer' style={{color:'#fff'}}>
                                     <FontAwesomeIcon icon={faDoorOpen} className='payment-modal-icon'/>
                                     <span>Pyppo Room Live</span>
                                 </li>
 
-                                <li className='offer' style={{color:'#fff'}}>
+                                {/* <li className='offer' style={{color:'#fff'}}>
                                     <FontAwesomeIcon icon={faBots} className='payment-modal-icon'/>
                                     <span>Chat bot in pyppo room</span>
-                                </li>
+                                </li> */}
                             </ul>
                             <PayPalButton />
                         </Modal>

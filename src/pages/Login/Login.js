@@ -34,11 +34,10 @@ const Login = () => {
             }, {withCredentials: true});  // Make sure to include this to send cookies
     
             if (response.data.login) {
-                console.log('Login successful');
                 setIsLoggedIn(true);
                 setAlreadyAuth(true);
             } else {
-                console.log('Login failed');
+                toast.error("Something goes wrong, please try again")
             }
 
             if (response.data.spotify_token)
@@ -51,13 +50,15 @@ const Login = () => {
             {
                 localStorage.setItem('spotify_expires_at', response.data.spotify_expire_at);
                 const spotifyExpireAt = new Date(response.data.spotify_expire_at * 1000);
-                console.log(spotifyExpireAt);
             }
             toast.success('Logged in successfully');
     
         } catch (error) {
-            console.log(error.message);
-            toast.error('Wrong username or password!');
+            if (error.response && error.response.status === 429) {
+                toast.error('Too many requests. Please try again later.');
+            } else {
+                toast.error('Wrong username or password!');
+            }
         }
     };
     
@@ -77,16 +78,6 @@ const Login = () => {
 
     const handleBackToHome = () => {
         navigate('/');
-    }
-
-    const handleLoginWithSpotify = async () => {
-        try {
-            const res = await axios.get('http://127.0.0.1:8080/spotify/user-login')
-
-        }
-        catch (error) {
-            console.log(error.message);
-        }
     }
 
     const handleOpenForgotPassword = () => {
@@ -162,17 +153,17 @@ const Login = () => {
                                 </div>
                             </div>
 
-                            <div className="txt1 text-center p-t-54 p-b-20">
+                            {/* <div className="txt1 text-center p-t-54 p-b-20">
                                 <span>
                                     Or Log in Using
                                 </span>
-                            </div>
+                            </div> */}
 
-                            <div className="flex-c-m">
+                            {/* <div className="flex-c-m">
                                 <div className="login100-social-item bg2" style={{cursor:'pointer'}} onClick={handleLoginWithSpotify}>
                                     <FontAwesomeIcon icon={faSpotify} />
                                 </div>
-                            </div>
+                            </div> */}
                         </form>
                     </div>
                 </div>

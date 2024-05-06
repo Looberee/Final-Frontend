@@ -21,6 +21,7 @@ export const ProfilePlaylist = () => {
             }
             catch (err) {
                 console.error("Fail to fetch playlists: ", err);
+                toast.error("Something goes wrong, please try again")
             }
         }
         getPlaylists();
@@ -89,6 +90,7 @@ const PersonalPlaylists = () => {
             togglePlaylist();
         } catch (error) {
             console.error('Error creating playlist:', error);
+            toast.error("Something goes wrong, please try again")
         }
     };
 

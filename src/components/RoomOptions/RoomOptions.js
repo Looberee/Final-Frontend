@@ -54,7 +54,6 @@ const RoomOptions = () => {
         const fetchRoom = async () => {
             try {
                 const response = await axios.get('http://127.0.0.1:5001/personal/rooms', { withCredentials: true });
-                console.log("Rooms: ", response.data.my_rooms);
                 setRooms(response.data.my_rooms);
             } catch (err) {
                 if (err.response && err.response.status === 404) {
@@ -127,7 +126,7 @@ const RoomOptions = () => {
             <div>
                 <ul className={`rooms ${roomState ? 'active' : ''}`}>
                     {rooms.map((room) => (
-                        <li className="room-container" style={{color:'#fff'}} key={room.id} onClick={() => setNameToggle(room)}>
+                        <li className="room-container" style={{color:'#fff'}} key={room.encode_id} onClick={() => setNameToggle(room)}>
                             <a className="room-box" href="#">
                                 <h2 className="room-name">{room.name}</h2>
                             </a>

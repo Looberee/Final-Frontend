@@ -45,9 +45,8 @@ const EmailConfirm = () => {
         // }
 
         try {
-            toast.success(`${email}`)
             const response = await axios.post('http://127.0.0.1:8080/request-reset', { email });
-            console.log(response.data);
+            toast.success("Email has been sent successfully! Please check your email to reset your password.")
         } catch (error) {
             if (error.response && error.response.status === 404) {  
                 toast.error("This mail does not exist in Pyppo! Please try again.");

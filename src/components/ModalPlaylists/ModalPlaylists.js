@@ -46,7 +46,6 @@ const ModalPlaylists = ({ onAddToPlaylist }) => {
     };
 
     const handleGetPlaylist = (myPlaylist) => {
-        console.log("Playlist Id: ", myPlaylist.encode_id);
         onAddToPlaylist(myPlaylist.encode_id);
     };
 

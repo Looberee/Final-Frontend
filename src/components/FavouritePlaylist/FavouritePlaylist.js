@@ -108,7 +108,6 @@ const FavouritePlaylist = () => {
                 const response = await axios.get(`http://127.0.0.1:8080/personal/favourites/tracks`, {
                     withCredentials: true
                 });
-                console.log("Track from the specific playlist: ", response.data.favourite_tracks);
                 setPlaylistTracks(response.data.favourite_tracks); 
     
             } catch (error) {

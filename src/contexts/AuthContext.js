@@ -13,16 +13,6 @@ const [refreshToken, setRefreshToken] = useState();
 const [expiresAt, setExpiresAt] = useState(null);
 const [alreadyAuth, setAlreadyAuth] = useState(false);
 
-
-
-useEffect(() => {
-    console.log("Access Token: " + accessToken);
-    console.log("Refresh Token: " + refreshToken);
-    console.log("Expires At: " + expiresAt);
-    console.log("Date expired for token: ", new Date(expiresAt));
-    console.log("Already Authenticated: " + alreadyAuth);
-}, [accessToken, refreshToken, alreadyAuth]);
-
 useEffect(() => {
     if (!accessToken || !expiresAt) {
         return;
@@ -49,18 +39,14 @@ useEffect(() => {
 
     if (timeUntilExpiration > tenMinutes) {
         timerId = setTimeout(() => {
-            console.log('The access token will expire in 10 minutes.');
         }, timeUntilExpiration - tenMinutes);
     } else if (timeUntilExpiration > fiveMinutes) {
         timerId = setTimeout(() => {
-            console.log('The access token will expire in 5 minutes.');
         }, timeUntilExpiration - fiveMinutes);
     } else if (timeUntilExpiration > oneMinute) {
         timerId = setTimeout(() => {
-            console.log('The access token will expire in 1 minute.');
         }, timeUntilExpiration - oneMinute);
     } else {
-        console.log('The access token will expire in less than 1 minute. Forcing refresh token now!');
         refreshTokens();
     }
 
@@ -72,10 +58,10 @@ const refreshTokens = async () => {
         const response = await axios.post('http://127.0.0.1:8080/refresh', {}, {
             withCredentials: true, // This will send the HttpOnly cookie
         });
-        console.log("Successfully refreshed tokens: ", response.data.refresh);
         login(response.data.access_token);
     } catch (error) {
         console.error('Error refreshing tokens:', error);
+        toast.error("Something goes wrong, please try again")
         throw error;
     }
 };
@@ -91,7 +77,6 @@ const logout = async () => {
         const response = await axios.get('http://127.0.0.1:8080/logout', {
             withCredentials: true // This will send the HttpOnly cookie
         });
-        console.log('Logout successful:', response.data);
         toast.success('Logout sucessfully!')
         setTimeout(() => {
             window.location.pathname = '/home';
@@ -99,6 +84,7 @@ const logout = async () => {
 
     } catch (error) {
         console.error('Error logging out:', error);
+        toast.error("Something goes wrong, please try again")
     }
 };
 

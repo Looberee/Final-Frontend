@@ -42,6 +42,7 @@ import NotFound from './pages/NotFound/NotFound';
 import { NotFoundPage } from './pages/NotFound/NotFound';
 
 import { useAuth } from './contexts/AuthContext';
+import { ArtistProvider } from './contexts/ArtistContext';
 
 
 const App = () => {
@@ -59,12 +60,14 @@ const App = () => {
         <UserProvider>
           <AuthProvider>
             <TrackProvider>
-              <RoomProvider>
-                <Router>
-                  <AppContent />
-                  <Toaster containerStyle={{ zIndex: 9999 }} />
-                </Router>
-              </RoomProvider>
+              <ArtistProvider>
+                <RoomProvider>
+                  <Router>
+                    <AppContent />
+                    <Toaster containerStyle={{ zIndex: 9999 }} />
+                  </Router>
+                </RoomProvider>
+              </ArtistProvider>
             </TrackProvider>
           </AuthProvider>
         </UserProvider>
@@ -77,9 +80,7 @@ const AppContent = () => {
   const location = useLocation();
   const [searchValue, setSearchValue] = useState('');
   const isBigPage = location.pathname === '/login' || location.pathname === '/register' || /\/room\/\d+/.test(location.pathname) || location.pathname === '/email-confirm' || /\/reset-password\/.*/.test(location.pathname);
-  const { pyppoTrack } = useTrack();
   const { openModalId } = useModal();
-  const [routeClicked, setRouteClicked] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const navigate = useNavigate()
   const { alreadyAuth } = useAuth();
@@ -130,12 +131,6 @@ const AppContent = () => {
     // Clear the interval when the component unmounts
     return () => clearInterval(intervalId);
 }, []);
-
-
-  useEffect(() => {
-    console.log(openModalId);
-  },[openModalId])
-
 
   useEffect(() => {
     if (searchValue) {

@@ -36,9 +36,8 @@ const ResetPassword = () => {
         }
 
         try {
-            toast.success(`${password}`)
             const response = await axios.post(`http://127.0.0.1:8080/personal/reset-password/${serverToken}`, { password });
-            console.log(response.data);
+            toast.success("Password has been reset successfully! Please login with your new password.")
             navigate('/login');
         } catch (error) {
             if (error.response && error.response.status === 404) {  

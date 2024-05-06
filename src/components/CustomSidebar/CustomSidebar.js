@@ -16,6 +16,7 @@ import { useModal } from '../../contexts/ModalContext';
 import UnauthorizedModal from '../../components/Modal/AlertModals/UnauthorizedModal';
 import { useDarkTheme } from '../../contexts/DarkThemeContext';
 import toast from 'react-hot-toast';
+import { useArtist } from '../../contexts/ArtistContext';
 
 
 const CustomSidebar = () => {
@@ -31,6 +32,7 @@ const CustomSidebar = () => {
     const { roomState, setRoomState } = useRoom();
     const { openModal } = useModal();
     const { toggleDarkMode } = useDarkTheme();
+    const { artistState } = useArtist();
 
 
     const sidebarItems = [
@@ -152,33 +154,32 @@ const CustomSidebar = () => {
         const handleGetArtists = async () => {
             try {
                 const response = await axios.get('http://127.0.0.1:8080/personal/favourites/artists/random', { withCredentials : true})
-                console.log(response.data.favorite_artists)
                 setFiveFavouriteArtists(response.data.favorite_artists);
             }
-            catch (err) {
-                console.error('Error fetching favourite artists:', err);
+            catch (error) {
+                console.error(error);
             }
             
         }
 
         handleGetArtists();
-    },[])
+    },[artistState])
 
     useEffect(() => {
         // Fetch recent tracks when component mounts
         const fetchRecentTracks = async () => {
             try {
-                const token = localStorage.getItem('token');
                 const response = await axios.get('http://127.0.0.1:8080/personal/recent/tracks', {
                     withCredentials: true
                 });
                 setRecentTracks(response.data.recent_tracks);
             } catch (error) {
-                console.error('Error fetching recent tracks:', error);
+                console.error(error);
             }
         };
 
         fetchRecentTracks();
+
 
     }, [recentTrackState]);
 
@@ -195,7 +196,6 @@ const CustomSidebar = () => {
 
     const handlePlayTrack = (track) =>
     {
-        console.log('Track: ', track)
         setPyppoTrack(track);
         toggleRecentTrack();
     }
@@ -206,7 +206,6 @@ const CustomSidebar = () => {
         <div className={'sidebar'}>
             <div className='icon-sidebar'>
                 <ul className='main'>
-                    {/* Map over the sidebarItems array to render each item dynamically */}
                     {sidebarItems.map((item) => (
                         <li key={item.id}>
                             <a className="special-a" onClick={() => handleClick(item.id)}>

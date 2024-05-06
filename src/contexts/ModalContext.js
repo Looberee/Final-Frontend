@@ -9,10 +9,6 @@ export const ModalProvider = ({ children }) => {
 const [openModalId, setOpenModalId] = useState(null);
 const [data, setData ] = useState("")
 
-useEffect(() => {
-    console.log("Modal Id: " + openModalId)
-},[openModalId]);
-
 const openModal = (modalId) => {
     setOpenModalId(modalId);
 };

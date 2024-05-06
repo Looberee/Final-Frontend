@@ -80,9 +80,6 @@ const Dropdown = ({ track }) => {
     };
 
     const handleGetPlaylist = async (playlistId) => {
-        console.log(`Adding song to playlist: ${playlistId}`);
-        console.log("Track object: ", track.spotify_id);
-    
         // Prepare the data to send in the request body
         const data = {
             playlist_id: playlistId,
@@ -94,7 +91,6 @@ const Dropdown = ({ track }) => {
             const response = await axios.post(`http://127.0.0.1:8080/personal/playlists/${playlistId}/track/${track.spotify_id}`, data, {
                 withCredentials: true
             });
-            console.log('Response:', response.data);
             togglePlaylist();
             setIsModalOpen(false);
             toast.success("A track has been added to your playlist!")
@@ -108,7 +104,6 @@ const Dropdown = ({ track }) => {
     };
 
     const handleAddToWaitingList = (track) => {
-        console.log("Track will be added to waiting list: ", track);
         addToWaitingList(track);
         toast.success(`${track.name} has been added to your waiting list`);
 
@@ -120,7 +115,6 @@ const Dropdown = ({ track }) => {
             const response = await axios.post('http://127.0.0.1:8080/personal/favourites/track', 
             { 'spotify_id' : track.spotify_id }, 
             { withCredentials : true });
-            console.log('Message : ', response.data.message)
             toast.success(`${track.name} has been added to your favourites`);
             setIsTrackFavourite(true);
         }

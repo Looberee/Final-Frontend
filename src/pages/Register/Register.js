@@ -54,8 +54,6 @@ const Register = () => {
                 password,
             });
 
-            console.log(response.data); // Assuming your backend returns some data upon successful registration
-
             // Reset form fields after successful registration
             setUsername('');
             setEmail('');
@@ -69,10 +67,12 @@ const Register = () => {
 
         } catch (error) {
             console.error('Registration failed:', error);
-            toast.error('Registration failed! Please try again');
+            if (error.response && error.response.status === 429) {
+                toast.error('Too many requests. Please try again later.');
+            } else {
+                toast.error('Registration failed. Please try again.');
+            }
         }
-
-        console.log(username, email, password, confirmPassword);
     };
 
     const handleBackToHome = () => {

@@ -37,10 +37,8 @@ const TrackPlayer = () => {
     useEffect(() => {
         const initSpotifyPlayer = () => {
             if (window.Spotify) {
-                console.log('Spotify object is available:', window.Spotify);
         
                 const spotify_access_token = localStorage.getItem('spotify_token');
-                console.log('Spotify access token:', spotify_access_token);
         
                 if (!spotify_access_token) {
                     console.error('Access token not found in local storage');
@@ -60,15 +58,12 @@ const TrackPlayer = () => {
                 player.addListener('playback_error', ({ message }) => { console.error('Playback error:', message); });
                 
                 player.addListener('ready', ({ device_id }) => {
-                    console.log('Ready with device ID:', device_id);
                     setMyDeviceId(device_id);
                 });
 
                 player.connect().then(async success => {
-                    console.log('Connect success:', success);
                     if (success) {
                         console.log('The Web Playback SDK successfully connected to Spotify!');
-                        
                     }
                 });
 
@@ -147,14 +142,12 @@ const TrackPlayer = () => {
                         setTrackEnd(true);
                         console.log('Track end', trackEnd);
                         if (repeatActive === false) {
-                            clearInterval(intervalId);
-                            console.log('Repeat state is false');   
+                            clearInterval(intervalId); 
                             setIsPlaying(false);
                             setAlreadyPlayed(false);
                             setSliderValue(0);
                             return 0;
                         } else {
-                            console.log('Repeat state is true');
                             setIsPlaying(true);
                             setAlreadyPlayed(true);
                             setTrackEnd(false);
@@ -187,7 +180,6 @@ const TrackPlayer = () => {
     useEffect(() => {
         if (currentTrackPosition == '0:00' && isPlayingTrack == pyppoTrack) {
             if (repeatState === 'track') {
-                console.log("Repeat track")
             }
             else
             {
@@ -209,7 +201,6 @@ const TrackPlayer = () => {
 
     const handleSliderChange = (event) => {
         const value = parseInt(event.target.value);
-        console.log("Slider value: ", value)
         setSliderValue(value);
     };
 
@@ -219,7 +210,6 @@ const TrackPlayer = () => {
             const response = await axios.post('http://127.0.0.1:8080/personal/favourites/track', 
             { 'spotify_id' : track.spotify_id }, 
             { withCredentials : true });
-            console.log('Message : ', response.data.message)
             toast.success("The current track has been added to the favorite list")
 
         }
@@ -236,7 +226,6 @@ const TrackPlayer = () => {
                 data: { 'spotify_id' : track.spotify_id },
                 withCredentials: true
             });
-            console.log('Message : ', response.data.message)
             toast.success("Remove the current track from the favorite list sucessfully!")
         }
         catch (err) {
@@ -273,9 +262,6 @@ const TrackPlayer = () => {
             // Calculate the new position in milliseconds based on the slider value
             const newPositionMs = (sliderValue / 100) * isPlayingTrack.duration;
             setCounter(parseInt(newPositionMs / 1000));
-            console.log("Slider value in seek function: ", sliderValue)
-            console.log("Is Playing Track: ", isPlayingTrack.name)
-            console.log("Track duration: ",isPlayingTrack.duration)
 
             if (!isPlaying) {
                 handleResumeTrackInPlayer();
@@ -283,10 +269,10 @@ const TrackPlayer = () => {
 
             const response = await axios.post('http://127.0.0.1:8080/playback/seek', { newPositionMs, 'isPlaying' : isPlaying }, {withCredentials: true});
             setIsPlaying(true);
-            console.log('Seek request sent successfully');
             
         } catch (error) {
             console.error('Failed to send seek request:', error);
+            toast.error("Something wrong here, please try again")
         }
     };
 
@@ -315,7 +301,8 @@ const TrackPlayer = () => {
                     // Retry the playback control request
                     // Your code to send playback control request...
                 } catch (refreshError) {
-                    console.error('Failed to refresh Spotify token and retry playback control request:', refreshError);
+                    console.error('Failed to refresh Spotify token and retry playback control request:', refreshError)
+                    toast.error("Something wrong here, please try again");
                 }
             }
         }
@@ -326,12 +313,11 @@ const TrackPlayer = () => {
             const response = await axios.post('http://127.0.0.1:8080/playback/resume', { myDeviceId }, {
                 withCredentials: true
             });
-            console.log('Playback control request sent successfully');
-            console.log(response.data.message);
             setIsPlaying(true);
             setAlreadyPlayed(true)
         } catch (error) {
             console.error('Failed to send playback control request:', error);
+            toast.error("Something wrong here, please try again")
         }
     }
 
@@ -340,8 +326,6 @@ const TrackPlayer = () => {
             const response = await axios.post('http://127.0.0.1:8080/playback/pause', { myDeviceId }, {
                 withCredentials: true
             });
-            console.log('Playback control request sent successfully');
-            console.log(response.data.message);
             setIsPlaying(false);
         } catch (error) {
             console.error('Failed to send playback control request:', error);
@@ -396,7 +380,6 @@ const TrackPlayer = () => {
                 const response = await axios.post('http://127.0.0.1:8080/playback/next', { myDeviceId }, {
                     withCredentials: true
                 });
-                console.log('Playback control request sent successfully');
                 setTrackEnd(false);
                 setIsPlaying(true);
                 setAlreadyPlayed(true)
@@ -418,7 +401,6 @@ const TrackPlayer = () => {
             const response = await axios.post('http://127.0.0.1:8080/playback/previous', { myDeviceId }, {
                 withCredentials: true
             });
-            console.log('Playback control request sent successfully');
             setTrackEnd(false);
             setIsPlaying(true);
             setAlreadyPlayed(true)
@@ -447,7 +429,6 @@ const TrackPlayer = () => {
             });
             const { success, message } = response.data;
             if (success) {
-                console.log(message);
                 setShuffleState(!shuffleState); // Update local state after successful shuffle
                 if (!shuffleState) {
                     toast.success("Shuffle has been enabled")
@@ -457,10 +438,12 @@ const TrackPlayer = () => {
                 }
             } else {
                 console.error('Failed to toggle shuffle:', message);
+                toast.error("Something wrong here, please try again")
             }
         } catch (error) {
             
             console.error('Error toggling shuffle:', error);
+            toast.error("Something wrong here, please try again")
         }
     };
     
@@ -479,13 +462,14 @@ const TrackPlayer = () => {
             });
             const { success, message } = response.data;
             if (success) {
-                console.log(message);
                 setRepeatState(repeatMode); // Update local state after successful repeat mode change
             } else {
                 console.error('Failed to set repeat mode:', message);
+                toast.error("Something wrong here, please try again")
             }
         } catch (error) {
             console.error('Error setting repeat mode:', error);
+            toast.error("Something wrong here, please try again")
         }
     };
     
@@ -532,7 +516,6 @@ const TrackPlayer = () => {
             toggleRecentTrack();
     
         } catch (error) {
-            console.log(isPlayingTrack.spotify_id)
             console.error('Error adding recent track:', error);
         }
     };

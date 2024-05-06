@@ -70,7 +70,6 @@ const TrackRow = ({ track, trackOrder, playlist_encode_id, profile }) => {
                     withCredentials: true
                 }
             );
-            console.log('Track deleted successfully:', response.data);
             togglePlaylist();
             toast.success("The track has been removed from the current playlist!")
         } catch (error) {
@@ -85,7 +84,6 @@ const TrackRow = ({ track, trackOrder, playlist_encode_id, profile }) => {
             const response = await axios.post('http://127.0.0.1:8080/personal/favourites/track', 
             { 'spotify_id' : track.spotify_id }, 
             { withCredentials : true });
-            console.log('Message : ', response.data.message)
             toast.success("The track has been added to the favorite list!")
         }
         catch (error)
@@ -101,7 +99,6 @@ const TrackRow = ({ track, trackOrder, playlist_encode_id, profile }) => {
                 data: { 'spotify_id' : track.spotify_id },
                 withCredentials: true
             });
-            console.log('Message : ', response.data.message)
             toast.success("The track has been removed from the favorite list!")
         }
         catch (err) {
@@ -128,7 +125,7 @@ const TrackRow = ({ track, trackOrder, playlist_encode_id, profile }) => {
         }
         else
         {
-            console.log("Something wrong here")
+            toast.error("Something goes wrong here!")
         }
     };
 
@@ -201,12 +198,12 @@ const UserPlaylist = ({onTrackSelected}) => {
                 const response = await axios.get(`http://127.0.0.1:8080/personal/playlists/${encode_id}/tracks`, {
                     withCredentials: true
                 });
-                console.log("Track from the specific playlist: ", response.data.playlist.tracks);
                 setPlaylistTracks(response.data.playlist.tracks);
                 setPlaylistName(response.data.playlist.name);
     
             } catch (error) {
                 console.error('Error fetching playlist tracks:', error);
+                toast.error("Something goes wrong, please try again")
             }
         };
     
@@ -222,6 +219,7 @@ const UserPlaylist = ({onTrackSelected}) => {
                 setProfile(response.data.profile);
             } catch (error) {
                 console.error('Error fetching user profile:', error);
+                toast.error("Something goes wrong, please try again")
             }
         };
 
@@ -267,8 +265,6 @@ const UserPlaylist = ({onTrackSelected}) => {
 
     const getNewName = async (name) => {
         try {
-            console.log("This is the name: " + name)
-            const token = localStorage.getItem('token');
             const response = await axios.put(
                 'http://127.0.0.1:8080/personal/playlists',
                 { encode_id: encode_id, new_name: name }, // Send encode_id and new_name in the request body
@@ -276,13 +272,13 @@ const UserPlaylist = ({onTrackSelected}) => {
                     withCredentials: true
                 }
             );
-            console.log('Playlist name updated successfully:', response.data);
             setPlaylistName(name); // Update the local state with the new name
             setIsEditModalOpen(false);
             togglePlaylist();
             toast.success("Playlist name updated successfully!")
         } catch (error) {
             console.error('Error updating playlist name:', error);
+            toast.error("Something goes wrong, please try again")
         }
     };
 
@@ -296,13 +292,13 @@ const UserPlaylist = ({onTrackSelected}) => {
                     data: { encode_id: encode_id } // Pass encode_id in the request body
                 }
             );
-            console.log('Playlist deleted successfully:', response.data);
             setIsDeleteModalOpen(false);
             togglePlaylist();
             toast.success("Playlist deleted successfully!")
             navigate('/')
         } catch (error) {
             console.error('Error deleting playlist:', error);
+            toast.error("Something goes wrong, please try again")
         }
     };
 
@@ -321,7 +317,11 @@ const UserPlaylist = ({onTrackSelected}) => {
                         <div className="modal-nameEdit-container">
                             <h2>Edit name of the playlist</h2>
                             <div className="user-playlist-nameEdit-container">
-                                <input type="text" value={playlistName} onChange={(e) => setPlaylistName(e.target.value)} />
+                            <input type="text" value={playlistName} onChange={(e) => {
+                                if (e.target.value.trim() !== '') {
+                                    setPlaylistName(e.target.value);
+                                }
+                            }} />
                                 <button onClick={() => getNewName(playlistName)}>Done</button>
                             </div>
                         </div>

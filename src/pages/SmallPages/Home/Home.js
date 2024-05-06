@@ -6,6 +6,7 @@ import Banner from '../../../components/Banner/Banner';
 import { useAuth } from '../../../contexts/AuthContext';
 import Albums from '../../../components/Recommendation/Albums/Albums';
 import { Artist } from '../Artists/Artists'
+import { toast } from 'react-hot-toast';
 
 const Home = () => {
     const { accessToken } = useAuth();
@@ -22,8 +23,6 @@ const Home = () => {
                 const response = await axios.get('http://localhost:8080/home')
 
                 setDatabaseTracks(response.data.tracks);
-                console.log(response.data.tracks)
-                console.log(response.data.ncs_tracks)
                 setNcsTracks(response.data.ncs_tracks);
                 setElectronicTracks(response.data.electronic_tracks);
                 setRelaxTracks(response.data.relax_tracks);

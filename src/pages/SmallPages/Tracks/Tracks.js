@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import './Tracks.css'
 import Albums from "../../../components/Recommendation/Albums/Albums";
+import { toast } from "react-hot-toast";
 
 const Track = ({title, fetched_tracks}) => {
     const [trackTitle, setTrackTitle] = useState("Title");
@@ -70,6 +71,7 @@ const Tracks = () => {
                     return data.sorted_tracks; // Return sorted Tracks
                 } catch (error) {
                     console.error(error);
+                    toast.error("Something goes wrong, please try again")
                     return []; // Return empty array in case of error
                 }
         };
