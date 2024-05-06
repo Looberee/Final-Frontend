@@ -17,22 +17,35 @@ const Register = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        // if (!username) {
-        //     toast.error('Username is missing');
-        //     return;
-        // }
-        // if (!email) {
-        //     toast.error('Email is missing');
-        //     return;
-        // }
-        // if (!password) {
-        //     toast.error('Password is missing');
-        //     return;
-        // }
-        // if (!confirmPassword) {
-        //     toast.error('Confirm password is missing');
-        //     return;
-        // }
+        if (!username) {
+            toast.error('Username is missing');
+            return;
+        }
+        if (!email) {
+            toast.error('Email is missing');
+            return;
+        }
+        if (!password) {
+            toast.error('Password is missing');
+            return;
+        }
+
+        if (password.length < 6) {
+            toast.error('Password must be at least 6 characters long');
+            return;
+        }
+        
+        // Check if password contains at least one uppercase letter, one special character and one number
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{6,}$/;
+        if (!passwordRegex.test(password)) {
+            toast.error('Password must contain at least one uppercase letter, one special character and one number');
+            return;
+        }
+
+        if (!confirmPassword) {
+            toast.error('Confirm password is missing');
+            return;
+        }
 
         try {
             const response = await axios.post('http://127.0.0.1:8080/register', {

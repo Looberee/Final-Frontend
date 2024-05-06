@@ -16,10 +16,11 @@ const SpecificRoom = () => {
     const [userInput, setUserInput] = useState([]);
     const [trackSearchedValue, setTrackSearchedValue] = useState('');
     const [trackSearchedResults, setTrackSearchedResults] = useState([]);
+    const { setPyppoTrack } = useTrack();
 
     useEffect(() => {
-        // Connect to the socket server
         socket.current.connect();
+
         console.log('Connected to socket server');
 
         socket.current.emit('join', {room_encode_id: encode_id });
@@ -139,7 +140,6 @@ const SpecificRoom = () => {
                                 <span className='member-name'>{message.user}</span>
                             </div>
                             <p className='member-text' style={{color:'#fff'}}>{message.text}</p>
-
                         </div>
                     ))}
                 </div>

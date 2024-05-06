@@ -107,7 +107,7 @@ const FavouriteArtists = () => {
                     {artists && artists.length > 0 ? (
                         artists.map((artist, index) => (
                             <FavouriteArtistRow
-                                key={artists.id}
+                                key={artists.artist_id}
                                 playlist_encode_id = {encode_id}
                                 artist={artist}
                                 artistOrder={index + 1}

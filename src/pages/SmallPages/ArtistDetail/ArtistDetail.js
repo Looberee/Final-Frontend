@@ -90,9 +90,9 @@ const ArtistDetail = () => {
             toast.success("Artist has been added to your favourites!")
         }
         catch (error) {
-            toast.error("You must login!")
             setIsFavouriteArtist(false);
             console.error('Error adding favourite artist:', error);
+            toast.error("You must login!")
         }
     }
 
@@ -109,9 +109,9 @@ const ArtistDetail = () => {
             toast.success("Artist has been removed from your favourites!")
         }
         catch (err) {
-            toast.error("You must login!")
             setIsFavouriteArtist(false);
             console.error('Error removing favourite artist:', err);
+            toast.error("You must login!")
         };
     }
 

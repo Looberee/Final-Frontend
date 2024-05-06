@@ -23,7 +23,6 @@ const Banner = () => {
         setCurrentIndex(index);
     };
     
-
     return (
         <div className="container">
             <div className="slider-wrapper">
@@ -31,7 +30,6 @@ const Banner = () => {
                     <span>Top playlists</span>
                     <h1>Discover new music</h1>
                     <p>Listen to new music and create your own playlists</p>
-                    <button>Play now</button>
                 </div>
 
                 <div className="slider" style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}>

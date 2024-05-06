@@ -41,6 +41,8 @@ import { toast, Toaster } from 'react-hot-toast';
 import NotFound from './pages/NotFound/NotFound';
 import { NotFoundPage } from './pages/NotFound/NotFound';
 
+import { useAuth } from './contexts/AuthContext';
+
 
 const App = () => {
 
@@ -80,6 +82,7 @@ const AppContent = () => {
   const [routeClicked, setRouteClicked] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const navigate = useNavigate()
+  const { alreadyAuth } = useAuth();
 
   useEffect(() => {
     const checkScope = async () => {
@@ -150,6 +153,34 @@ const AppContent = () => {
     }
   }, [isSearching, searchValue, navigate]);
 
+  const LoginPageRedirect = () => {
+    if (alreadyAuth === null) {
+      // Authentication status is still being checked
+      return <LoadingSpinner />;
+    } else if (alreadyAuth) {
+      // User is authenticated
+      navigate('/');
+      return null;
+    } else {
+      // User is not authenticated
+      return <Login />;
+    }
+  };
+  
+  const RegisterPageRedirect = () => {
+    if (alreadyAuth === null) {
+      // Authentication status is still being checked
+      return <LoadingSpinner />;
+    } else if (alreadyAuth) {
+      // User is authenticated
+      navigate('/');
+      return null;
+    } else {
+      // User is not authenticated
+      return <Register />;
+    }
+  };
+
   return (
     <div>
       {!isBigPage && (
@@ -184,8 +215,8 @@ const AppContent = () => {
       )}
 
       <Routes>
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
+        <Route path='/login' element={<LoginPageRedirect />} />
+        <Route path='/register' element={<RegisterPageRedirect />} />
         <Route path='/room/:encode_id' element={<SpecificRoom />} />
         <Route path='/email-confirm' element={<EmailConfirm />} />
         <Route path='/reset-password/:token' element={<ResetPassword />} />
